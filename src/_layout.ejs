@@ -78,20 +78,12 @@
 	<!-- End Google Tag Manager (noscript) -->
 	<%
 	const _processPageList = [ // 填寫資料頁面列表
-	'systemChoose',
-	'qualify1',
-	'qualify2',
-	'qualify3',
+	'qualify',
 	'personalInfo',
-	'educationInfo',
-	'olympia',
-	'admissionSelection',
 	'grade',
 	'placementSelection',
 	'result',
 	'downloadDocs',
-	'uploadReviewItems',
-	'uploadMacauTranscript'
 	];
 	%>
 
@@ -132,32 +124,15 @@
 		<div class="row">
 			<div class="col-lg-3">
 				<div class="list-group">
-					<a href="systemChoose.html" class="nav-item list-group-item list-group-item-action nav-systemChoose <%= 'qualify1qualify2qualify3systemChoose'.includes(current.source) ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　資格檢視 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
+					<a href="qualify.html" class="nav-item list-group-item list-group-item-action nav-qualify <%= current.source === 'qualify' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　資格檢視 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
 					<a href="personalInfo.html" class="nav-item list-group-item list-group-item-action nav-personalInfo <%= current.source === 'personalInfo' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　個人基本資料 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
-					<a href="educationInfo.html" class="nav-item list-group-item list-group-item-action nav-educationInfo hide <%= current.source === 'educationInfo' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　入學資料 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
-					<a href="olympia.html" class="nav-item list-group-item list-group-item-action nav-olympia hide <%= current.source === 'olympia' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　奧林匹亞志願 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="olympia-deadline" style="display:none">&emsp;<small class="text-danger">(非開放時間)</small></div></a>
-					<a href="admissionSelection.html" class="nav-item list-group-item list-group-item-action nav-admissionSelection <%= current.source === 'admissionSelection' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　個人申請志願 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-personal-info-first">&emsp;<small class="text-danger">(請先填寫個人基本資料)</small></div> <div class="tip-deadline">&emsp;<small class="text-danger">(非開放時間)</small></div> </a>
-					<a href="grade.html" class="nav-item list-group-item list-group-item-action nav-grade hide <%= current.source === 'grade' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　聯合分發成績採計方式 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
-					<a href="placementSelection.html" class="nav-item list-group-item list-group-item-action nav-placementSelection hide <%= current.source === 'placementSelection' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　聯合分發志願 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-grade-first">&emsp;<small class="text-danger">(請先選擇聯合分發採計方式)</small></div> <div class="tip-placement-deadline">&emsp;<small class="text-danger">(非開放時間)</small></div> </a>
+					<a href="grade.html" class="nav-item list-group-item list-group-item-action nav-grade  <%= current.source === 'grade' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　分發成績採計方式 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
+					<a href="placementSelection.html" class="nav-item list-group-item list-group-item-action nav-placementSelection  <%= current.source === 'placementSelection' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　分發志願類組 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-grade-first">&emsp;<small class="text-danger">(請先選擇分發採計方式)</small></div> <div class="tip-placement-deadline">&emsp;<small class="text-danger">(非開放時間)</small></div> </a>
 					<a href="result.html" class="nav-item list-group-item list-group-item-action nav-result <%= current.source === 'result' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　志願檢視<i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-personal-info-first">&emsp;<small class="text-danger">(請先填寫個人基本資料)</small></div></a>
 				</div>
 				<hr>
 				<button type="button" id="btn-all-set" class="btn btn-danger btn-block">完成填報</button>
-				<div id="afterConfirmZone" style="display: none;">
-					<hr>
-					<div class="list-group">
-						<a href="downloadDocs.html" class="nav-item list-group-item list-group-item-action nav-lalalalalala <%= current.source === 'downloadDocs' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　下載報名表件 <div class="tip-deadline"><small class="text-danger">(請先鎖定聯分志願)</small></div></a>
-						<a href="uploadReviewItems.html" class="nav-item list-group-item list-group-item-action nav-uploadReviewItems <%= current.source === 'uploadReviewItems' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　上傳備審資料 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i><div class="admission-doc-identity">&emsp;<small class="text-danger">(僅有參加個人申請者需要)</small></div></a>
-					</div>
-					<hr>
-					<button type="button" id="btn-uploadAndSubmit" class="btn btn-danger btn-block">確認上傳資料並提交</button>
-					<small id="btn-uploadAndSubmit-hint" class="text-danger">注意：按下確認後，上傳的檔案就無法再做任何變更，請確認推薦函上傳情形後再提交。</small>
-				</div>
 				<hr>
-				<div>
-					<button type="button" id="btn-uploadMacauTranscript" class="btn btn-info btn-block hide" onclick="location.href='uploadMacauTranscript.html'">登錄及上傳四校聯考成績單</button>
-					<small id="macauTranscriptAlert" class="text-danger hide"> (登錄及上傳截止時間：2020 年 5 月 19 日 17:00 ) </small>
-				</div>
 			</div>
 			<div class="col-lg-9">
 				<%- yield %>
