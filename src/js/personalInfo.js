@@ -137,7 +137,6 @@
 
     function _init() {
         loading.complete();
-        _reRenderSchoolLocation();
         // student.getStudentPersonalData()
         //     .then((res) => {
         //         if (res.ok) {
@@ -416,6 +415,8 @@
     }
 
     function _showTaiwanIdExample() {
+        document.getElementById("taiwanIdExample1").style.display = "none"
+        document.getElementById("taiwanIdExample2").style.display = "none"
         if ($taiwanIdType.val() == '居留證') {
             document.getElementById("taiwanIdExample1").style.display = "block";
             document.getElementById("taiwanIdExample2").style.display = "none";
@@ -850,6 +851,13 @@
                 dbKey: 'taiwan_address'
             },
             {
+                el: $schoolCountry,
+                require: true,
+                type: 'string',
+                dbKey: 'school_country',
+                colName: '學校所在地國家'
+            },
+            {
                 el: $schoolLocation,
                 require: false,
                 type: 'string',
@@ -974,17 +982,8 @@
             formValidateList.push({ el: $schoolNameText, require: true, type: 'string', dbKey: 'school_name', colName: '學校名稱' });
         }
 
-        // 學士班、港二技 需要送出學歷學制描述
-        if (_systemId === 1 || _systemId === 2) {
-            formValidateList.push({ el: $educationSystemDescription, require: true, type: 'string', dbKey: 'education_system_description', colName: '學制描述' });
-        } else {
-            formValidateList.push({ el: $educationSystemDescription, require: false, type: 'string', dbKey: 'education_system_description', dbData: '' });
-        }
-
-        // 判斷是否送主、輔修科目
-        if (_systemId === 3 || _systemId === 4) {
-            formValidateList.push({ el: $majorSubject, require: true, type: 'string', dbKey: 'major_subject', colName: '主修科目' }, { el: $minorSubject, require: false, type: 'string', dbKey: 'minor_subject' });
-        }
+        // 學歷學制描述
+        formValidateList.push({ el: $educationSystemDescription, require: true, type: 'string', dbKey: 'education_system_description', colName: '學制描述' });
 
         let _correct = true; // 格式正確
         let sendData = {}; // 送給後端的

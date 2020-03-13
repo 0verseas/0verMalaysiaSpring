@@ -23,7 +23,6 @@
 	*/
 
 	function _handleChoose() {
-		console.log($(this).val());
 		if (+$(this).val() === 1) {
 			// code = 01 (華文獨中統考文憑) 要驗證 馬來西亞華文獨中統考准考證號碼
 			$('.forCode01').fadeIn();
@@ -40,8 +39,6 @@
 			alert('請選擇您欲申請的成績採計方式');
 			return;
 		}
-
-		console.log(id);
 
 		let data = {
 			apply_way: id

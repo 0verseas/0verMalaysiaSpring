@@ -81,9 +81,9 @@
 	'qualify',
 	'personalInfo',
 	'grade',
-	'placementSelection',
+	'admission',
 	'result',
-	'downloadDocs',
+	'download',
 	];
 	%>
 
@@ -127,11 +127,17 @@
 					<a href="qualify.html" class="nav-item list-group-item list-group-item-action nav-qualify <%= current.source === 'qualify' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　資格檢視 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
 					<a href="personalInfo.html" class="nav-item list-group-item list-group-item-action nav-personalInfo <%= current.source === 'personalInfo' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　個人基本資料 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
 					<a href="grade.html" class="nav-item list-group-item list-group-item-action nav-grade  <%= current.source === 'grade' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　分發成績採計方式 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i></a>
-					<a href="placementSelection.html" class="nav-item list-group-item list-group-item-action nav-placementSelection  <%= current.source === 'placementSelection' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　分發志願類組 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-grade-first">&emsp;<small class="text-danger">(請先選擇分發採計方式)</small></div> <div class="tip-placement-deadline">&emsp;<small class="text-danger">(非開放時間)</small></div> </a>
+					<a href="admission.html" class="nav-item list-group-item list-group-item-action nav-admission  <%= current.source === 'admission' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　分發志願類組 <i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-grade-first">&emsp;<small class="text-danger">(請先選擇分發採計方式)</small></div> <div class="tip-placement-deadline">&emsp;<small class="text-danger">(非開放時間)</small></div> </a>
 					<a href="result.html" class="nav-item list-group-item list-group-item-action nav-result <%= current.source === 'result' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　志願檢視<i class="fa fa-square-o yet pull-right"></i><i class="done fa fa-check-square-o pull-right hide" aria-hidden="true"></i> <div class="tip-personal-info-first">&emsp;<small class="text-danger">(請先填寫個人基本資料)</small></div></a>
 				</div>
 				<hr>
 				<button type="button" id="btn-all-set" class="btn btn-danger btn-block">完成填報</button>
+				<div id="afterConfirmZone" style="display: none;">
+					<hr>
+					<div class="list-group">
+						<a href="download.html" class="nav-item list-group-item list-group-item-action nav-download <%= current.source === 'download' ? 'active' : ''%>"><i class="fa fa-chevron-right hide icon-arrow" aria-hidden="true"></i> 　下載報名表件 <div class="tip-deadline"><small class="text-danger">(請先鎖定聯分志願)</small></div></a>
+					</div>
+				</div>
 				<hr>
 			</div>
 			<div class="col-lg-9">

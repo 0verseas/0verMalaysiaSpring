@@ -357,40 +357,40 @@
 		$downArrow.on("click", _nextWish);
 	}
 
-	function _handleSave() {
-		let order = [];
-		if (_wishList.length > 0) {
-			_wishList.forEach((value, index) => {
-				order.push(value.id);
-			});
-			const data = {
-				order
-			}
-			loading.start();
-			student.setPlacementSelectionOrder(data)
-			.then((res) => {
-				if (res.ok) {
-					return res.json();
-				} else {
-					throw res;
-				}
-			})
-			.then((json) => {
-				alert("儲存成功");
-				window.location.reload();
-				loading.complete();
-			})
-			.catch((err) => {
-				err.json && err.json().then((data) => {
-					console.error(data);
-					alert(`ERROR: \n${data.messages[0]}`);
-				})
-				loading.complete();
-			})
-		} else {
-			alert('沒有選擇志願。');
-		}
-	}
+	// function _handleSave() {
+	// 	let order = [];
+	// 	if (_wishList.length > 0) {
+	// 		_wishList.forEach((value, index) => {
+	// 			order.push(value.id);
+	// 		});
+	// 		const data = {
+	// 			order
+	// 		}
+	// 		loading.start();
+	// 		student.setPlacementSelectionOrder(data)
+	// 		.then((res) => {
+	// 			if (res.ok) {
+	// 				return res.json();
+	// 			} else {
+	// 				throw res;
+	// 			}
+	// 		})
+	// 		.then((json) => {
+	// 			alert("儲存成功");
+	// 			window.location.reload();
+	// 			loading.complete();
+	// 		})
+	// 		.catch((err) => {
+	// 			err.json && err.json().then((data) => {
+	// 				console.error(data);
+	// 				alert(`ERROR: \n${data.messages[0]}`);
+	// 			})
+	// 			loading.complete();
+	// 		})
+	// 	} else {
+	// 		alert('沒有選擇志願。');
+	// 	}
+	// }
 
 	function _handleConfirmed() {
 		var order= _wishList.length;
@@ -405,46 +405,46 @@
 			_handleSecondConfirmed();
 	}
 
-	function _handleSecondConfirmed() {
-		setTimeout(function(){
-			var isAllSet = confirm("確認後就「無法再次更改志願」，您真的確認送出嗎？");
-			if (isAllSet === true) {
-				let order = [];
-				if (_wishList.length > 0) {
-					_wishList.forEach((value, index) => {
-						order.push(value.id);
-					});
-					const data = {
-						order
-					}
-					loading.start();
-					student.SecondPlacementSelectionOrder(data)
-						.then((res) => {
-							if (res.ok) {
-								return res.json();
-							} else {
-								throw res;
-							}
-						})
-						.then((json) => {
-							alert("儲存成功並已鎖定，系統已寄送志願選填通知信至您的 email。");
-							window.location.reload();
-							loading.complete();
-							location.href = "./downloadDocs.html";
-						})
-						.catch((err) => {
-							err.json && err.json().then((data) => {
-								console.error(data);
-								alert(`ERROR: \n${data.messages[0]}`);
-							})
-							loading.complete();
-						})
-				} else {
-					alert('沒有選擇志願。');
-				}
-			}
-		}, 500);
-	}
+	// function _handleSecondConfirmed() {
+	// 	setTimeout(function(){
+	// 		var isAllSet = confirm("確認後就「無法再次更改志願」，您真的確認送出嗎？");
+	// 		if (isAllSet === true) {
+	// 			let order = [];
+	// 			if (_wishList.length > 0) {
+	// 				_wishList.forEach((value, index) => {
+	// 					order.push(value.id);
+	// 				});
+	// 				const data = {
+	// 					order
+	// 				}
+	// 				loading.start();
+	// 				student.SecondPlacementSelectionOrder(data)
+	// 					.then((res) => {
+	// 						if (res.ok) {
+	// 							return res.json();
+	// 						} else {
+	// 							throw res;
+	// 						}
+	// 					})
+	// 					.then((json) => {
+	// 						alert("儲存成功並已鎖定，系統已寄送志願選填通知信至您的 email。");
+	// 						window.location.reload();
+	// 						loading.complete();
+	// 						location.href = "./downloadDocs.html";
+	// 					})
+	// 					.catch((err) => {
+	// 						err.json && err.json().then((data) => {
+	// 							console.error(data);
+	// 							alert(`ERROR: \n${data.messages[0]}`);
+	// 						})
+	// 						loading.complete();
+	// 					})
+	// 			} else {
+	// 				alert('沒有選擇志願。');
+	// 			}
+	// 		}
+	// 	}, 500);
+	// }
 
 	function _checkconfirm(data) {
 		if (!!data.student_misc_data.confirmed_placement_at) {

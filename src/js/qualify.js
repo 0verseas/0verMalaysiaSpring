@@ -226,8 +226,7 @@
 	//處理分發來台年限
 	function _handleDistributionTime(){
 		let inputTime = $distributionTime[0].valueAsNumber; 
-		console.log($distributionTime);
-		console.log(inputTime);
+
 		if(inputTime){
 			inputTime = Math.floor(inputTime); //先無條件捨去
 			if(inputTime > $distributionTime[0].max){
