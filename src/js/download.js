@@ -11,8 +11,8 @@
 	/**
 	*	init
 	*/
-
-	_init();
+	loading.complete();
+	// _init();
 
 	/**
 	*	bind event

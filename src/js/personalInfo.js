@@ -96,14 +96,6 @@
     const $momPhoneCode = $('#momPhoneCode'); // 聯絡電話國碼
     const $momPhone = $('#momPhone'); // 聯絡電話
     const $momPhoneForm = $('#mom-phone');// 母親電話欄位
-    // 監護人（父母皆不詳才需要填寫）
-    const $guardianForm = $('#form-guardian'); // 資料表單
-    const $guardianName = $('#guardianName'); // 姓名（中）
-    const $guardianEngName = $('#guardianEngName'); // 姓名（英）
-    const $guardianBirthday = $('#guardianBirthday'); // 生日
-    const $guardianJob = $('#guardianJob'); // 職業
-    const $guardianPhoneCode = $('#guardianPhoneCode'); // 聯絡電話國碼
-    const $guardianPhone = $('#guardianPhone'); // 聯絡電話
 
     // 在台聯絡人
     const $twContactName = $('#twContactName'); // 姓名
@@ -525,6 +517,12 @@
     }
 
     function _switchDadDataForm() {
+        if(_currentMomStatus === "undefined" && _currentDadStatus ==="undefined"){
+            alert('請至少填寫一位監護人資料');
+            _currentDadStatus = 'alive';
+            $dadStatus[0].checked = true;
+            $dadStatus[2].checked = false;
+        }
         if (_currentDadStatus === "undefined") {
             $dadDataForm.hide();
         } else {
@@ -537,12 +535,18 @@
             document.getElementById('dadPhoneCode').value="";
             document.getElementById('dadPhone').value="";
         }
-        _switchGuardianForm();
     }
 
     function _chMomStatus() {
         _currentMomStatus = $(this).val();
-        _switchMomDataForm();
+        if(_currentMomStatus === "undefined" && _currentDadStatus ==="undefined"){
+            alert('請至少填寫一位監護人資料');
+            _currentMomStatus = 'alive';
+            $momStatus[0].checked = true;
+            $momStatus[2].checked = false;
+        } else {
+            _switchMomDataForm();
+        }
     }
 
     function _switchMomDataForm() {
@@ -557,15 +561,6 @@
             $momPhoneForm.hide();
             document.getElementById('momPhoneCode').value="";
             document.getElementById('momPhone').value="";
-        }
-        _switchGuardianForm();
-    }
-
-    function _switchGuardianForm() {
-        if (_currentDadStatus === "undefined" && _currentMomStatus === "undefined") {
-            $guardianForm.fadeIn();
-        } else {
-            $guardianForm.hide();
         }
     }
 
@@ -619,12 +614,6 @@
         $momJob.val($momJob.val().replace(/[\<\>\"]/g, "")); // 職業
         $momPhoneCode.val($momPhoneCode.val().replace(/[^\d-]/g, '')); // 聯絡電話國碼
         $momPhone.val($momPhone.val().replace(/[^\d-]/g, '')); // 聯絡電話
-        // 監護人（父母皆不詳才需要填寫）
-        $guardianName.val($guardianName.val().replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "")); // 姓名（中）
-        $guardianEngName.val($guardianEngName.val().replace(/[^a-zA-Z.,-\s]/g, "")); // 姓名（英）
-        $guardianJob.val($guardianJob.val().replace(/[\<\>\"]/g, "")); // 職業
-        $guardianPhoneCode.val($guardianPhoneCode.val().replace(/[^\d-]/g, '')); // 聯絡電話國碼
-        $guardianPhone.val($guardianPhone.val().replace(/[^\d-]/g, '')); // 聯絡電話
 
         // 在台聯絡人 
         $twContactName.val($twContactName.val().replace(/[^\u00c0-\u9fffa-zA-Z\u002d\u00b7\s]/g, "")); // 姓名
@@ -851,13 +840,6 @@
                 dbKey: 'taiwan_address'
             },
             {
-                el: $schoolCountry,
-                require: true,
-                type: 'string',
-                dbKey: 'school_country',
-                colName: '學校所在地國家'
-            },
-            {
                 el: $schoolLocation,
                 require: false,
                 type: 'string',
@@ -963,11 +945,6 @@
         //母親為「存」時增加的驗證
         if(_currentMomStatus == "alive"){
             formValidateList.push( { el: $momPhoneCode, require: true, type: 'string', colName: '母親聯絡電話國碼' }, { el: $momPhone, require: true, type: 'string', dbKey: 'mom_phone', dbData: $momPhoneCode.val() + ';' + $momPhone.val(), colName: '母親聯絡電話' });
-        }
-
-        // 父母皆為「不詳」時，增加「監護人」驗證
-        if (_currentDadStatus === "undefined" && _currentMomStatus === "undefined") {
-            formValidateList.push({ el: $guardianName, require: true, type: 'string', dbKey: 'guardian_name', colName: '監護人姓名（中）' }, { el: $guardianEngName, require: true, type: 'string', dbKey: 'guardian_eng_name', colName: '監護人姓名（英）' }, { el: $guardianBirthday, require: true, type: 'date', dbKey: 'guardian_birthday', colName: '監護人生日' }, { el: $guardianJob, require: true, type: 'string', dbKey: 'guardian_job', colName: '監護人職業' }, { el: $guardianPhoneCode, require: true, type: 'string', colName: '監護人聯絡電話國碼' }, { el: $guardianPhone, require: true, type: 'string', dbKey: 'guardian_phone', dbData: $guardianPhoneCode.val() + ';' + $guardianPhone.val(), colName: '監護人聯絡電話' });
         }
 
         // 有證件類型再送 ID
