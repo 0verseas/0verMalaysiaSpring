@@ -28,7 +28,7 @@
 	*/
 	function _init() {
 		loading.complete();
-		_setData();
+		// _setData();
 
 		// get data
 		// student.getVerifyQualification().then((res) => {

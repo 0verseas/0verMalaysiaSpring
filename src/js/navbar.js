@@ -12,33 +12,33 @@
 	* init
 	*/
 	// get progress
-	student.getStudentRegistrationProgress()
-	.then((res) => {
-		if (res.ok) {
-			return res.json();
-		} else {
-			throw res;
-		}
-	})
-	.then((json) => {
-		!!json || location.replace('./');
-		_setEmailVerifyAlert(json);
-		// _setProgress(json);
-		_setHeader(json);
-		// _checkConfirm(json);
-	})
-	.catch((err) => {
-		console.error(err);
-        if (err.status && err.status === 401) {
-            alert('請登入。');
-            location.href = "./index.html";
-        } else {
-            err.json && err.json().then((data) => {
-                console.error(data);
-                alert(`ERROR: \n${data.messages[0]}`);
-            })
-        }
-	});
+	// student.getStudentRegistrationProgress()
+	// .then((res) => {
+	// 	if (res.ok) {
+	// 		return res.json();
+	// 	} else {
+	// 		throw res;
+	// 	}
+	// })
+	// .then((json) => {
+	// 	!!json || location.replace('./');
+	// 	_setEmailVerifyAlert(json);
+	// 	// _setProgress(json);
+	// 	_setHeader(json);
+	// 	// _checkConfirm(json);
+	// })
+	// .catch((err) => {
+	// 	console.error(err);
+    //     if (err.status && err.status === 401) {
+    //         alert('請登入。');
+    //         location.href = "./index.html";
+    //     } else {
+    //         err.json && err.json().then((data) => {
+    //             console.error(data);
+    //             alert(`ERROR: \n${data.messages[0]}`);
+    //         })
+    //     }
+	// });
 
 	/**
 	*	bind event
@@ -93,7 +93,7 @@
 		})
 	}
 
-	function _setEmailVerifyAlert(data)) {
+	function _setEmailVerifyAlert(data) {
 		if (!data.email_verified) {
 			$('.alert-emailVerify').show();
 		}
