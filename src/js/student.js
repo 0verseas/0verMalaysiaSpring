@@ -123,15 +123,15 @@ const student = (() => {
 		})
 	}
 
-	// function resendEmail() {
-	// 	return fetch(baseUrl + `/students/verify-email`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		}, 
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function resendEmail() {
+		return fetch(baseUrl + `/malaysia-spring/verify-email`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}, 
+			credentials: 'include'
+		})
+	}
 
 	// function getDeptApplicationDoc(schoolId, system, deptId) { // 接系所資料（暫時用在「上傳備審資料」上）
 	// 	return fetch(baseUrl + `/schools/` + schoolId + `/systems/` + system + `/departments/` + deptId, {
@@ -481,7 +481,7 @@ const student = (() => {
 		login,
 		logout,
 		verifyEmail,
-		// resendEmail,
+		resendEmail,
 		// getDeptApplicationDoc,
 		// sendResetPassword,
 		// resetPassword,
