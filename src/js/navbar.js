@@ -12,33 +12,33 @@
 	* init
 	*/
 	// get progress
-	// student.getStudentRegistrationProgress()
-	// .then((res) => {
-	// 	if (res.ok) {
-	// 		return res.json();
-	// 	} else {
-	// 		throw res;
-	// 	}
-	// })
-	// .then((json) => {
-	// 	!!json || location.replace('./');
-	// 	_setEmailVerifyAlert(json);
-	// 	// _setProgress(json);
-	// 	_setHeader(json);
-	// 	// _checkConfirm(json);
-	// })
-	// .catch((err) => {
-	// 	console.error(err);
-    //     if (err.status && err.status === 401) {
-    //         alert('請登入。');
-    //         location.href = "./index.html";
-    //     } else {
-    //         err.json && err.json().then((data) => {
-    //             console.error(data);
-    //             alert(`ERROR: \n${data.messages[0]}`);
-    //         })
-    //     }
-	// });
+	student.getStudentRegistrationProgress()
+	.then((res) => {
+		if (res.ok) {
+			return res.json();
+		} else {
+			throw res;
+		}
+	})
+	.then((json) => {
+		!!json || location.replace('./');
+		_setEmailVerifyAlert(json);
+		_setProgress(json);
+		_setHeader(json);
+		// _checkConfirm(json);
+	})
+	.catch((err) => {
+		console.error(err);
+        if (err.status && err.status === 401) {
+            alert('請登入。');
+            location.href = "./index.html";
+        } else {
+            err.json && err.json().then((data) => {
+                console.error(data);
+                alert(`ERROR: \n${data.messages[0]}`);
+            })
+        }
+	});
 
 	/**
 	*	bind event
@@ -100,37 +100,55 @@
 	}
 
 	function _setProgress(data) {
+		console.log(data)
 		// 資格驗證
-		// if (!!data.student_qualification_verify) {
-		// 	$('.nav-systemChoose').addClass('list-group-item-success');
-		// 	const systemID = data.student_qualification_verify.system_id;
-		// 	if (+systemID === 1) {
-		// 		$('.nav-educationInfo, .nav-olympia, .nav-grade, .nav-placementSelection').show();
-		// 	}
-		// }
+		if (!!data.has_qualify) {
+			$('.nav-qualify').addClass('list-group-item-success');
+		}
 
 		// 個人基本資料
-		// !!data.student_personal_data && $('.nav-personalInfo').addClass('list-group-item-success');
+		!!data.has_personal_info && $('.nav-personalInfo').addClass('list-group-item-success');
+
+		if(data.has_qualify ===false){
+			// 學生還沒有完成資格檢視時，出現提示訊息（請先完成資格檢視）
+			$('.nav-personalInfo').addClass('disabled');
+			$('.nav-personalInfo').addClass('show-qualify-first');
+			$('.nav-personalInfo').click(function(e){e.preventDefault();});
+		}
 
 		// 分發成績採計方式
-		// !!data.student_department_admission_placement_apply_way && $('.nav-grade').addClass('list-group-item-success');
+		!!data.has_apply_way && $('.nav-grade').addClass('list-group-item-success');
+
+		if(data.has_personal_info ===false){
+			// 學生還沒有填寫個人基本資料時，出現提示訊息（請先填寫個人基本資料）
+			$('.nav-grade').addClass('disabled');
+			$('.nav-grade').addClass('show-personal-info-first');
+			$('.nav-grade').click(function(e){e.preventDefault();});
+		}
 
 		// 分發志願
-		// !!data.student_department_admission_placement_order && $('.nav-placementSelection').addClass('list-group-item-success');
+		!!data.has_admission && $('.nav-admission').addClass('list-group-item-success');
 
-		// if (!data.student_department_admission_placement_apply_way) {
-		// 	// 學生沒有填聯合分發採計方式時，「聯合分發志願」出現提示訊息（請先選擇聯合分發採計方式）
-		// 	$('.nav-placementSelection').addClass('disabled');
-		// 	$('.nav-placementSelection').addClass('show-grade-first');
-		// 	$('.nav-placementSelection').click(function(e){e.preventDefault();});
-		// } else {
-		// 	// 學生有填聯合分發採計方式，但沒有在聯合分發期間期間時，「聯合分發志願」出現提示訊息（聯合分發已截止）
-		// 	$('.nav-placementSelection').addClass('disabled');
-		// 	$('.nav-placementSelection').addClass('show-placement-deadline');
-		// 	$('.nav-placementSelection').click(function(e){e.preventDefault();});
-		// }
+		if(data.is_opening ===false){
+			// 學生沒有在開放期間時，出現提示訊息（非開放時間）
+			$('.nav-admission').addClass('disabled');
+			$('.nav-admission').addClass('show-admission-deadline');
+			$('.nav-admission').click(function(e){e.preventDefault();});
+		}else{
+			if(data.has_apply_way ===false){
+				// 學生有在開放期間時，但沒有填成績採計方式時，出現提示訊息（請先選擇成績採計方式）
+				$('.nav-admission').addClass('disabled');
+				$('.nav-admission').addClass('show-grade-first');
+				$('.nav-admission').click(function(e){e.preventDefault();});
+			}
+		}
 
-		// }
+		//志願檢視
+		if(data.has_admission===false){
+			$('.nav-result').addClass('disabled');
+			$('.nav-result').addClass('show-admission-first');
+			$('.nav-result').click(function(e){e.preventDefault();});
+		}
 	}
 
 	function _setHeader(data) {

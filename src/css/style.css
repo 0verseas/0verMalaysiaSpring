@@ -100,6 +100,13 @@ footer { /* 令 footer 圖層置底，才不會蓋到其他元素 */
 	background-color: #fff;
 }
 
+.tip-qualify-first {
+	display: none;
+}
+.show-qualify-first>.tip-qualify-first {
+	display: block;
+}
+
 .tip-personal-info-first {
 	display: none;
 }
@@ -120,7 +127,7 @@ footer { /* 令 footer 圖層置底，才不會蓋到其他元素 */
 	display: none;
 }
 
-.tip-placement-deadline {
+.tip-admission-deadline {
 	display: none;
 }
 
@@ -128,7 +135,14 @@ footer { /* 令 footer 圖層置底，才不會蓋到其他元素 */
 	display: block;
 }
 
-.show-placement-deadline>.tip-placement-deadline {
+.show-admission-deadline>.tip-admission-deadline {
+	display: block;
+}
+
+.tip-admission-first {
+	display: none;
+}
+.show-admission-first>.tip-admission-first {
 	display: block;
 }
 

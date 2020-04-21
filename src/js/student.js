@@ -2,20 +2,16 @@ const student = (() => {
 
 	const baseUrl = env.baseUrl;
 
-	// function setHeader(headerData) {
-	// 	const $studentInfoHeader = $('#header-studentInfo');
-	// 	const $headerId = $studentInfoHeader.find('#headerId');
+	function setHeader(headerData) {
+		const $studentInfoHeader = $('#header-studentInfo');
+		const $headerId = $studentInfoHeader.find('#headerId');
 
-	// 	headerData = headerData || {
-	// 		system: "",
-	// 		identity: "請重新整理。",
-	// 		id: ""
-	// 	}
-
-	// 	$headerSystem.html(headerData.system);
-	// 	$headerIdentity.html(headerData.identity);
-	// 	$headerId.html(headerData.id);
-	// }
+		headerData = headerData || {
+			id: "重新整理"
+		}
+		
+		$headerId.html(headerData.id);
+	}
 
 	// function getAdmissionCount () {
 	// 	return fetch(baseUrl + `/students/admission-count`, {
@@ -391,15 +387,15 @@ const student = (() => {
 	// 	})
 	// }
 
-	// function getStudentRegistrationProgress() {
-	// 	return fetch(baseUrl + `/students/registration-progress`, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function getStudentRegistrationProgress() {
+		return fetch(baseUrl + `/malaysia-spring/registration-progress`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+	}
 
 	// function setReviewItem({ student_id, dept_id, type_id, data }) {
 	// 	return fetch(`${baseUrl}/students/${student_id}/admission-selection-application-document/departments/${dept_id}/types/${type_id}/files`, {
@@ -475,7 +471,7 @@ const student = (() => {
 	}
 
 	return {
-		// setHeader,
+		setHeader,
 		// getAdmissionCount,
 		// getAdmissionCountDetail,
 		// getCountryList,
@@ -506,7 +502,7 @@ const student = (() => {
 		// getStudentAvailableApplyWayList,
 		// getStudentAdmissionPlacementApplyWay,
 		// setStudentAdmissionPlacementApplyWay,
-		// getStudentRegistrationProgress,
+		getStudentRegistrationProgress,
 		// getPlacementSelectionOrder,
 		// setPlacementSelectionOrder,
 		// getOrderResultList,
