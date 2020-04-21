@@ -130,7 +130,7 @@
 			}
 		})
 		.then((json) => {
-			location.href="./systemChoose.html";
+			location.href="./qualify.html";
 			loading.complete();
 		})
 		.catch((err) => {
