@@ -9,7 +9,7 @@ const student = (() => {
 		headerData = headerData || {
 			id: "重新整理"
 		}
-		
+
 		$headerId.html(headerData.id);
 	}
 
@@ -112,16 +112,16 @@ const student = (() => {
 		})
 	}
 
-	// function verifyEmail(email, token) {
-	// 	return fetch(baseUrl + `/students/verify-email/${email}`, {
-	// 		method: 'PUT',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		}, 
-	// 		credentials: 'include',
-	// 		body: JSON.stringify({ token })
-	// 	})
-	// }
+	function verifyEmail(email, token) {
+		return fetch(baseUrl + `/malaysia-spring/verify-email/${email}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			}, 
+			credentials: 'include',
+			body: JSON.stringify({ token })
+		})
+	}
 
 	// function resendEmail() {
 	// 	return fetch(baseUrl + `/students/verify-email`, {
@@ -480,7 +480,7 @@ const student = (() => {
 		isLogin,
 		login,
 		logout,
-		// verifyEmail,
+		verifyEmail,
 		// resendEmail,
 		// getDeptApplicationDoc,
 		// sendResetPassword,

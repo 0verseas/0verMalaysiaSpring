@@ -2,7 +2,7 @@
 	/**
 	* init
 	*/
-	// _verify();
+	_verify();
 
 	/**
 	* private method
