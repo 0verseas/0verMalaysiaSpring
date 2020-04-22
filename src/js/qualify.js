@@ -27,43 +27,32 @@
 	* init
 	*/
 	function _init() {
-		loading.complete();
-		// _setData();
-
 		// get data
-		// student.getVerifyQualification().then((res) => {
-		// 	if (res.ok) {
-		// 		return res.json();
-		// 	} else {
-		// 		throw res;
-		// 	}
-		// })
-		// .then((json) => {
-		// 	console.log(json);
-		// 	if (json && json.student_qualification_verify && json.student_qualification_verify.identity) {
-		// 		_savedIdentity = json.student_qualification_verify.identity;
-		// 		if (json.student_qualification_verify.system_data && json.student_qualification_verify.system_data.id) {
-		// 			_savedSystem = json.student_qualification_verify.system_data.id;
-		// 		}
-
-		// 		+json.student_qualification_verify.system_id === 1 && _setData(json.student_qualification_verify);
-		// 	}
-		// })
-		// .then(() => {
-		// 	loading.complete();
-		// })
-		// .catch((err) => {
-		// 	if (err.status && err.status === 401) {
-		// 		alert('請登入。');
-		// 		location.href = "./index.html";
-		// 	} else {
-		// 		err.json && err.json().then((data) => {
-		// 			console.error(data);
-		// 			alert(`ERROR: \n${data.messages[0]}`);
-		// 		})
-		// 	}
-		// 	loading.complete();
-		// });
+		student.getVerifyQualification().then((res) => {
+			if (res.ok) {
+				return res.json();
+			} else {
+				throw res;
+			}
+		})
+		.then((json) => {
+			_setData(json);
+		})
+		.then(() => {
+			loading.complete();
+		})
+		.catch((err) => {
+			if (err.status && err.status === 401) {
+				alert('請登入。');
+				location.href = "./index.html";
+			} else {
+				err.json && err.json().then((data) => {
+					console.error(data);
+					alert(`ERROR: \n${data.messages[0]}`);
+				})
+			}
+			loading.complete();
+		});
 		if(document.body.scrollWidth<768)  // 判別網頁寬度 少於768會今入單欄模式
 		smoothScroll(document.body.scrollHeight/2.2,800);  // 用整體長度去做計算  滑動到需要填寫欄位位置
 	}
@@ -81,7 +70,6 @@
 	const $hasBeenTaiwanRadio = $signUpForm.find('.radio-hasBeenTaiwan');
 	const $whyHasBeenTaiwanRadio = $signUpForm.find('.radio-whyHasBeenTaiwan');
 	const $ethnicChineseRadio = $signUpForm.find('.radio-ethnicChinese');
-	const $distributionTime = $('#distributionTime');
 
 	/**
 	*	init
@@ -101,7 +89,6 @@
 	$hasBeenTaiwanRadio.on('change', _checkHasBeenTaiwanValidation);
 	$whyHasBeenTaiwanRadio.on('change', _checkWhyHasBeenTaiwanValidation);
 	$ethnicChineseRadio.on('change',_checkEthnicChineseValidation);
-	$distributionTime.on('blur',_handleDistributionTime)
 
 	/**
 	*	event handler
@@ -131,38 +118,35 @@
 		console.log(`在台停留日期請就下列選項，擇一勾選，並檢附證明文件： ${hasBeenTaiwanOption}`);
 		console.log(`是否為華裔者： ${ethnicChinese}`);
 
-		// loading.start();
-		// student.verifyQualification({
-		// 	system_id: 1,
-		// 	identity: 3,
-		// 	has_come_to_taiwan: !!isDistribution,
-		// 	come_to_taiwan_at: distributionTime,
-		// 	reason_selection_of_come_to_taiwan: distributionOption,
-		// 	overseas_residence_time: stayLimitOption,
-		// 	stay_over_120_days_in_taiwan: !!hasBeenTaiwan,
-		// 	reason_selection_of_stay_over_120_days_in_taiwan: hasBeenTaiwanOption,
-		// 	is_ethnic_Chinese: ethnicChinese,
-		// 	force_update: true // TODO:
-		// })
-		// .then((res) => {
-		// 	if (res.ok) {
-		// 		return res.json();
-		// 	} else {
-		// 		throw res;
-		// 	}
-		// })
-		// .then((json) => {
-		// 	console.log(json);
-		// 	window.location.href = './personalInfo.html';
-		// 	loading.complete();
-		// })
-		// .catch((err) => {
-		// 	err.json && err.json().then((data) => {
-		// 		console.error(data);
-		// 		alert(`ERROR: \n${data.messages[0]}`);
-		// 	})
-		// 	loading.complete();
-		// });
+		loading.start();
+		student.verifyQualification({
+			has_come_to_taiwan: !!isDistribution,
+			come_to_taiwan_at: distributionTime,
+			reason_of_come_to_taiwan: distributionOption,
+			overseas_residence_time: stayLimitOption,
+			stay_over_120_days_in_taiwan: !!hasBeenTaiwan,
+			reason_selection_of_stay_over_120_days_in_taiwan: hasBeenTaiwanOption,
+			is_ethnic_Chinese: ethnicChinese,
+			force_update: true // TODO:
+		})
+		.then((res) => {
+			if (res.ok) {
+				return res.json();
+			} else {
+				throw res;
+			}
+		})
+		.then((json) => {
+			window.location.href = './personalInfo.html';
+			loading.complete();
+		})
+		.catch((err) => {
+			err.json && err.json().then((data) => {
+				console.error(data);
+				alert(`ERROR: \n${data.messages[0]}`);
+			})
+			loading.complete();
+		});
 	}
 	
 
@@ -223,23 +207,6 @@
 		!!option || $signUpForm.find('.question.overseas .hasBeenTaiwanQuestion').fadeOut();
 	}
 
-	//處理分發來台年限
-	function _handleDistributionTime(){
-		let inputTime = $distributionTime[0].valueAsNumber; 
-
-		if(inputTime){
-			inputTime = Math.floor(inputTime); //先無條件捨去
-			if(inputTime > $distributionTime[0].max){
-				inputTime = $distributionTime[0].max;
-			} else if(inputTime < $distributionTime[0].min){
-				inputTime = $distributionTime[0].min;
-			}
-			$distributionTime[0].valueAsNumber = inputTime;
-		} else {
-			$distributionTime[0].value = '';
-		}
-	}
-
 	/**
 	*	private method
 	*/
@@ -251,10 +218,10 @@
 			!!data.has_come_to_taiwan &&
 			$signUpForm.find('.isDistribution[value=1]').trigger('click') &&
 			$signUpForm.find('.input-distributionTime').val(data.come_to_taiwan_at).trigger('change') &&
-			$signUpForm.find(`.distributionMoreQuestion[value=${data.reason_selection_of_come_to_taiwan}]`).trigger('click');
+			$signUpForm.find(`.distributionMoreQuestion[value=${data.reason_of_come_to_taiwan}]`).trigger('click');
 
 			// 是否華裔學生
-			!!data.is_ethnic_Chinese && $signUpForm.find('.radio-ethnicChinese[value=1]').trigger('click');
+			$signUpForm.find('.radio-ethnicChinese[value=1]').trigger('click');
 
 			// 海外居留年限
 			$signUpForm.find(`.radio-stayLimit[value=${data.overseas_residence_time}]`).trigger('click');

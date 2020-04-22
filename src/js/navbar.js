@@ -102,7 +102,6 @@
 	}
 
 	function _setProgress(data) {
-		console.log(data)
 		// 資格驗證
 		if (!!data.has_qualify) {
 			$('.nav-qualify').addClass('list-group-item-success');

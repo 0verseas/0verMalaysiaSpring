@@ -287,27 +287,27 @@ const student = (() => {
 	// 	})
 	// }
 
-	// // POST /students/verify-qualification
-	// function verifyQualification(data) {
-	// 	return fetch(`${baseUrl}/students/verify-qualification`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	});
-	// }
+	// // POST /malaysia-spring/verify-qualification
+	function verifyQualification(data) {
+		return fetch(`${baseUrl}/malaysia-spring/verify-qualification`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		});
+	}
 
-	// function getVerifyQualification() {
-	// 	return fetch(`${baseUrl}/students/verify-qualification`, {
-	// 		method: 'get',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	});
-	// }
+	function getVerifyQualification() {
+		return fetch(`${baseUrl}/malaysia-spring/verify-qualification`, {
+			method: 'get',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		});
+	}
 
 	// function getStudentAvailableApplyWayList() {
 	// 	return fetch(baseUrl + `/students/available-apply-way`, {
@@ -497,8 +497,8 @@ const student = (() => {
 		// getAdmissionSelectionOrder,
 		// getAdmissionSelectionWishOrder,
 		// setAdmissionSelectionOrder,
-		// verifyQualification,
-		// getVerifyQualification,
+		verifyQualification,
+		getVerifyQualification,
 		// getStudentAvailableApplyWayList,
 		// getStudentAdmissionPlacementApplyWay,
 		// setStudentAdmissionPlacementApplyWay,
