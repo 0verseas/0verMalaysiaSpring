@@ -136,7 +136,7 @@
             })
             .then((json) => {
                 let formData = json;
-                console.log(formData);
+
                 if (formData['name'] === null) {
                     formData = {
                         "gender": "F",
@@ -613,7 +613,6 @@
                     sendData[i] = "";
                 }
             }
-           console.log(sendData);
             loading.start();
             student.setStudentPersonalData(sendData)
                 .then((res) => {
@@ -624,7 +623,6 @@
                     }
                 })
                 .then((json) => {
-                    console.log(json);
                     alert('儲存成功');
                     window.location.reload();
                     loading.complete();
@@ -637,7 +635,6 @@
                     loading.complete();
                 })
         } else {
-            console.log('==== validate failed ====');
             alert("填寫格式錯誤，請檢查以下表單：\n———————————————\n" + _errormsg.join('、'));
         }
     }

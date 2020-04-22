@@ -319,26 +319,26 @@ const student = (() => {
 	// 	})
 	// }
 
-	// function getStudentAdmissionPlacementApplyWay() {
-	// 	return fetch(baseUrl + `/students/admission-placement-apply-way`, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function getStudentAdmissionPlacementApplyWay() {
+		return fetch(baseUrl + `/malaysia-spring/admission-apply-way`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+	}
 
-	// function setStudentAdmissionPlacementApplyWay(data) {
-	// 	return fetch(baseUrl + `/students/admission-placement-apply-way`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function setStudentAdmissionPlacementApplyWay(data) {
+		return fetch(baseUrl + `/malaysia-spring/admission-apply-way`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		})
+	}
 
 	// function getPlacementSelectionOrder() {
 	// 	var urls = [
@@ -500,8 +500,8 @@ const student = (() => {
 		verifyQualification,
 		getVerifyQualification,
 		// getStudentAvailableApplyWayList,
-		// getStudentAdmissionPlacementApplyWay,
-		// setStudentAdmissionPlacementApplyWay,
+		getStudentAdmissionPlacementApplyWay,
+		setStudentAdmissionPlacementApplyWay,
 		getStudentRegistrationProgress,
 		// getPlacementSelectionOrder,
 		// setPlacementSelectionOrder,
