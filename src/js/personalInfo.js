@@ -8,11 +8,9 @@
     let _disabilityCategory = '視覺障礙';
     let _currentDadStatus = 'alive';
     let _currentMomStatus = 'alive';
-    let _countryList = [];
-    let _systemId = 0;
-    let _identityId = 0;
+    let _countryList = [];;
 
-    let _hasSchoolLocate = true; // 有無學校所在地列表，true 則採用 $schoolNameSelect，否則採用 $schoolNameText
+    let _hasSchoolName = true; // 有無學校所在地列表，true 則採用 $schoolNameSelect，否則採用 $schoolNameText
     let _schoolCountryId = "128";
     let _currentSchoolLocate = "";
     let _currentSchoolName = "";
@@ -45,7 +43,6 @@
     const $residenceContinent = $('#residenceContinent'); // 州
     const $residentLocation = $('#residentLocation'); // 國
     const $residentId = $('#residentId'); // 身分證號碼（ID no.）
-    const $residentIdLabel = $('#residentIdLabel'); // 身分證號碼（ID no.）的那個字
     const $residentPassportNo = $('#residentPassportNo'); // 護照號碼
     const $residentPhoneCode = $('#residentPhoneCode'); // 電話國碼
     const $residentPhone = $('#residentPhone'); // 電話號碼
@@ -104,7 +101,6 @@
     const $twContactAddress = $('#twContactAddress'); // 地址
     const $twContactWorkplaceName = $('#twContactWorkplaceName'); // 服務機關名稱
     const $twContactWorkplacePhone = $('#twContactWorkplacePhone'); // 服務機關電話
-    const $twContactWorkplaceAddress = $('#twContactWorkplaceAddress'); // 服務機關地址
     const $saveBtn = $('#btn-save');
 
     /**
@@ -122,199 +118,178 @@
     $disabilityCategory.on('change', _switchDisabilityCategory);
     $residenceContinent.on('change', _reRenderResidenceCountry);
     $schoolLocation.on('change', _chSchoolLocation);
+    $schoolNameSelect.on('change',_chSchoolName);
     $dadStatus.on('change', _chDadStatus);
     $momStatus.on('change', _chMomStatus);
     $saveBtn.on('click', _handleSave);
     $taiwanIdType.on('change', _showTaiwanIdExample);
 
     function _init() {
-        loading.complete();
-        // student.getStudentPersonalData()
-        //     .then((res) => {
-        //         if (res.ok) {
-        //             _initCountryList();
-        //             return res.json();
-        //         } else {
-        //             throw res;
-        //         }
-        //     })
-        //     .then((json) => {
-        //         _systemId = json.student_qualification_verify.system_id;
-        //         _identityId = json.student_qualification_verify.identity;
-        //         let formData = json.student_personal_data;
-        //         if (formData === null) {
-        //             formData = {
-        //                 "backup_email": "",
-        //                 "gender": "F",
-        //                 "birthday": "",
-        //                 "birth_location": "",
-        //                 "special": 0,
-        //                 "disability_category": "",
-        //                 "disability_level": "",
-        //                 "resident_location": "",
-        //                 "resident_id": "",
-        //                 "resident_passport_no": "",
-        //                 "resident_phone": "",
-        //                 "resident_cellphone": "",
-        //                 "resident_address": "",
-        //                 "taiwan_id_type": "",
-        //                 "taiwan_id": "",
-        //                 "taiwan_passport": "",
-        //                 "taiwan_phone": "",
-        //                 "taiwan_address": "",
-        //                 "education_system_description": "",
-        //                 "school_name": "",
-        //                 "school_locate": "",
-        //                 "school_admission_at": "",
-        //                 "school_graduate_at": "",
-        //                 "dad_status": "alive",
-        //                 "dad_name": "",
-        //                 "dad_eng_name": "",
-        //                 "dad_birthday": "",
-        //                 "dad_job": "",
-        //                 "dad_phone": "",
-        //                 "mom_status": "alive",
-        //                 "mom_name": "",
-        //                 "mom_eng_name": "",
-        //                 "mom_birthday": "",
-        //                 "mom_job": "",
-        //                 "mom_phone": "",
-        //                 "guardian_name": "",
-        //                 "guardian_eng_name": "",
-        //                 "guardian_birthday": "",
-        //                 "guardian_job": "",
-        //                 "guardian_phone": "",
-        //                 "tw_contact_name": "",
-        //                 "tw_contact_relation": "",
-        //                 "tw_contact_phone": "",
-        //                 "tw_contact_address": "",
-        //                 "tw_contact_workplace_name": "",
-        //                 "tw_contact_workplace_phone": "",
-        //                 "tw_contact_workplace_address": ""
-        //             }
-        //         }
+        student.getStudentPersonalData()
+            .then((res) => {
+                if (res.ok) {
+                    _initCountryList();
+                    return res.json();
+                } else {
+                    throw res;
+                }
+            })
+            .then((json) => {
+                let formData = json;
+                console.log(formData);
+                if (formData['name'] === null) {
+                    formData = {
+                        "gender": "F",
+                        "birthday": "",
+                        "birth_location": "",
+                        "special": 0,
+                        "disability_category": "",
+                        "disability_level": "",
+                        "resident_location": "",
+                        "resident_id": "",
+                        "resident_passport_no": "",
+                        "phone": "",
+                        "cellphone": "",
+                        "resident_address": "",
+                        "taiwan_id_type": "",
+                        "taiwan_id": "",
+                        "taiwan_passport": "",
+                        "taiwan_phone": "",
+                        "taiwan_address": "",
+                        "education_system_description": "",
+                        "school_name": "",
+                        "school_locate": "",
+                        "school_admission_at": "",
+                        "school_graduate_at": "",
+                        "dad_status": "alive",
+                        "dad_name": "",
+                        "dad_eng_name": "",
+                        "dad_birthday": "",
+                        "dad_job": "",
+                        "dad_phone": "",
+                        "mom_status": "alive",
+                        "mom_name": "",
+                        "mom_eng_name": "",
+                        "mom_birthday": "",
+                        "mom_job": "",
+                        "mom_phone": "",
+                        "tw_contact_name": "",
+                        "tw_contact_relation": "",
+                        "tw_contact_phone": "",
+                        "tw_contact_address": "",
+                        "tw_contact_workplace_name": "",
+                        "tw_contact_workplace_phone": "",
+                    }
+                }
 
-        //         // init 申請人資料表
-        //         $email.val(json.email);
-        //         $name.val(json.name);
-        //         $engName.val(json.eng_name);
-        //         $("input[name=gender][value='" + formData.gender + "']").prop("checked", true);
-        //         $birthday.val(formData.birthday);
-        //         $birthContinent.val(_findContinent(formData.birth_location)).change();
-        //         $birthLocation.val(formData.birth_location);
+                // init 申請人資料表
+                $email.val(json.email);
+                $name.val(json.name);
+                $engName.val(json.eng_name);
+                $("input[name=gender][value='" + formData.gender + "']").prop("checked", true);
+                $birthday.val(formData.birthday);
+                $birthContinent.val(_findContinent(formData.birth_location)).change();
+                $birthLocation.val(formData.birth_location);
 
-        //         _specailStatus = formData.special;
-        //         $("input[name=special][value='" + _specailStatus + "']").prop("checked", true).change();
-        //         if (_specailStatus === 1) {
-        //             if (_disabilityCategoryList.indexOf(formData.disability_category) > -1) {
-        //                 $disabilityCategory.val(formData.disability_category).change();
-        //             } else {
-        //                 $disabilityCategory.val("-1").change();
-        //                 $otherDisabilityCategory.val(formData.disability_category);
-        //             }
-        //             $disabilityLevel.val(formData.disability_level);
-        //         }
+                // 是否為「身心障礙」或「特殊照護」或「特殊教育」者
+                _specailStatus = formData.special;
+                if (_specailStatus) {
+                    $("input[name=special][value='1']").prop("checked", true).change();
+                    if (_disabilityCategoryList.indexOf(formData.disability_category) > -1) {
+                        $disabilityCategory.val(formData.disability_category).change();
+                    } else {
+                        $disabilityCategory.val("-1").change();
+                        $otherDisabilityCategory.val(formData.disability_category);
+                    }
+                    $disabilityLevel.val(formData.disability_level);
+                } else {
+                    $("input[name=special][value='0']").prop("checked", true).change();
+                }
 
-        //         // init 僑居地資料
-        //         $residenceContinent.val(_findContinent(formData.resident_location)).change();
-        //         $residentLocation.val(formData.resident_location);
-        //         $residentId.val(formData.resident_id);
-        //         $residentPassportNo.val(formData.resident_passport_no);
-        //         $residentPhoneCode.val(_splitWithSemicolon(formData.resident_phone)[0]);
-        //         $residentPhone.val(_splitWithSemicolon(formData.resident_phone)[1]);
-        //         $residentCellphoneCode.val(_splitWithSemicolon(formData.resident_cellphone)[0]);
-        //         $residentCellphone.val(_splitWithSemicolon(formData.resident_cellphone)[1]);
-        //         // $residentAddress.val(_splitWithSemicolon(formData.resident_address)[0]);
-        //         $residentAddress.val(formData.resident_address); // 原本僑居地地址有兩欄，如果恢復其他語言地址欄位請記得取消這邊的註解
-        //         $residentOtherLangAddress.val(_splitWithSemicolon(formData.resident_address)[1]);
-        //         _showResidentIDExample();
+                // init 僑居地資料
+                $residenceContinent.val(_findContinent(formData.resident_location)).change();
+                $residentLocation.val(formData.resident_location);
+                $residentId.val(formData.resident_id);
+                $residentPassportNo.val(formData.resident_passport_no);
+                $residentPhoneCode.val(_splitWithSemicolon(formData.phone)[0]);
+                $residentPhone.val(_splitWithSemicolon(formData.phone)[1]);
+                $residentCellphoneCode.val(_splitWithSemicolon(formData.cellphone)[0]);
+                $residentCellphone.val(_splitWithSemicolon(formData.cellphone)[1]);
+                // $residentAddress.val(_splitWithSemicolon(formData.resident_address)[0]);
+                $residentAddress.val(formData.resident_address); // 原本僑居地地址有兩欄，如果恢復其他語言地址欄位請記得取消這邊的註解
+                $residentOtherLangAddress.val(_splitWithSemicolon(formData.resident_address)[1]);
 
-        //         // init 在台資料
-        //         $taiwanIdType.val(formData.taiwan_id_type);
-        //         $taiwanIdNo.val(formData.taiwan_id);
-        //         $taiwanPassport.val(formData.taiwan_passport);
-        //         $taiwanPhone.val(formData.taiwan_phone);
-        //         $taiwanAddress.val(formData.taiwan_address);
+                // init 在台資料
+                $taiwanIdType.val(formData.taiwan_id_type);
+                $taiwanIdNo.val(formData.taiwan_id);
+                $taiwanPassport.val(formData.taiwan_passport);
+                $taiwanPhone.val(formData.taiwan_phone);
+                $taiwanAddress.val(formData.taiwan_address);
 
-        //         // init 學歷
-        //         $educationSystemDescription.val(formData.education_system_description);
+                // init 學歷
+                _reRenderSchoolLocation();
+                $educationSystemDescription.val(formData.education_system_description);
+                _currentSchoolLocate = (formData.school_locate !== null) ? formData.school_locate : "";
+                _currentSchoolName = formData.school_name;
 
-        //         $schoolContinent.val(_findContinent(formData.school_country)).change();
-        //         $schoolCountry.val(formData.school_country);
+                // 入學時間、畢業時間初始化
+                $schoolAdmissionAt.val(formData.school_admission_at);
+                $schoolGraduateAt.val(formData.school_graduate_at);
 
-        //         _currentSchoolLocate = (formData.school_locate !== null) ? formData.school_locate : "";
-        //         _currentSchoolName = formData.school_name;
+                // init 家長資料
+                // 父
+                _currentDadStatus = formData.dad_status;
+                $("input[name=dadStatus][value='" + formData.dad_status + "']").prop("checked", true);
+                $dadName.val(formData.dad_name);
+                $dadEngName.val(formData.dad_eng_name);
+                $dadBirthday.val(formData.dad_birthday);
+                $dadJob.val(formData.dad_job);
+                // FIXME: 當雙親都是不詳的時候不這樣寫（判斷有無電話）渲染會出錯，懇請大神協助修改讓程式碼好看一點
+                if (formData.dad_phone !== null) {
+                    $dadPhoneCode.val(_splitWithSemicolon(formData.dad_phone)[0]);
+                    $dadPhone.val(_splitWithSemicolon(formData.dad_phone)[1]);
+                }
+                // 母
+                _currentMomStatus = formData.mom_status;
+                $("input[name=momStatus][value='" + formData.mom_status + "']").prop("checked", true);
+                $momName.val(formData.mom_name);
+                $momEngName.val(formData.mom_eng_name);
+                $momBirthday.val(formData.mom_birthday);
+                $momJob.val(formData.mom_job);
+                if (formData.mom_phone !== null) {
+                    $momPhoneCode.val(_splitWithSemicolon(formData.mom_phone)[0]);
+                    $momPhone.val(_splitWithSemicolon(formData.mom_phone)[1]);
+                }
 
-        //         // 入學時間、畢業時間初始化
-        //         $schoolAdmissionAt.val(formData.school_admission_at);
-        //         $schoolGraduateAt.val(formData.school_graduate_at);
-
-        //         // init 家長資料
-        //         // 父
-        //         _currentDadStatus = formData.dad_status;
-        //         $("input[name=dadStatus][value='" + formData.dad_status + "']").prop("checked", true);
-        //         $dadName.val(formData.dad_name);
-        //         $dadEngName.val(formData.dad_eng_name);
-        //         $dadBirthday.val(formData.dad_birthday);
-        //         $dadJob.val(formData.dad_job);
-        //         // FIXME: 當雙親都是不詳的時候不這樣寫（判斷有無電話）渲染會出錯，懇請大神協助修改讓程式碼好看一點
-        //         if (formData.dad_phone !== null) {
-        //             $dadPhoneCode.val(_splitWithSemicolon(formData.dad_phone)[0]);
-        //             $dadPhone.val(_splitWithSemicolon(formData.dad_phone)[1]);
-        //         }
-        //         // 母
-        //         _currentMomStatus = formData.mom_status;
-        //         $("input[name=momStatus][value='" + formData.mom_status + "']").prop("checked", true);
-        //         $momName.val(formData.mom_name);
-        //         $momEngName.val(formData.mom_eng_name);
-        //         $momBirthday.val(formData.mom_birthday);
-        //         $momJob.val(formData.mom_job);
-        //         if (formData.mom_phone !== null) {
-        //             $momPhoneCode.val(_splitWithSemicolon(formData.mom_phone)[0]);
-        //             $momPhone.val(_splitWithSemicolon(formData.mom_phone)[1]);
-        //         }
-        //         // 監護人
-        //         $guardianName.val(formData.guardian_name);
-        //         $guardianEngName.val(formData.guardian_eng_name);
-        //         $guardianBirthday.val(formData.guardian_birthday);
-        //         $guardianJob.val(formData.guardian_job);
-        //         if (formData.guardian_phone !== null) {
-        //             $guardianPhoneCode.val(_splitWithSemicolon(formData.guardian_phone)[0]);
-        //             $guardianPhone.val(_splitWithSemicolon(formData.guardian_phone)[1]);
-        //         }
-
-        //         // init 在台聯絡人
-        //         $twContactName.val(formData.tw_contact_name);
-        //         $twContactRelation.val(formData.tw_contact_relation);
-        //         $twContactPhone.val(formData.tw_contact_phone);
-        //         $twContactAddress.val(formData.tw_contact_address);
-        //         $twContactWorkplaceName.val(formData.tw_contact_workplace_name);
-        //         $twContactWorkplacePhone.val(formData.tw_contact_workplace_phone);
-        //         $twContactWorkplaceAddress.val(formData.tw_contact_workplace_address);
-        //     })
-        //     .then(() => {
-        //         _showSpecailForm();
-        //         _handleOtherDisabilityCategoryForm();
-        //         _switchDadDataForm();
-        //         _switchMomDataForm();
-        //         _setResidenceContinent();
-        //         _setSchoolContinent();
-        //     })
-        //     .then(() => {
-        //         loading.complete();
-        //     })
-        //     .catch((err) => {
-        //         if (err.status && err.status === 401) {
-        //             alert('請登入。');
-        //             location.href = "./index.html";
-        //         } else {
-        //             err.json && err.json().then((data) => {
-        //                 console.error(data);
-        //                 alert(`ERROR: \n${data.messages[0]}`);
-        //             })
-        //         }
-        //         loading.complete();
-        //     })
+                // init 在台聯絡人
+                $twContactName.val(formData.tw_contact_name);
+                $twContactRelation.val(formData.tw_contact_relation);
+                $twContactPhone.val(formData.tw_contact_phone);
+                $twContactAddress.val(formData.tw_contact_address);
+                $twContactWorkplaceName.val(formData.tw_contact_workplace_name);
+                $twContactWorkplacePhone.val(formData.tw_contact_workplace_phone);
+            })
+            .then(() => {
+                _showSpecailForm();
+                _handleOtherDisabilityCategoryForm();
+                _switchDadDataForm();
+                _switchMomDataForm();
+            })
+            .then(() => {
+                loading.complete();
+            })
+            .catch((err) => {
+                if (err.status && err.status === 401) {
+                    alert('請登入。');
+                    location.href = "./index.html";
+                } else {
+                    err.json && err.json().then((data) => {
+                        console.error(data);
+                        alert(`ERROR: \n${data.messages[0]}`);
+                    })
+                }
+                loading.complete();
+            })
     }
 
     function _findContinent(locationId) { // 找到州別
@@ -345,7 +320,6 @@
                 });
                 $birthContinent.html(stateHTML);
                 $residenceContinent.html(stateHTML);
-                $schoolContinent.html(stateHTML);
             })
     }
 
@@ -368,14 +342,14 @@
 
     function _reRenderResidenceCountry() {
         const continent = $(this).find(':selected').data('continentindex');
-        const identityRule = ["113", "127", "134", "135"]; // 海外僑生   不能選到香港、澳門、臺灣跟大陸
 
         let countryHTML = '<option value="">Country</option>';
 
-        _countryList[continent]['country'].forEach((obj, index) => {
-            if (identityRule.indexOf(obj.id) > -1) { return; }
-            countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
-        })
+        if (continent !== -1) {
+            _countryList[continent]['country'].forEach((obj, index) => {
+                countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
+            })
+        }
 
         $residentLocation.html(countryHTML);
     }
@@ -420,10 +394,6 @@
     }
 
     function _reRenderSchoolLocation() {
-        // 沒有選國家則不會出現學校名稱欄位
-        // if (!!_schoolCountryId) {
-        //     // 學士班才需要出現學校所在地、名稱列表
-
             student.getSchoolList(128)
                 .then((res) => {
                     if (res.ok) {
@@ -433,50 +403,50 @@
                     }
                 })
                 .then((json) => {
-                    // schoolWithType: 當前類別的學校列表
-                    let schoolWithType = [];
-                    if (_schoolCountryId in _schoolType) {
-                        schoolWithType = json.filter((obj) => {
-                            return obj.type === _currentSchoolType;
-                        })
-                    } else {
-                        schoolWithType = json;
-                    }
+                    schoolList = json;
+                    schoolList.push({
+                        id: 999,
+                        country_id: 128,
+                        locate: '其它',
+                        type: '',
+                        name: '其它'
+                    });
 
-                    if (schoolWithType.length > 0) {
-                        // 當前類別有學校列表的話，渲染所在地、學校名稱列表
-                        let group_to_values = schoolWithType.reduce(function(obj, item) {
-                            obj[item.locate] = obj[item.locate] || [];
-                            obj[item.locate].push({ name: item.name });
-                            return obj;
-                        }, {});
+                    // 當前類別有學校列表的話，渲染所在地、學校名稱列表
+                    let group_to_values = schoolList.reduce(function(obj, item) {
+                        obj[item.locate] = obj[item.locate] || [];
+                        obj[item.locate].push({ name: item.name });
+                        return obj;
+                    }, {});
 
-                        // group by 學校所在地
-                        let groups = Object.keys(group_to_values).map(function(key) {
-                            return { locate: key, school: group_to_values[key] };
-                        });
-                        let schoolLocationHTML = '';
-                        _schoolList = groups;
-                        // 渲染學校所在地、隱藏學校名稱輸入
-                        _schoolList.forEach((value, index) => {
-                            schoolLocationHTML += `<option value="${value.locate}">${value.locate}</option>`;
-                        });
-                        $schoolLocation.html(schoolLocationHTML);
-                        if (_currentSchoolLocate !== "") {
-                            $schoolLocation.val(_currentSchoolLocate);
-                        } else {
-                            _currentSchoolLocate = _schoolList[0].locate;
+                    // group by 學校所在地
+                    let groups = Object.keys(group_to_values).map(function(key) {
+                        return { locate: key, school: group_to_values[key] };
+                    });
+
+                    //各所在地區的學校名稱加上其它選項
+                    for(let i=0;i<groups.length;i++){
+                        if(groups[i].locate !== '其它'){
+                            groups[i].school.push({
+                                name:'其它'
+                            });
                         }
-                        $schoolLocationForm.fadeIn();
-                        $schoolNameTextForm.hide();
-                        _hasSchoolLocate = true;
-                    } else {
-                        // 沒有學校列表，則單純顯示學校名稱 text field
-                        $schoolLocationForm.hide();
-                        $schoolNameTextForm.fadeIn();
-                        $schoolNameText.val(_currentSchoolName);
-                        _hasSchoolLocate = false;
                     }
+
+                    let schoolLocationHTML = '';
+                    _schoolList = groups;
+                    // 渲染學校所在地、隱藏學校名稱輸入
+                    _schoolList.forEach((value, index) => {
+                        schoolLocationHTML += `<option value="${value.locate}">${value.locate}</option>`;
+                    });
+                    $schoolLocation.html(schoolLocationHTML);
+                    if (_currentSchoolLocate !== "") {
+                        $schoolLocation.val(_currentSchoolLocate);
+                    } else {
+                        _currentSchoolLocate = _schoolList[0].locate;
+                    }
+                    $schoolLocationForm.fadeIn();
+                    $schoolNameTextForm.hide();                  
                 })
                 .then(() => {
                     setTimeout(_reRenderSchoolList(), 500);
@@ -485,15 +455,25 @@
                     err.json && err.json().then((data) => {
                         console.error(data);
                     })
-                })
-            
-               
+                })               
     }
 
     function _chSchoolLocation() {
         _currentSchoolLocate = $(this).val();
         _currentSchoolName = "";
         _reRenderSchoolList();
+        _chSchoolName();
+    }
+
+    //學校名稱是其它時 出現 學校名稱 input Text 讓它輸入
+    function _chSchoolName(){
+        if($schoolNameSelect.val() === '其它'){
+            $schoolNameTextForm.show();
+            _hasSchoolName = false;
+        } else {
+            $schoolNameTextForm.hide();
+            _hasSchoolName = true;
+        }
     }
 
     function _reRenderSchoolList() {
@@ -622,46 +602,44 @@
         $twContactAddress.val($twContactAddress.val().replace(/[\<\>\"]/g, "")); // 地址
         $twContactWorkplaceName.val($twContactWorkplaceName.val().replace(/[\<\>\"]/g, "")); // 服務機關名稱
         $twContactWorkplacePhone.val($twContactWorkplacePhone.val().replace(/[^\d-]/g, '')); // 服務機關電話
-        $twContactWorkplaceAddress.val($twContactWorkplaceAddress.val().replace(/[\<\>\"]/g, "")); // 服務機關地址   
     }
 
     function _handleSave() {
         _handleReplace();
         let sendData = {};
-        // if (sendData = _validateForm()) {
-        //     for (let i in sendData) {
-        //         if (sendData[i] === null) {
-        //             sendData[i] = "";
-        //         }
-        //     }
-        //     if (!_hasEduType) { sendData.school_type = ""; }
-        //     if (!_hasSchoolLocate) { sendData.school_locate = ""; }
-        //     loading.start();
-        //     student.setStudentPersonalData(sendData)
-        //         .then((res) => {
-        //             if (res.ok) {
-        //                 return res.json();
-        //             } else {
-        //                 throw res;
-        //             }
-        //         })
-        //         .then((json) => {
-        //             console.log(json);
-        //             alert('儲存成功');
-        //             window.location.reload();
-        //             loading.complete();
-        //         })
-        //         .catch((err) => {
-        //             err.json && err.json().then((data) => {
-        //                 console.error(data);
-        //                 alert(`ERROR: \n${data.messages[0]}`);
-        //             });
-        //             loading.complete();
-        //         })
-        // } else {
-        //     console.log('==== validate failed ====');
-        //     alert("填寫格式錯誤，請檢查以下表單：\n———————————————\n" + _errormsg.join('、'));
-        // }
+        if (sendData = _validateForm()) {
+            for (let i in sendData) {
+                if (sendData[i] === null) {
+                    sendData[i] = "";
+                }
+            }
+           console.log(sendData);
+            loading.start();
+            student.setStudentPersonalData(sendData)
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw res;
+                    }
+                })
+                .then((json) => {
+                    console.log(json);
+                    alert('儲存成功');
+                    window.location.reload();
+                    loading.complete();
+                })
+                .catch((err) => {
+                    err.json && err.json().then((data) => {
+                        console.error(data);
+                        alert(`ERROR: \n${data.messages[0]}`);
+                    });
+                    loading.complete();
+                })
+        } else {
+            console.log('==== validate failed ====');
+            alert("填寫格式錯誤，請檢查以下表單：\n———————————————\n" + _errormsg.join('、'));
+        }
     }
 
     // 驗證是否有值
@@ -784,7 +762,7 @@
                 el: $residentPhone,
                 require: true,
                 type: 'string',
-                dbKey: 'resident_phone',
+                dbKey: 'phone',
                 dbData: $residentPhoneCode.val() + ';' + $residentPhone.val(),
                 colName: '僑居地電話號碼'
             },
@@ -798,7 +776,7 @@
                 el: $residentCellphone,
                 require: true,
                 type: 'string',
-                dbKey: 'resident_cellphone',
+                dbKey: 'cellphone',
                 dbData: $residentCellphoneCode.val() + ';' + $residentCellphone.val(),
                 colName: '僑居地手機號碼'
             },
@@ -911,12 +889,6 @@
                 require: false,
                 type: 'string',
                 dbKey: 'tw_contact_workplace_phone'
-            },
-            {
-                el: $twContactWorkplaceAddress,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_workplace_address'
             }
         ];
 
@@ -953,7 +925,7 @@
         }
 
         // 判斷 schoolName 要送 select 的還是 text 的
-        if (_hasSchoolLocate) {
+        if (_hasSchoolName) {
             formValidateList.push({ el: $schoolNameSelect, require: true, type: 'string', dbKey: 'school_name', colName: '學校名稱' });
         } else {
             formValidateList.push({ el: $schoolNameText, require: true, type: 'string', dbKey: 'school_name', colName: '學校名稱' });

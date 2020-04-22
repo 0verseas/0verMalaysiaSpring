@@ -25,50 +25,50 @@ const student = (() => {
 	// 	});
 	// }
 
-	// async function getCountryList() {
-	// 	if (localStorage.countryList
-	// 		&& localStorage.countryList !== ""
-	// 		&& localStorage.countryListExpiration
-	// 		&& localStorage.countryListExpiration
-	// 		&& localStorage.countryListExpiration > new Date().getTime()) {
-	// 		return JSON.parse(localStorage.countryList);
-	// 	} else {
-	// 		try {
-	// 			const response = await fetch(baseUrl + `/country-lists`, {
-	// 				method: 'GET',
-	// 				headers: {
-	// 					'Content-Type': 'application/json'
-	// 				},
-	// 				credentials: 'include'
-	// 			});
-	// 			if (!response.ok) { throw response; }
-	// 			const json = await response.json();
+	async function getCountryList() {
+		if (localStorage.countryList
+			&& localStorage.countryList !== ""
+			&& localStorage.countryListExpiration
+			&& localStorage.countryListExpiration
+			&& localStorage.countryListExpiration > new Date().getTime()) {
+			return JSON.parse(localStorage.countryList);
+		} else {
+			try {
+				const response = await fetch(baseUrl + `/country-lists`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					credentials: 'include'
+				});
+				if (!response.ok) { throw response; }
+				const json = await response.json();
 
-	// 			let group_to_values = await json.reduce(function (obj, item) {
-	// 				obj[item.continent] = obj[item.continent] || [];
-	// 				obj[item.continent].push({id: item.id, country: item.country});
-	// 				return obj;
-	// 			}, {});
+				let group_to_values = await json.reduce(function (obj, item) {
+					obj[item.continent] = obj[item.continent] || [];
+					obj[item.continent].push({id: item.id, country: item.country});
+					return obj;
+				}, {});
 
-	// 			let groups = await Object.keys(group_to_values).map(function (key) {
-	// 				return {continent: key, country: group_to_values[key]};
-	// 			});
+				let groups = await Object.keys(group_to_values).map(function (key) {
+					return {continent: key, country: group_to_values[key]};
+				});
 
-	// 			localStorage.countryList = JSON.stringify(groups);
-    //             localStorage.countryListExpiration = new Date().getTime() + (1440 * 60 * 1000);
-	// 			return groups;
-	// 		} catch (e) {
-	// 			console.log('Boooom!!');
-	// 			console.log(e);
-	// 		}
-	// 	}
-	// }
+				localStorage.countryList = JSON.stringify(groups);
+                localStorage.countryListExpiration = new Date().getTime() + (1440 * 60 * 1000);
+				return groups;
+			} catch (e) {
+				console.log('Boooom!!');
+				console.log(e);
+			}
+		}
+	}
 
-	// function getSchoolList(countryId) {
-	// 	return fetch(baseUrl + `/overseas-school-lists?country_id=` + countryId, {
-	// 		method: 'GET'
-	// 	});
-	// }
+	function getSchoolList(countryId) {
+		return fetch(baseUrl + `/overseas-school-lists?country_id=` + countryId, {
+			method: 'GET'
+		});
+	}
 
 	function register(data) {
 		return fetch(baseUrl + `/malaysia-spring/register`, {
@@ -168,26 +168,26 @@ const student = (() => {
 	// 	})
 	// }
 
-	// function getStudentPersonalData() {
-	// 	return fetch(baseUrl + `/students/personal-data`, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function getStudentPersonalData() {
+		return fetch(baseUrl + `/malaysia-spring/personal-data`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+	}
 
-	// function setStudentPersonalData(data) {
-	// 	return fetch(baseUrl + `/students/personal-data`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function setStudentPersonalData(data) {
+		return fetch(baseUrl + `/malaysia-spring/personal-data`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		})
+	}
 
 	// function getStudentEducationInfoData() {
 	// 	return fetch(baseUrl + `/students/education-background`, {
@@ -474,8 +474,8 @@ const student = (() => {
 		setHeader,
 		// getAdmissionCount,
 		// getAdmissionCountDetail,
-		// getCountryList,
-		// getSchoolList,
+		getCountryList,
+		getSchoolList,
 		register,
 		isLogin,
 		login,
@@ -486,8 +486,8 @@ const student = (() => {
 		// sendResetPassword,
 		// resetPassword,
 		// checkResetPasswordToken,
-		// getStudentPersonalData,
-		// setStudentPersonalData,
+		getStudentPersonalData,
+		setStudentPersonalData,
 		// getStudentEducationInfoData,
 		// setStudentEducationInfoData,
 		// getOrderList,
