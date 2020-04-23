@@ -340,42 +340,31 @@ const student = (() => {
 		})
 	}
 
-	// function getPlacementSelectionOrder() {
-	// 	var urls = [
-	// 	baseUrl + '/students/admission-placement-order',
-	// 	baseUrl + '/students/admission-order-list?type=placement'
-	// 	]
-	// 	const grabContent = url => fetch(url, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	})
-	// 	return Promise.all(urls.map(grabContent))
-	// }
+	function getPlacementSelectionOrder() {
+		var urls = [
+		baseUrl + '/malaysia-spring/admission-order',
+		baseUrl + '/malaysia-spring/admission-order-list?type=placement'
+		]
+		const grabContent = url => fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+		return Promise.all(urls.map(grabContent))
+	}
 
-	// function setPlacementSelectionOrder(data) {
-	// 	return fetch(baseUrl + `/students/admission-placement-order`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	})
-	// }
-
-	// function SecondPlacementSelectionOrder(data) {
-	// 	return fetch(baseUrl + `/students/storeConfirm`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function setPlacementSelectionOrder(data) {
+		return fetch(baseUrl + `/malaysia-spring/admission-order`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		})
+	}
 
 	// function getOrderResultList(url) {
 	// 	return fetch(baseUrl + url, {
@@ -503,8 +492,8 @@ const student = (() => {
 		getStudentAdmissionPlacementApplyWay,
 		setStudentAdmissionPlacementApplyWay,
 		getStudentRegistrationProgress,
-		// getPlacementSelectionOrder,
-		// setPlacementSelectionOrder,
+		getPlacementSelectionOrder,
+		setPlacementSelectionOrder,
 		// getOrderResultList,
 		// dataConfirmation,
 		// setReviewItem,

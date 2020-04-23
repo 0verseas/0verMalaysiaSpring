@@ -61,13 +61,11 @@
 				throw res;
 			}
 		})
-		.then((json) => {
+		.then(() => {
 			alert("儲存成功");
-			if (json.student_misc_data.admission_placement_apply_way_data.code === '99999') { // 不參加聯分，原地 reload
-				window.location.reload();
-			} else { // 其餘導向下一頁
-				location.href = "./placementSelection.html"
-			}
+
+			location.href = "./admission.html"
+			
 			loading.complete();
 		})
 		.catch((err) => {

@@ -18,8 +18,6 @@
 	/**
 	*	cache DOM
 	*/
-
-	const $placementSelectForm = $('#form-placementSelect'); // 聯分表單
 	const $group1QuotaBtn = $('#btn-group1Quota');
 	const $group2QuotaBtn = $('#btn-group2Quota');
 	const $group3QuotaBtn = $('#btn-group3Quota');
@@ -32,7 +30,6 @@
 	const $wishList = $('#wish-list'); // 已填選志願
 	const wishList = document.getElementById('wish-list'); // 已填選志願，渲染用
 	const $saveBtn = $('#btn-save');
-	const $confirmedBtn = $('#btn-confirmed');
 	const $secondConfirm = $('#secondConfirm');
 
 	/**
@@ -49,99 +46,78 @@
 	$optionFilterInput.on('keyup', _generateOptionalWish); // // 監聽「招生校系清單」關鍵字
 	$manualSearchBtn.on('click', _generateOptionalWish);
 	$saveBtn.on('click', _handleSave);
-	$confirmedBtn.on('click', _handleConfirmed);
-	$secondConfirm.on('click', _handleSecondConfirmed);
-
+	
 	async function _init() {
 		loading.complete();
 		$group1QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=true&second-group=false&third-group=false`);
 		$group2QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=false&second-group=true&third-group=false`);
 		$group3QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=false&second-group=false&third-group=true`);
 		$groupSubjects.attr('href', `https://cmn-hant.overseas.ncnu.edu.tw/#block-subjects`);
-	// 	try {
+		try {
 
-	// 		// 使用 jQuery 的 Tooltip
-	// 		$(document).tooltip({
-	// 			track: true,  // 提示框會隨著滑鼠游標移動
-	// 		});
+			// 使用 jQuery 的 Tooltip
+			$(document).tooltip({
+				track: true,  // 提示框會隨著滑鼠游標移動
+			});
 
-	// 		const response = await student.getPlacementSelectionOrder();
-	// 		if (!response[0].ok) { throw response[0]; }
+			const response = await student.getPlacementSelectionOrder();
+			if (!response[0].ok) { throw response[0]; }
 
-	// 		const resPlacement = await response[0].json();
-	// 		const resOrder = await response[1].json();
+			const resPlacement = await response[0].json();
+			const resOrder = await response[1].json();
 
-	// 		const groupName = ["第一類組", "第二類組", "第三類組"]; // 用於類組 code 轉中文
-	// 		await resOrder.forEach((value, index) => { // 志願列表格式整理
-	// 			let add = {
-	// 				id: value.id, // 系所 id
-	// 				cardCode: value.card_code, // 畫卡號碼
-	// 				mainGroup: value.main_group_data.title, // 學群
-	// 				group: groupName[Number(value.group_code) - 1], // 類組
-	// 				school: value.school.title, // 校名
-	// 				dept: value.title, // 中文系名
-	// 				engDept: value.eng_title, // 英文系名
-	// 				specialDeptType: value.special_dept_type, // 特殊系所
-	// 				sortNum: index // 根據初始資料流水號，用於排序清單、抓取資料
-	// 			};
-	// 			_optionalWish.push(add);
-	// 		})
+			const groupName = ["第一類組", "第二類組", "第三類組"]; // 用於類組 code 轉中文
+			await resOrder.forEach((value, index) => { // 志願列表格式整理
+				let add = {
+					id: value.id, // 系所 id
+					cardCode: value.card_code, // 畫卡號碼
+					mainGroup: value.main_group_data.title, // 學群
+					group: groupName[Number(value.group_code) - 1], // 類組
+					school: value.school.title, // 校名
+					dept: value.title, // 中文系名
+					engDept: value.eng_title, // 英文系名
+					specialDeptType: value.special_dept_type, // 特殊系所
+					sortNum: index // 根據初始資料流水號，用於排序清單、抓取資料
+				};
+				_optionalWish.push(add);
+			})
 
-	// 		// 整理已選志願
-	// 		let order = [];
-	// 		await resPlacement.student_department_admission_placement_order.forEach((value, index) => {
-	// 			order.push(value.department_data.id);
-	// 		});
-	// 		await order.forEach((value, index) => {
-	// 			let orderIndex = _optionalWish.findIndex(order => order.id === value);
-	// 			if (orderIndex > -1) {
-	// 				_wishList.push(_optionalWish[orderIndex]);
-	// 				_optionalWish.splice(orderIndex, 1);
-	// 			}
-	// 		});
+			// 整理已選志願
+			let order = [];
+			if(resPlacement.admission_group !== null){
+				let dept_id = resPlacement.admission_group+'FFFF'
+				order.push(dept_id);
+			}			
 
-	// 		_generateOptionalWish();
-	// 		_generateWishList();
-	// 		loading.complete();
-	// 	} catch (e) {
-	// 		console.log(e);
-	// 		if (e.status && e.status === 401) {
-	// 			alert('請登入。');
-	// 			location.href = "./index.html";
-	// 		} else if (e.status && e.status === 403) {
-	// 			e.json && e.json().then((data) => {
-	// 				alert(`ERROR: \n${data.messages[0]}\n` + '即將返回上一頁');
-	// 				window.history.back();
-	// 			})
-	// 		} else {
-	// 			e.json && e.json().then((data) => {
-	// 				console.error(data);
-	// 				alert(`ERROR: \n${data.messages[0]}`);
-	// 			})
-	// 		}
-	// 		loading.complete();
-	// 	}
-	// 	//僑先部＆＆已填報＆＆後填志願時間期內，要顯示確認鎖定志願按鈕
-	// 	student.getStudentRegistrationProgress()
-	// 		.then((res) => {
-	// 			if (res.ok) {
-	// 				return res.json();
-	// 			} else {
-	// 				throw res;
-	// 			}
-	// 		})
-	// 		.then((data) => {
-	// 			if (
-	// 				(data.student_qualification_verify.identity === 7 &&
-	// 				data.student_misc_data.confirmed_at != null &&
-    //                 data.student_misc_data.confirmed_placement_at === null) ||
-	// 				(data.student_misc_data.admission_placement_apply_way_data.code == "23" &&
-	// 				data.student_misc_data.confirmed_at != null &&
-    //                 data.student_misc_data.confirmed_placement_at === null) ) {
-	// 				$('#div-btn-confirmed').show();
-	// 				_checkconfirm(data);
-	// 			}
-	// 		})
+			await order.forEach((value, index) => {
+				let orderIndex = _optionalWish.findIndex(order => order.id === value);
+				if (orderIndex > -1) {
+					_wishList.push(_optionalWish[orderIndex]);
+					_optionalWish.splice(orderIndex, 1);
+				}
+			});
+
+			_generateOptionalWish();
+			_generateWishList();
+			loading.complete();
+		} catch (e) {
+			// console.log(e);
+			if (e.status && e.status === 401) {
+				alert('請登入。');
+				location.href = "./index.html";
+			} else if (e.status && e.status === 403) {
+				e.json && e.json().then((data) => {
+					alert(`ERROR: \n${data.messages[0]}\n` + '即將返回上一頁');
+					window.history.back();
+				})
+			} else {
+				e.json && e.json().then((data) => {
+					console.error(data);
+					alert(`ERROR: \n${data.messages[0]}`);
+				})
+			}
+			loading.complete();
+		}
 	}
 
 	function _addWish() { // 增加志願
@@ -357,99 +333,39 @@
 		$downArrow.on("click", _nextWish);
 	}
 
-	// function _handleSave() {
-	// 	let order = [];
-	// 	if (_wishList.length > 0) {
-	// 		_wishList.forEach((value, index) => {
-	// 			order.push(value.id);
-	// 		});
-	// 		const data = {
-	// 			order
-	// 		}
-	// 		loading.start();
-	// 		student.setPlacementSelectionOrder(data)
-	// 		.then((res) => {
-	// 			if (res.ok) {
-	// 				return res.json();
-	// 			} else {
-	// 				throw res;
-	// 			}
-	// 		})
-	// 		.then((json) => {
-	// 			alert("儲存成功");
-	// 			window.location.reload();
-	// 			loading.complete();
-	// 		})
-	// 		.catch((err) => {
-	// 			err.json && err.json().then((data) => {
-	// 				console.error(data);
-	// 				alert(`ERROR: \n${data.messages[0]}`);
-	// 			})
-	// 			loading.complete();
-	// 		})
-	// 	} else {
-	// 		alert('沒有選擇志願。');
-	// 	}
-	// }
-
-	function _handleConfirmed() {
-		var order= _wishList.length;
-		if(_wishList.length < 70 ) {
-			var text= `提醒您 <br />
-				您僅選擇 ${order}  個志願，尚未填滿 70 個志願。 <br/>
-				依簡章規定，屆時如分發分數已達大學最低錄取標準，但所填志願已無名額可供分發，一律分發師大僑先部。填滿 70 個志願但未獲分發者，本會將提供二次分發機會。`;
-			$("#warningModal").modal();
-			document.getElementById("warningText").innerHTML = text;
-		}
-		else
-			_handleSecondConfirmed();
-	}
-
-	// function _handleSecondConfirmed() {
-	// 	setTimeout(function(){
-	// 		var isAllSet = confirm("確認後就「無法再次更改志願」，您真的確認送出嗎？");
-	// 		if (isAllSet === true) {
-	// 			let order = [];
-	// 			if (_wishList.length > 0) {
-	// 				_wishList.forEach((value, index) => {
-	// 					order.push(value.id);
-	// 				});
-	// 				const data = {
-	// 					order
-	// 				}
-	// 				loading.start();
-	// 				student.SecondPlacementSelectionOrder(data)
-	// 					.then((res) => {
-	// 						if (res.ok) {
-	// 							return res.json();
-	// 						} else {
-	// 							throw res;
-	// 						}
-	// 					})
-	// 					.then((json) => {
-	// 						alert("儲存成功並已鎖定，系統已寄送志願選填通知信至您的 email。");
-	// 						window.location.reload();
-	// 						loading.complete();
-	// 						location.href = "./downloadDocs.html";
-	// 					})
-	// 					.catch((err) => {
-	// 						err.json && err.json().then((data) => {
-	// 							console.error(data);
-	// 							alert(`ERROR: \n${data.messages[0]}`);
-	// 						})
-	// 						loading.complete();
-	// 					})
-	// 			} else {
-	// 				alert('沒有選擇志願。');
-	// 			}
-	// 		}
-	// 	}, 500);
-	// }
-
-	function _checkconfirm(data) {
-		if (!!data.student_misc_data.confirmed_placement_at) {
-			$('#btn-confirmed').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已鎖定志願') && $afterConfirmZone.show();
+	function _handleSave() {
+		let order = [];
+		if (_wishList.length > 0) {
+			_wishList.forEach((value, index) => {
+				order.push(value.id);
+			});
+			const data = {
+				order
+			}
+			console.log(data);
+			loading.start();
+			student.setPlacementSelectionOrder(data)
+			.then((res) => {
+				if (res.ok) {
+					return res.json();
+				} else {
+					throw res;
+				}
+			})
+			.then((json) => {
+				alert("儲存成功");
+				window.location.reload();
+				loading.complete();
+			})
+			.catch((err) => {
+				err.json && err.json().then((data) => {
+					console.error(data);
+					alert(`ERROR: \n${data.messages[0]}`);
+				})
+				loading.complete();
+			})
+		} else {
+			alert('沒有選擇志願。');
 		}
 	}
-
 })();
