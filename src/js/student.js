@@ -13,11 +13,11 @@ const student = (() => {
 		$headerId.html(headerData.id);
 	}
 
-	// function getAdmissionCount () {
-	// 	return fetch(baseUrl + `/students/admission-count`, {
-	// 		method: 'GET'
-	// 	});
-	// }
+	function getAdmissionCount () {
+		return fetch(baseUrl + `/malaysia-spring/admission-count`, {
+			method: 'GET'
+		});
+	}
 
 	// function getAdmissionCountDetail() {
 	// 	return fetch(baseUrl + `/students/admission-count/detail`, {
@@ -461,7 +461,7 @@ const student = (() => {
 
 	return {
 		setHeader,
-		// getAdmissionCount,
+		getAdmissionCount,
 		// getAdmissionCountDetail,
 		getCountryList,
 		getSchoolList,
