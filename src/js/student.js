@@ -366,15 +366,15 @@ const student = (() => {
 		})
 	}
 
-	// function getOrderResultList(url) {
-	// 	return fetch(baseUrl + url, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function getOrderResultList(url) {
+		return fetch(baseUrl + url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		})
+	}
 
 	function getStudentRegistrationProgress() {
 		return fetch(baseUrl + `/malaysia-spring/registration-progress`, {
@@ -494,7 +494,7 @@ const student = (() => {
 		getStudentRegistrationProgress,
 		getPlacementSelectionOrder,
 		setPlacementSelectionOrder,
-		// getOrderResultList,
+		getOrderResultList,
 		// dataConfirmation,
 		// setReviewItem,
 		// getReviewItem,
