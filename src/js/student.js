@@ -139,34 +139,34 @@ const student = (() => {
 	// 	});
 	// }
 
-	// function sendResetPassword(data) {
-	// 	return fetch(baseUrl + `/students/reset-password`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data)
-	// 	})
-	// }
+	function sendResetPassword(data) {
+		return fetch(baseUrl + `/malaysia-spring/reset-password`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+	}
 
-	// function resetPassword(data, email) {
-	// 	return fetch(baseUrl + `/students/reset-password/` + email, {
-	// 		method: 'PUT',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data)
-	// 	})
-	// }
+	function resetPassword(data, email) {
+		return fetch(baseUrl + `/malaysia-spring/reset-password/` + email, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+	}
 
-	// function checkResetPasswordToken(email, token) {
-	// 	return fetch(baseUrl + `/students/reset-password?email=` + email + `&token=` + token, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		}
-	// 	})
-	// }
+	function checkResetPasswordToken(email, token) {
+		return fetch(baseUrl + `/malaysia-spring/reset-password?email=` + email + `&token=` + token, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+	}
 
 	function getStudentPersonalData() {
 		return fetch(baseUrl + `/malaysia-spring/personal-data`, {
@@ -472,9 +472,9 @@ const student = (() => {
 		verifyEmail,
 		resendEmail,
 		// getDeptApplicationDoc,
-		// sendResetPassword,
-		// resetPassword,
-		// checkResetPasswordToken,
+		sendResetPassword,
+		resetPassword,
+		checkResetPasswordToken,
 		getStudentPersonalData,
 		setStudentPersonalData,
 		// getStudentEducationInfoData,
