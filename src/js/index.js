@@ -22,7 +22,8 @@
 	*/
 	$identifyingCanvas.on('click',generateCode);
 	$loginBtn.on('click', _handleLogin);
-	$pass.keyup((e) => { e.keyCode == 13 && _handleLogin(); });
+	// $pass.keyup((e) => { e.keyCode == 13 && _handleLogin(); }); //原本沒驗證碼 所以就密碼輸入欄位判斷是否有按enter的鍵盤事件
+	$identifyingCode.keydown((e) => { e.keyCode == 13 && _handleLogin(); }); //驗證碼輸入欄位  判斷是否有按enter的鍵盤事件
 
 	/**
 	*	event handlet
@@ -79,12 +80,19 @@
 			}
 		})
 		.then((json) => {
-			console.log(json);
-			if( json.confirmed_at === null) {
-				location.href = './qualify.html';
-			} else {
+			if( json.confirmed_at !== null) {
 				location.href = './download.html';
-			} 
+			} else if(json.has_admission) {
+				location.href = './result.html';
+			} else if(json.has_apply_way) {
+				location.href = './admission.html';
+			} else if(json.has_personal_info) {
+				location.href = './grade.html';
+			}  else if(json.has_qualify) {
+				location.href = './personalInfo.html';
+			}  else {
+				location.href = './qualify.html';
+			}
 			loading.complete();
 		})
 		.catch((err) => {

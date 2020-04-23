@@ -129,6 +129,7 @@
             .then((res) => {
                 if (res.ok) {
                     _initCountryList();
+                    _reRenderSchoolLocation();
                     return res.json();
                 } else {
                     throw res;
@@ -227,7 +228,6 @@
                 $taiwanAddress.val(formData.taiwan_address);
 
                 // init 學歷
-                _reRenderSchoolLocation();
                 $educationSystemDescription.val(formData.education_system_description);
                 _currentSchoolLocate = (formData.school_locate !== null) ? formData.school_locate : "";
                 _currentSchoolName = formData.school_name;
