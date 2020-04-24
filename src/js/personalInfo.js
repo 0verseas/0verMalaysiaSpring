@@ -107,7 +107,9 @@
      *	init
      */
 
-    _init();
+    _initCountryList(); //初始化國家列表
+    _reRenderSchoolLocation(); //渲染學校地區列表
+    _init();// 初始化學生個人基本資料
 
     /**
      *	bind event
@@ -128,8 +130,6 @@
         student.getStudentPersonalData()
             .then((res) => {
                 if (res.ok) {
-                    _initCountryList();
-                    _reRenderSchoolLocation();
                     return res.json();
                 } else {
                     throw res;
