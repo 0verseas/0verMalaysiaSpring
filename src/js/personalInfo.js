@@ -107,9 +107,7 @@
      *	init
      */
 
-    _initCountryList(); //初始化國家列表
-    _reRenderSchoolLocation(); //渲染學校地區列表
-    _init();// 初始化學生個人基本資料
+    _init(); 
 
     /**
      *	bind event
@@ -127,6 +125,25 @@
     $taiwanIdType.on('change', _showTaiwanIdExample);
 
     function _init() {
+        student.getCountryList()
+            .then((json) => {
+                _countryList = json;
+                let stateHTML = '<option value="-1" data-continentIndex="-1">Continent</option>';
+                json.forEach((obj, index) => {
+                    stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`
+                });
+                $birthContinent.html(stateHTML);
+                $residenceContinent.html(stateHTML);
+            })
+            .then(()=>{
+                _reRenderSchoolLocation();
+            })
+            .then(()=>{
+                _initPersonalInfo();
+            })
+    }
+
+    function _initPersonalInfo() {
         student.getStudentPersonalData()
             .then((res) => {
                 if (res.ok) {
@@ -308,19 +325,6 @@
     function _splitWithSemicolon(phoneNum) {
         let i = phoneNum.indexOf(";");
         return [phoneNum.slice(0, i), phoneNum.slice(i + 1)];
-    }
-
-    function _initCountryList() {
-        student.getCountryList()
-            .then((json) => {
-                _countryList = json;
-                let stateHTML = '<option value="-1" data-continentIndex="-1">Continent</option>';
-                json.forEach((obj, index) => {
-                    stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`
-                });
-                $birthContinent.html(stateHTML);
-                $residenceContinent.html(stateHTML);
-            })
     }
 
     function _reRenderCountry() {
