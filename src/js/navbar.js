@@ -45,7 +45,7 @@
 	*/
 	$logoutBtn.on('click', _handleLogout);
 	$mailResendBtn.on('click', _handleResendMail);
-	// $checkBtn.on('click', _checkAllSet);
+	$checkBtn.on('click', _checkAllSet);
 
 	//登出處理
 	function _handleLogout() {
@@ -173,10 +173,9 @@
 					throw res;
 				}
 			})
-			.then((json) => {
-				// console.log(json);
+			.then(() => {
 				alert("成功確認資料。\n如果需要再修改資料請利用「資料修正表」，或是重新申請一組新的帳號。");
-				location.href = "./downloadDocs.html";
+				location.href = "./download.html";
 				loading.complete();
 			})
 			.catch((err) => {

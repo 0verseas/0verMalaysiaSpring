@@ -420,16 +420,16 @@ const student = (() => {
 	// 	})
 	// }
 
-	// function dataConfirmation(data) {
-	// 	return fetch(baseUrl + `/students/data-confirmation`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 		credentials: 'include'
-	// 	})
-	// }
+	function dataConfirmation(data) {
+		return fetch(baseUrl + `/malaysia-spring/data-confirmation`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data),
+			credentials: 'include'
+		})
+	}
 
 	// function uploadAndSubmit() {
 	// 	return fetch(baseUrl + `/students/admission-selection-application-document-lock`, {
@@ -495,7 +495,7 @@ const student = (() => {
 		getPlacementSelectionOrder,
 		setPlacementSelectionOrder,
 		getOrderResultList,
-		// dataConfirmation,
+		dataConfirmation,
 		// setReviewItem,
 		// getReviewItem,
 		// delReviewItem,
