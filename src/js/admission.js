@@ -107,8 +107,16 @@
 				location.href = "./index.html";
 			} else if (e.status && e.status === 403) {
 				e.json && e.json().then((data) => {
-					alert(`ERROR: \n${data.messages[0]}\n` + '即將返回上一頁');
-					window.history.back();
+					alert(`ERROR: \n${data.messages[0]}\n`);
+					if(data.messages[0] === '請先完成資格檢視'){
+						location.href = "./qualify.html";
+					}else if(data.messages[0]==='請先完成個人基本資料填寫'){
+						location.href = "./personalInfo.html";
+					}else if(data.messages[0]==='請先選擇成績採計方式'){
+						location.href = "./grade.html";
+					}else{
+						location.href = "./result.html";
+					}
 				})
 			} else {
 				e.json && e.json().then((data) => {
@@ -354,7 +362,7 @@
 			})
 			.then((json) => {
 				alert("儲存成功");
-				window.location.reload();
+				location.href = "./result.html";
 				loading.complete();
 			})
 			.catch((err) => {

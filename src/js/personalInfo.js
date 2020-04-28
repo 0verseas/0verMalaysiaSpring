@@ -303,6 +303,11 @@
                     err.json && err.json().then((data) => {
                         console.error(data);
                         alert(`ERROR: \n${data.messages[0]}`);
+                        if(data.messages[0] === '請先完成資格檢視'){
+                            location.href = "./qualify.html";
+                        }else{
+                            location.href = "./result.html";
+                        }
                     })
                 }
                 loading.complete();

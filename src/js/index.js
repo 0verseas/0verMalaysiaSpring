@@ -80,18 +80,18 @@
 			}
 		})
 		.then((json) => {
-			if( json.confirmed_at !== null) {
-				location.href = './download.html';
-			} else if(json.has_admission) {
-				location.href = './result.html';
-			} else if(json.has_apply_way) {
-				location.href = './admission.html';
-			} else if(json.has_personal_info) {
-				location.href = './grade.html';
-			}  else if(json.has_qualify) {
-				location.href = './personalInfo.html';
-			}  else {
+			if(!json.has_qualify) {
 				location.href = './qualify.html';
+			} else if(!json.has_personal_info) {
+				location.href = './personalInfo.html';
+			} else if(!json.has_apply_way) {
+				location.href = './grade.html';
+			} else if(!json.has_admission) {
+				location.href = './admission.html';
+			} else if(json.confirmed_at === null){
+				location.href = './result.html';
+			}else{
+				location.href = './download.html';
 			}
 			loading.complete();
 		})

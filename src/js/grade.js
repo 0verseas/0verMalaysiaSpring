@@ -106,8 +106,14 @@
 				location.href = "./index.html";
 			} else if (err.status && err.status === 403) {
 				err.json && err.json().then((data) => {
-					alert(`ERROR: \n${data.messages[0]}\n` + '即將返回上一頁');
-					window.history.back();
+					alert(`ERROR: \n${data.messages[0]}\n`);
+					if(data.messages[0] === '請先完成資格檢視'){
+						location.href = "./qualify.html";
+					}else if(data.messages[0]==='請先完成個人基本資料填寫'){
+						location.href = "./personalInfo.html";
+					}else{
+						location.href = "./result.html";
+					}
 				})
 			} else {
 				err.json && err.json().then((data) => {
