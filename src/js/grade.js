@@ -64,9 +64,24 @@
 		.then(() => {
 			alert("儲存成功");
 
-			location.href = "./admission.html"
-			
-			loading.complete();
+			student.getStudentRegistrationProgress()
+			.then((res) => {
+				if (res.ok) {
+					return res.json();
+				} else {
+					throw res;
+				}
+			})
+			.then((json) => {
+				if(json.is_opening){
+					location.href = "./admission.html"
+				} else {
+					window.location.reload();
+				}
+			})
+			.then(() => {
+                loading.complete();
+            })
 		})
 		.catch((err) => {
 			if (err.status && err.status === 401) {
