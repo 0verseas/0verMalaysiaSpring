@@ -192,10 +192,10 @@
 						<label class="text-danger" for="residentPhoneCode">* 電話</label>
 						<div class="row">
 							<div class="col-3">
-								<input type="text" class="form-control" id="residentPhoneCode" maxlength="5" placeholder="國碼">
+								<input type="text" class="form-control" id="residentPhoneCode" maxlength="5" placeholder="國碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 							</div>
 							<div class="col-9">
-								<input type="text" class="form-control" id="residentPhone" placeholder="電話號碼">
+								<input type="text" class="form-control" id="residentPhone" placeholder="電話號碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 							</div>
 						</div>
 					</div>
@@ -207,10 +207,10 @@
 						<label class="text-danger" for="residentCellphoneCode">* 手機</label>
 						<div class="row">
 							<div class="col-3">
-								<input type="text" class="form-control" id="residentCellphoneCode" maxlength="5" placeholder="國碼">
+								<input type="text" class="form-control" id="residentCellphoneCode" maxlength="5" placeholder="國碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 							</div>
 							<div class="col-9">
-								<input type="text" class="form-control" id="residentCellphone" placeholder="手機電話號碼">
+								<input type="text" class="form-control" id="residentCellphone" placeholder="手機電話號碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 							</div>
 						</div>
 					</div>
@@ -267,7 +267,7 @@
 				<div class="col-md-8">
 					<div class="form-group">
 						<label for="taiwanPhone">臺灣電話</label>
-						<input type="text" class="form-control" id="taiwanPhone" placeholder="電話">
+						<input type="text" class="form-control" id="taiwanPhone" placeholder="電話" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 					</div>
 				</div>
 			</div>
@@ -432,10 +432,10 @@
 											<label class="text-danger" for="dadPhoneCode">* 聯絡電話</label>
 											<div class="row">
 												<div class="col-3">
-													<input type="text" class="form-control" id="dadPhoneCode" maxlength="5" placeholder="國碼">
+													<input type="text" class="form-control" id="dadPhoneCode" maxlength="5" placeholder="國碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 												</div>
 												<div class="col-9">
-													<input type="text" class="form-control" id="dadPhone" placeholder="手機或電話號碼">
+													<input type="text" class="form-control" id="dadPhone" placeholder="手機或電話號碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 												</div>
 											</div>
 										</div>
@@ -507,10 +507,10 @@
 											<label class="text-danger" for="momPhoneCode">* 聯絡電話</label>
 											<div class="row">
 												<div class="col-3">
-													<input type="text" class="form-control" id="momPhoneCode" maxlength="5" placeholder="國碼">
+													<input type="text" class="form-control" id="momPhoneCode" maxlength="5" placeholder="國碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 												</div>
 												<div class="col-9">
-													<input type="text" class="form-control" id="momPhone" placeholder="手機或電話號碼">
+													<input type="text" class="form-control" id="momPhone" placeholder="手機或電話號碼" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 												</div>
 											</div>
 										</div>
@@ -547,7 +547,7 @@
 				<div class="col-md-4">
 					<div class="form-group">
 						<label for="twContactPhone">聯絡電話</label>
-						<input type="text" class="form-control" id="twContactPhone" placeholder="">
+						<input type="text" class="form-control" id="twContactPhone" placeholder="" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 					</div>
 				</div>
 			</div>
@@ -569,7 +569,7 @@
 				<div class="col-md-4">
 					<div class="form-group">
 						<label for="twContactWorkplacePhone">服務機關電話</label>
-						<input type="text" class="form-control" id="twContactWorkplacePhone" placeholder="">
+						<input type="text" class="form-control" id="twContactWorkplacePhone" placeholder="" onblur="this.value=this.value.replace(/[^\d]/g,'')">
 					</div>
 				</div>
 			</div>
