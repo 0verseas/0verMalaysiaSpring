@@ -136,9 +136,6 @@
                 $residenceContinent.html(stateHTML);
             })
             .then(()=>{
-                _reRenderSchoolLocation();
-            })
-            .then(()=>{
                 _initPersonalInfo();
             })
     }
@@ -291,6 +288,7 @@
                 _handleOtherDisabilityCategoryForm();
                 _switchDadDataForm();
                 _switchMomDataForm();
+                _reRenderSchoolLocation();
             })
             .then(() => {
                 loading.complete();
@@ -454,11 +452,11 @@
                     } else {
                         _currentSchoolLocate = _schoolList[0].locate;
                     }
-                    $schoolLocationForm.fadeIn();
-                    $schoolNameTextForm.hide();                  
+                    $schoolLocationForm.fadeIn();   
                 })
                 .then(() => {
                     setTimeout(_reRenderSchoolList(), 500);
+                    setTimeout(_chSchoolName(), 600);
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
@@ -478,6 +476,7 @@
     function _chSchoolName(){
         if($schoolNameSelect.val() === '其它'){
             $schoolNameTextForm.show();
+            $schoolNameText.val(_currentSchoolName);
             _hasSchoolName = false;
         } else {
             $schoolNameTextForm.hide();
@@ -496,7 +495,11 @@
         });
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
-            $schoolNameSelect.val(_currentSchoolName);
+            if(_currentSchoolLocate !=="其它"){
+                $schoolNameSelect.val(_currentSchoolName);
+            } else {
+                $schoolNameSelect.val('其它');
+            }
         }
     }
 
