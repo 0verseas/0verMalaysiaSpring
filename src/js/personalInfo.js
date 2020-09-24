@@ -328,7 +328,7 @@
     }
 
     function _splitWithSemicolon(phoneNum) {
-        let i = phoneNum.indexOf(";");
+        let i = phoneNum.indexOf("-");
         return [phoneNum.slice(0, i), phoneNum.slice(i + 1)];
     }
 
@@ -621,6 +621,7 @@
                 if (sendData[i] === null) {
                     sendData[i] = "";
                 }
+                console.log(sendData[i]);
             }
             loading.start();
             student.setStudentPersonalData(sendData)
