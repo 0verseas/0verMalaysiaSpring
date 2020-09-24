@@ -624,7 +624,6 @@
                 if (sendData[i] === null) {
                     sendData[i] = "";
                 }
-                console.log(sendData[i]);
             }
             loading.start();
             student.setStudentPersonalData(sendData)
