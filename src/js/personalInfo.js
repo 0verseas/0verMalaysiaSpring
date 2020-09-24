@@ -635,6 +635,7 @@
                     alert('儲存成功');
                     window.location.reload();
                     loading.complete();
+                    scroll(0,0);
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
