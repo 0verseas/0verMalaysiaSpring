@@ -104,18 +104,18 @@
 		const hasBeenTaiwan = +$signUpForm.find('.radio-hasBeenTaiwan:checked').val();
 		const hasBeenTaiwanOption = +$signUpForm.find('.radio-whyHasBeenTaiwan:checked').val();
 		const ethnicChinese = +$signUpForm.find('.radio-ethnicChinese:checked').val();
-		const invalidDistributionOption = [3, 4, 5, 6];
-		if (!!isDistribution && invalidDistributionOption.includes(distributionOption)) return alert('分發來台選項不具報名資格');
-		if (!!isDistribution && distributionTime === '') return alert('未填寫分發來台年份或填寫格式不正確');
+		const invalidDistributionOption = [4, 5, 6, 7];
+		if (!!isDistribution && invalidDistributionOption.includes(distributionOption)) return alert('分發來臺選項不具報名資格');
+		if (!!isDistribution && distributionTime === '') return alert('未填寫分發來臺年份或填寫格式不正確');
 		if (stayLimitOption === 1) return alert('海外居留年限選項不具報名資格');
-		if (!!hasBeenTaiwan && hasBeenTaiwanOption === 9) return alert('在台停留選項不具報名資格');
+		if (!!hasBeenTaiwan && hasBeenTaiwanOption === 9) return alert('在臺停留選項不具報名資格');
 		if (ethnicChinese === 0) return alert('非華裔者不具報名資格');
 		console.log(`是否曾經分發來臺就學過？ ${!!isDistribution}`);
-		console.log(`曾分發來臺於西元幾年分發來台？ ${distributionTime}`);
+		console.log(`曾分發來臺於西元幾年分發來臺？ ${distributionTime}`);
 		console.log(`曾分發來臺請就下列選項擇一勾選 ${distributionOption}`);
 		console.log(`海外居留年限 ${stayLimitOption}`);
 		console.log(`報名截止日往前推算僑居地居留期間內，是否曾在某一年來臺停留超過 120 天？ ${!!hasBeenTaiwan}`);
-		console.log(`在台停留日期請就下列選項，擇一勾選，並檢附證明文件： ${hasBeenTaiwanOption}`);
+		console.log(`在臺停留日期請就下列選項，擇一勾選，並檢附證明文件： ${hasBeenTaiwanOption}`);
 		console.log(`是否為華裔者： ${ethnicChinese}`);
 
 		loading.start();
@@ -150,11 +150,11 @@
 	}
 	
 
-	// 判斷是否分發來台就學的一推選項是否符合資格
+	// 判斷是否分發來臺就學的一推選項是否符合資格
 	function _checkDistributionValidation() {
 		const $this = $(this);
 		const option = +$this.val();
-		const validOption = [1, 2];
+		const validOption = [1, 2, 3];
 		$signUpForm.find('.distributionMoreAlert').hide();
 		if (validOption.includes(option)) {
 			$signUpForm.find('.distributionMoreAlert.valid').fadeIn();
@@ -173,7 +173,7 @@
 		}
 	}
 
-	// 為何在台超過一百二十天
+	// 為何在臺超過一百二十天
 	function _checkWhyHasBeenTaiwanValidation() {
 		const $this = $(this);
 		const option = +$this.val();
@@ -226,7 +226,7 @@
 			// 海外居留年限
 			$signUpForm.find(`.radio-stayLimit[value=${data.overseas_residence_time}]`).trigger('click');
 
-			// 在台停留日期
+			// 在臺停留日期
 			!!data.stay_over_120_days_in_taiwan &&
 			$signUpForm.find('.radio-hasBeenTaiwan[value=1]').trigger('click') &&
 			$signUpForm.find(`.radio-whyHasBeenTaiwan[value=${data.reason_selection_of_stay_over_120_days_in_taiwan}]`).trigger('click');

@@ -35,7 +35,7 @@
 		const id = $('.applyOptions:checked').val();
 		const ticket_no = $('.my_admission_ticket_no').val();
 		if (!id ) {
-			alert('請選擇您欲申請的成績採計方式');
+			alert('請選擇您的成績採計方式');
 			return;
 		}
 
