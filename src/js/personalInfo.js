@@ -490,12 +490,14 @@
         let locateIndex = _schoolList.findIndex(order => order.locate === _currentSchoolLocate);
 
         let schoolListHTML = '';
+        let selectSchoolName = '其它';
         _schoolList[locateIndex].school.forEach((value, index) => {
             schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
+            if(value.name == _currentSchoolName){selectSchoolName=value.name;}
         });
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
-            if(_currentSchoolLocate !=="其它"){
+            if(_currentSchoolLocate !=="其它" && selectSchoolName !== "其它"){
                 $schoolNameSelect.val(_currentSchoolName);
             } else {
                 $schoolNameSelect.val('其它');
