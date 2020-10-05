@@ -136,9 +136,6 @@
                 $residenceContinent.html(stateHTML);
             })
             .then(()=>{
-                _reRenderSchoolLocation();
-            })
-            .then(()=>{
                 _initPersonalInfo();
             })
     }
@@ -291,6 +288,7 @@
                 _handleOtherDisabilityCategoryForm();
                 _switchDadDataForm();
                 _switchMomDataForm();
+                _reRenderSchoolLocation();
             })
             .then(() => {
                 loading.complete();
@@ -328,7 +326,7 @@
     }
 
     function _splitWithSemicolon(phoneNum) {
-        let i = phoneNum.indexOf(";");
+        let i = phoneNum.indexOf("-");
         return [phoneNum.slice(0, i), phoneNum.slice(i + 1)];
     }
 
@@ -454,11 +452,11 @@
                     } else {
                         _currentSchoolLocate = _schoolList[0].locate;
                     }
-                    $schoolLocationForm.fadeIn();
-                    $schoolNameTextForm.hide();                  
+                    $schoolLocationForm.fadeIn();   
                 })
                 .then(() => {
                     setTimeout(_reRenderSchoolList(), 500);
+                    setTimeout(_chSchoolName(), 600);
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
@@ -478,6 +476,7 @@
     function _chSchoolName(){
         if($schoolNameSelect.val() === '其它'){
             $schoolNameTextForm.show();
+            $schoolNameText.val(_currentSchoolName);
             _hasSchoolName = false;
         } else {
             $schoolNameTextForm.hide();
@@ -491,12 +490,18 @@
         let locateIndex = _schoolList.findIndex(order => order.locate === _currentSchoolLocate);
 
         let schoolListHTML = '';
+        let selectSchoolName = '其它';
         _schoolList[locateIndex].school.forEach((value, index) => {
             schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
+            if(value.name == _currentSchoolName){selectSchoolName=value.name;}
         });
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
-            $schoolNameSelect.val(_currentSchoolName);
+            if(_currentSchoolLocate !=="其它" && selectSchoolName !== "其它"){
+                $schoolNameSelect.val(_currentSchoolName);
+            } else {
+                $schoolNameSelect.val('其它');
+            }
         }
     }
 
@@ -635,6 +640,7 @@
                     alert('儲存成功');
                     window.location.reload();
                     loading.complete();
+                    scroll(0,0);
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
@@ -769,7 +775,7 @@
                 require: true,
                 type: 'string',
                 dbKey: 'phone',
-                dbData: $residentPhoneCode.val() + ';' + $residentPhone.val(),
+                dbData: $residentPhoneCode.val() + '-' + $residentPhone.val(),
                 colName: '僑居地電話號碼'
             },
             { // 手機國碼，需驗證，合併在手機號碼一起送出。
@@ -783,7 +789,7 @@
                 require: true,
                 type: 'string',
                 dbKey: 'cellphone',
-                dbData: $residentCellphoneCode.val() + ';' + $residentCellphone.val(),
+                dbData: $residentCellphoneCode.val() + '-' + $residentCellphone.val(),
                 colName: '僑居地手機號碼'
             },
             {
@@ -912,7 +918,7 @@
 
         //父親為「存」時增加的驗證
         if(_currentDadStatus == "alive"){
-            formValidateList.push({ el: $dadPhoneCode, require: true, type: 'string', colName: '父親聯絡電話國碼' },{ el: $dadPhone, require: true, type: 'string', dbKey: 'dad_phone', dbData: $dadPhoneCode.val() + ';' + $dadPhone.val(), colName: '父親聯絡電話' });
+            formValidateList.push({ el: $dadPhoneCode, require: true, type: 'string', colName: '父親聯絡電話國碼' },{ el: $dadPhone, require: true, type: 'string', dbKey: 'dad_phone', dbData: $dadPhoneCode.val() + '-' + $dadPhone.val(), colName: '父親聯絡電話' });
         }
 
         // 母親不為「不詳」時增加的驗證
@@ -922,7 +928,7 @@
 
         //母親為「存」時增加的驗證
         if(_currentMomStatus == "alive"){
-            formValidateList.push( { el: $momPhoneCode, require: true, type: 'string', colName: '母親聯絡電話國碼' }, { el: $momPhone, require: true, type: 'string', dbKey: 'mom_phone', dbData: $momPhoneCode.val() + ';' + $momPhone.val(), colName: '母親聯絡電話' });
+            formValidateList.push( { el: $momPhoneCode, require: true, type: 'string', colName: '母親聯絡電話國碼' }, { el: $momPhone, require: true, type: 'string', dbKey: 'mom_phone', dbData: $momPhoneCode.val() + '-' + $momPhone.val(), colName: '母親聯絡電話' });
         }
 
         // 有證件類型再送 ID
