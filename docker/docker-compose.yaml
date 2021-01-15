@@ -1,0 +1,14 @@
+version: '3'
+services:
+
+  # Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: 0verMalaysiaSpring
+    restart: unless-stopped
+    tty: true
+    environment:
+      - TZ=Asia/Taipei
+    volumes:
+#      - /var/log/nginx:/var/log/nginx
+      - ./app/dist/:/usr/share/nginx/html/malaysia_spring/
