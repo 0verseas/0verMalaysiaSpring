@@ -70,7 +70,11 @@
 		// 檢查檔案大小 不超過4MB 在放進senData中
 		let sendData = new FormData();
 		for (let i = 0; i < fileList.length; i++) {
-			if(student.sizeConversion(fileList[i].size,4)){
+			//有不可接受的副檔名存在
+			if(! await checkFile(fileList[i])){
+                return ;
+            }
+			if(await student.sizeConversion(fileList[i].size,4)){
 				await swal({
 					title: `上傳失敗！`,
 					html:`${fileList[i].name}檔案過大，檔案大小不能超過4MB。`,
@@ -80,7 +84,7 @@
 				});
 				return;
 			}
-			sendData.append('files[]', fileList[i]);
+			await sendData.append('files[]', fileList[i]);
 		}
 
 		await loading.start();
@@ -269,5 +273,26 @@
 				return 'img';
 		}
 	}
+
+	//檢查檔案類型
+    function checkFile(selectfile){
+        var extension = new Array(".jpg", ".png", ".pdf",".jpeg"); //可接受的附檔名
+        var fileExtension = selectfile.name; //fakepath
+        //看副檔名是否在可接受名單
+        fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.')).toLowerCase();  // 副檔名通通轉小寫
+        if (extension.indexOf(fileExtension) < 0) {
+			swal({
+				title: `上傳失敗`,
+				html:`${fileExtension} 非可接受的檔案類型副檔名。`,
+				type:"error",
+				confirmButtonText: '確定',
+				allowOutsideClick: false
+			});
+            selectfile.value = null;
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 })();
