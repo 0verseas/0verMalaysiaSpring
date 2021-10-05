@@ -67,6 +67,11 @@
 		// 取得學生欲上傳的檔案
 		const fileList = this.files;
 
+		// 沒有上傳檔案 直接return
+		if(fileList.length <= 0){
+			return;
+		}
+
 		// 檢查檔案大小 不超過4MB 在放進senData中
 		let sendData = new FormData();
 		for (let i = 0; i < fileList.length; i++) {
