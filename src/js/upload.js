@@ -4,10 +4,10 @@
 	*	cache DOM
 	*/
     const $saveButton = $('.btn-save'); // 儲存按鈕 安慰用 檔案成功上傳其實就儲存了
-	const $imgModal = $('#img-modal');
-	const $imgModalBody= $('#img-modal-body');
-	const $deleteFileBtn = $('.btn-delFile');
-	let $uploadedFiles = [];
+	const $imgModal = $('#img-modal'); // 檔案編輯模板
+	const $imgModalBody= $('#img-modal-body');// 檔案編輯模板顯示檔案區域
+	const $deleteFileBtn = $('.btn-delFile');// 檔案編輯模板刪除按鈕
+	let $uploadedFiles = [];// 已上傳檔案名稱陣列
 
 	
 	/**
@@ -20,18 +20,19 @@
 	*	bind event
 	*/
 
-    $saveButton.on('click', _handleSave);
-	$deleteFileBtn.on('click',_handleDeleteFile);
-    $('body').on('change.upload', '.file-upload', _handleUpload);
-	$('body').on('click', '.img-thumbnail', _showUploadedFile);
+    $saveButton.on('click', _handleSave); // 儲存按鈕事件
+	$deleteFileBtn.on('click',_handleDeleteFile);// 刪除按鈕事件
+    $('body').on('change.upload', '.file-upload', _handleUpload);// 上傳按鈕事件
+	$('body').on('click', '.img-thumbnail', _showUploadedFile);// 點擊檔案呼叫編輯模板事件
 
 	async function _init() {
 		const response = await student.getStudentAdmissionPaperFiles();
 		if(response.ok){
 			const data = await response.json();
-			console.log(data);
 			for (const [type] of Object.entries(data)) {
+				// 先取得各類型的以上傳檔案名稱陣列
 				$uploadedFiles = data[type];
+				// 有檔案才渲染
 				if($uploadedFiles.length > 0){
 					await _renderUploadedArea(type);
 				}
@@ -51,6 +52,7 @@
 		await loading.complete();
 	}
 
+	// 儲存事件
     async function _handleSave(){
         await loading.start();
         await swal({title: `儲存成功`, type:"success", confirmButtonText: '確定', allowOutsideClick: false});
@@ -58,14 +60,14 @@
         await location.reload();
     }
 
+	// 上傳事件
     async function _handleUpload(){
+		// 先取得要上傳的檔案類型
         const type = $(this).data('type');
+		// 取得學生欲上傳的檔案
 		const fileList = this.files;
 
-		console.log(type);
-		console.log(fileList);
-
-		// 
+		// 檢查檔案大小 不超過4MB 在放進senData中
 		let sendData = new FormData();
 		for (let i = 0; i < fileList.length; i++) {
 			if(student.sizeConversion(fileList[i].size,4)){
@@ -82,9 +84,8 @@
 		}
 
 		await loading.start();
-
+		// 將檔案傳送到後端
 		const response = await student.uploadStudentAdmissionPaperFiles(sendData, type);
-		console.log(response);
 		if(response.ok){
 			await swal({
 				title: `上傳成功！`,
@@ -92,9 +93,10 @@
 				confirmButtonText: '確定',
 				allowOutsideClick: false
 			});
+			// 後端會回傳上傳後該類型的已上傳檔案名稱陣列
 			const data = await response.json();
 			$uploadedFiles = data;
-			// console.log(data);
+			// 重新渲染已上傳檔案區域
 			await _renderUploadedArea(type);
 		} else {
 			const code = response.status;
@@ -113,6 +115,7 @@
 		return;
     }
 
+	// 渲染已上傳檔案區域事件
 	function _renderUploadedArea(type){
 		let uploadedAreaHtml = '';
 		const $uploadedFileArea = document.getElementById(`${type}-uploaded-files`)
