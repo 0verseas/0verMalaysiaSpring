@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "harp compile src dist && babel dist/js -d dist/js",
+    "build": "harp src dist && babel dist/js -d dist/js",
     "docker-build": "docker run -it --rm -v $PWD:/0verMalaysiaSpring -w /0verMalaysiaSpring node:14.16.0 sh -c 'npm install && npm run build' ",
-    "serve": "harp server src"
+    "serve": "harp src"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "harp": "^0.31.0"
+    "harp": "^0.41.0"
   },
   "devDependencies": {}
 }
