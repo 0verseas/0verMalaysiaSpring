@@ -195,22 +195,24 @@
 
 	function  _checkConfirm(json) {
 		if (!!json.confirmed_at) {
-			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已填報') && $afterConfirmZone.show();
+			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已填報').show() && $afterConfirmZone.show();
 		} else if (!json.has_qualify) {
 			// 沒有輸入資格驗證的狀況下，隱藏提交按鈕
-			$('#btn-all-set').addClass('hide');
+			$('#btn-all-set').hide();
 		} else if ( !json.has_personal_info) {
-			// 學士班以外其它學制，個人基本資料未填寫者，隱藏提交按鈕
-			$('#btn-all-set').addClass('hide');
+			// 個人基本資料未填寫者，隱藏提交按鈕
+			$('#btn-all-set').hide();
 		} else if (!json.has_apply_way) {
 			// 成績採計方式未填寫者，隱藏提交按鈕
-			$('#btn-all-set').addClass('hide');
+			$('#btn-all-set').hide();
 		} else if (!json.has_admission) {
 			// 志願類組未選擇者，隱藏提交按鈕
-			$('#btn-all-set').addClass('hide');
+			$('#btn-all-set').hide();
 		}else if (!json.is_opening) {
-			// 還沒有填報，且不在報名個人申請、聯合分發的期間，不能點送出填報按鈕
-			$('#btn-all-set').prop('disabled', true).text('目前非報名時間');
+			// 還沒有完成填報，且不在報名期間內，不能點送出填報按鈕
+			$('#btn-all-set').prop('disabled', true).text('目前非報名時間').show();
+		} else{
+			$('#btn-all-set').show();
 		}
 	}
 
