@@ -19,7 +19,7 @@
 	*/
 
 	async function _init() {
-
+		$('.correction-form-link').attr("href",env.baseUrl+"/admission-data-correction-form/malaysia-spring");
 		student.getStudentRegistrationProgress()
 		.then((res) => {
 			if (res.ok) {
