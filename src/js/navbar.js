@@ -5,8 +5,8 @@
 	*/
 	const $logoutBtn = $('#btn-logout'); //登出按鈕
 	const $mailResendBtn = $('#btn-mailResend'); //重寄驗證信按鈕
-	const $checkBtn = $('#btn-all-set'); //完成填報按鈕
-	const $afterConfirmZone = $('#afterConfirmZone'); //完成填報後區域
+	const $checkBtn = $('#btn-all-set'); //確認並鎖定個人基本資料按鈕
+	const $afterConfirmZone = $('#afterConfirmZone'); //確認並鎖定個人基本資料後區域
 
 	/**
 	* init
@@ -195,7 +195,7 @@
 
 	function  _checkConfirm(json) {
 		if (!!json.confirmed_at) {
-			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已填報').show() && $afterConfirmZone.show();
+			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已確認並鎖定個人基本資料').show() && $afterConfirmZone.show();
 		} else if (!json.has_qualify) {
 			// 沒有輸入資格驗證的狀況下，隱藏提交按鈕
 			$('#btn-all-set').hide();
@@ -209,7 +209,7 @@
 			// 志願類組未選擇者，隱藏提交按鈕
 			$('#btn-all-set').hide();
 		}else if (!json.is_opening) {
-			// 還沒有完成填報，且不在報名期間內，不能點送出填報按鈕
+			// 還沒有確認並鎖定個人基本資料，且不在報名期間內，不能點送出填報按鈕
 			$('#btn-all-set').prop('disabled', true).text('目前非報名時間').show();
 		} else{
 			$('#btn-all-set').show();

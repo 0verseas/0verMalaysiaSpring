@@ -42,7 +42,7 @@
 				alert('請先選擇分發志願類組');
 				location.href = './admission.html';
 			} else if(json.confirmed_at == null){
-				alert('尚未完成填報，資料確認不須更改後，請按下「完成填報」按鈕。');
+				alert('尚未確認並鎖定個人基本資料，資料確認不須更改後，請按下「確認並鎖定個人基本資料」按鈕。');
 				location.href = './result.html';
 			}
 			loading.complete();
