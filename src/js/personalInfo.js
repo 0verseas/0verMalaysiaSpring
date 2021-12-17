@@ -559,11 +559,12 @@
     }
 
     //將輸入欄位資料過濾  避免xss攻擊
-    function _handleReplace(){
+    async function _handleReplace(){
 
         /*
         *   3400～4DFF：中日韓認同表意文字擴充A區，總計收容6,582個中日韓漢字。
         *   4E00～9FFF：中日韓認同表意文字區，總計收容20,902個中日韓漢字。 
+        *   0023： #
         *   002d： -
         *   00b7：半形音界號
         *   2027：全形音界號
@@ -571,55 +572,159 @@
         *   \d：數字
         *   00c0~33FF：包含大部分國家的文字
         */
+        function regexChinese(str){
+            return str.replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "");
+        }
+        function regexEnglish(str){
+            return str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
+        }
+        function regexGeneral(str){
+            return str.replace(/[\s]/g, "\u0020").replace(/[\<\>\"]/g, "");
+        }
+        function regexIdNumber(str){
+            return str.replace(/[^0-9A-Za-z\u002d]/g, "");
+        }
+        function regexNumber(str){
+            return str.replace(/[^\d\u0020\u0023]/g, "");
+        }
 
+        let value = '';
         // 申請人資料表
-        $name.val($name.val().replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "")); // 姓名（中)
-        $engName.val($engName.val().replace(/[^a-zA-Z.,-\s]/g, "")); // 姓名（英）
-        $otherDisabilityCategory.val($otherDisabilityCategory.val().replace(/[\<\>\"]/g, "")); // 其他障礙說明
-
+        // 姓名（中)
+        value = await $name.val();
+        value = await regexChinese(value);
+        await $name.val(value);
+        // 姓名（英）
+        value = await $engName.val();
+        value = await regexEnglish(value);
+        await $engName.val(value);
+        // 其他障礙說明
+        value = await $otherDisabilityCategory.val();
+        value = await regexGeneral(value);
+        await $otherDisabilityCategory.val(value);
         // 僑居地資料
-        $residentPassportNo.val($residentPassportNo.val().replace(/[^0-9a-zA-Z\u002d]/g, "")); // 護照號碼
-        $residentPhoneCode.val($residentPhoneCode.val().replace(/[^\d-]/g, '')); // 電話國碼
-        $residentPhone.val($residentPhone.val().replace(/[^\d-]/g, '')); // 電話號碼
-        $residentCellphoneCode.val($residentCellphoneCode.val().replace(/[^\d-]/g, '')); // 手機國碼
-        $residentCellphone.val($residentCellphone .val().replace(/[^\d-]/g, ''));// 手機號碼
-        $residentAddress.val($residentAddress.val().replace(/[\<\>\"]/g, "")); // 地址（中 / 英）
-        // $residentOtherLangAddress.val($residentOtherLangAddress.val().replace(/[^\u00c0-\u9fffa-zA-Z0-9\u002d\s]/g, "")); // 地址（其他語言）
+        // 護照號碼
+        value = await $residentPassportNo.val();
+        value = await regexIdNumber(value);
+        await $residentPassportNo.val(value);
+        // 電話國碼
+        value = await $residentPhoneCode.val();
+        value = await regexNumber(value);
+        await $residentPhoneCode.val(value);
+        // 電話號碼
+        value = await $residentPhone.val();
+        value = await regexNumber(value);
+        await $residentPhone.val(value);
+        // 手機國碼
+        value = await $residentCellphoneCode.val();
+        value = await regexNumber(value);
+        await $residentCellphoneCode.val(value);
+        // 手機號碼
+        value = await $residentCellphone.val();
+        value = await regexNumber(value);
+        await $residentCellphone.val(value);
+        // 地址（中 / 英）
+        value = await $residentAddress.val();
+        value = await regexGeneral(value);
+        await $residentAddress.val(value);
 
-        // 在台資料 (選填)
-        $taiwanPassport.val($taiwanPassport.val().replace(/[^0-9a-zA-Z\u002d]/g, "")); // 臺灣護照號碼
-        $taiwanPhone.val($taiwanPhone.val().replace(/[^\d-]/g, '')); // 臺灣電話
-        $taiwanAddress.val($taiwanAddress.val().replace(/[\<\>\"]/g, "")); // 臺灣地址
+        // 在臺資料 (選填)
+        // 臺灣護照號碼
+        value = await $taiwanPassport.val();
+        value = await regexIdNumber(value);
+        await $taiwanPassport.val(value);
+        // 臺灣電話
+        value = await $taiwanPhone.val();
+        value = await regexNumber(value);
+        await $taiwanPhone.val(value);
+        // 臺灣地址
+        value = await $taiwanAddress.val();
+        value = await regexGeneral(value);
+        await $taiwanAddress.val(value);
 
         // 學歷
-        $educationSystemDescription.val($educationSystemDescription.val().replace(/[\<\>\"]/g, "")); // 學制描述
-        $schoolNameText.val($schoolNameText.val().replace(/[\<\>\"]/g, "")); // 學校名稱 (text)
+        // 學制描述
+        value = await $educationSystemDescription.val();
+        value = await regexGeneral(value);
+        await $educationSystemDescription.val(value);
+        // 學校名稱 (text)
+        value = await $schoolNameText.val();
+        value = await regexGeneral(value);
+        await $schoolNameText.val(value);
 
         // 家長資料
         // 父親
-        $dadName.val($dadName.val().replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "")); // 姓名（中）
-        $dadEngName.val($dadEngName.val().replace(/[^a-zA-Z.,-\s]/g, "")); // 姓名（英）
-        $dadJob.val($dadJob.val().replace(/[\<\>\"]/g, "")); // 職業
-        $dadPhoneCode.val($dadPhoneCode.val().replace(/[^\d-]/g, '')); // 聯絡電話國碼
-        $dadPhone.val($dadPhone.val().replace(/[^\d-]/g, '')); // 聯絡電話
+        // 姓名（中）
+        value = await $dadName.val();
+        value = await regexChinese(value);
+        await $dadName.val(value);
+        // 姓名（英）
+        value = await $dadEngName.val();
+        value = await regexEnglish(value);
+        await $dadEngName.val(value);
+        // 職業
+        value = await $dadJob.val();
+        value = await regexGeneral(value);
+        await $dadJob.val(value);
+        // 聯絡電話國碼
+        value = await $dadPhoneCode.val();
+        value = await regexNumber(value);
+        await $dadPhoneCode.val(value);
+        // 聯絡電話
+        value = await $dadPhone.val();
+        value = await regexNumber(value);
+        await $dadPhone.val(value);
         // 母親
-        $momName.val($momName.val().replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "")); // 姓名（中）
-        $momEngName.val($momEngName.val().replace(/[^a-zA-Z.,-\s]/g, "")); // 姓名（英）
-        $momJob.val($momJob.val().replace(/[\<\>\"]/g, "")); // 職業
-        $momPhoneCode.val($momPhoneCode.val().replace(/[^\d-]/g, '')); // 聯絡電話國碼
-        $momPhone.val($momPhone.val().replace(/[^\d-]/g, '')); // 聯絡電話
+        // 姓名（中）
+        value = await $momName.val();
+        value = await regexChinese(value);
+        await $momName.val(value);
+        // 姓名（英）
+        value = await $momEngName.val();
+        value = await regexEnglish(value);
+        await $momEngName.val(value);
+        // 職業
+        value = await $momJob.val();
+        value = await regexGeneral(value);
+        await $momJob.val(value);
+        // 聯絡電話國碼
+        value = await $momPhoneCode.val();
+        value = await regexNumber(value);
+        await $momPhoneCode.val(value);
+        // 聯絡電話
+        value = await $momPhone.val();
+        value = await regexNumber(value);
+        await $momPhone.val(value);
 
-        // 在台聯絡人 
-        $twContactName.val($twContactName.val().replace(/[^\u00c0-\u9fffa-zA-Z\u002d\u00b7\s]/g, "")); // 姓名
-        $twContactRelation.val($twContactRelation.val().replace(/[\<\>\"]/g, "")); // 關係
-        $twContactPhone.val($twContactPhone.val().replace(/[^\d-]/g, '')); // 聯絡電話
-        $twContactAddress.val($twContactAddress.val().replace(/[\<\>\"]/g, "")); // 地址
-        $twContactWorkplaceName.val($twContactWorkplaceName.val().replace(/[\<\>\"]/g, "")); // 服務機關名稱
-        $twContactWorkplacePhone.val($twContactWorkplacePhone.val().replace(/[^\d-]/g, '')); // 服務機關電話
+        // 在臺聯絡人 
+        // 姓名
+        value = await $twContactName.val();
+        value = await regexGeneral(value);
+        await $twContactName.val(value);
+        // 關係
+        value = await $twContactRelation.val();
+        value = await regexGeneral(value);
+        await $twContactRelation.val(value);
+        // 聯絡電話
+        value = await $twContactPhone.val();
+        value = await regexNumber(value);
+        await $twContactPhone.val(value);
+        // 地址
+        value = await $twContactAddress.val();
+        value = await regexGeneral(value);
+        await $twContactAddress.val(value);
+        // 服務機關名稱
+        value = await $twContactWorkplaceName.val();
+        value = await regexGeneral(value);
+        await $twContactWorkplaceName.val(value);
+        // 服務機關電話
+        value = await $twContactWorkplacePhone.val();
+        value = await regexNumber(value);
+        await $twContactWorkplacePhone.val(value);
     }
 
-    function _handleSave() {
-        _handleReplace();
+    async function _handleSave() {
+        await _handleReplace();
         let sendData = {};
         if (sendData = _validateForm()) {
             for (let i in sendData) {
