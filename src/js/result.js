@@ -13,16 +13,7 @@
 	*	cache DOM
 	*/
 	
-	// const $olympiaForm = $('#form-olympia');
-	// const $olympiaTbody = $('#tbody-olympia');
-	// const $admissionForm = $('#form-admission');
-	// const $admissionTbody = $('#tbody-admission');
-	// const $placementForm = $('#form-placement');
-	// const $placementTbody = $('#tbody-placement');
-	// const $noSelectForm = $('#form-no-select');
 	const $previewPersonalDataBtn = $('#btn-previewPersonalData');
-	// const $previewPlacementListBtn = $('#btn-previewPlacementList');
-	const $previewDataDiv = $('#div-previewData');
 
 	/**
 	*	init
