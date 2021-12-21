@@ -26,6 +26,26 @@
 	$('body').on('click', '.img-thumbnail', _showUploadedFile);// 點擊檔案呼叫編輯模板事件
 
 	async function _init() {
+		// 確認是否在報名期間 非報名期間 隱藏上傳、刪除、儲存按鈕
+		const registerResponse = await student.getStudentRegistrationProgress();
+		if(registerResponse.ok){
+			const data = await registerResponse.json();
+			if(!data.is_opening){
+				$('.input-group').hide();
+				$deleteFileBtn.hide();
+				$saveButton.hide();
+			}
+		} else {
+			const data = await response.json();
+			const message = data.messages[0];
+			await swal({
+				title: `ERROR！`,
+				html:`${message}`,
+				type:"error",
+				confirmButtonText: '確定',
+				allowOutsideClick: false
+			});
+		}
 		const response = await student.getStudentAdmissionPaperFiles();
 		if(response.ok){
 			const data = await response.json();
@@ -175,26 +195,17 @@
 
 		// 是圖放圖，非圖放 icon
 		if (fileType === 'img') {
-			const src = this.src;
-
 			$imgModalBody.html(`
 				<img
-					src="${src}"
+					src="${this.src}"
 					class="img-fluid rounded img-ori"
 				>
 			`);
 		} else {
-			const icon = this.dataset.icon;
-			const fileLink = this.dataset.filelink;
-
 			$imgModalBody.html(`
-				<div>
-					<i class="fa ${icon} non-img-file-ori" aria-hidden="true"></i>
+				<div style="margin: 0 auto">
+					<embed src="${this.dataset.filelink}" width="550" height="800" type="application/pdf">
 				</div>
-
-				<a class="btn btn-primary non-img-file-download" href="${fileLink}" target="_blank" >
-					<i class="fa fa-download" aria-hidden="true"></i> 下載
-				</a>
 			`);
 		}
         // 刪除檔案按鈕紀錄點選的檔案名稱及類別

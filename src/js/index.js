@@ -1,4 +1,10 @@
 (() => {
+	// 引入 reCAPTCHA 的 JS 檔案
+    var s = document.createElement('script');
+    let src = 'https://www.google.com/recaptcha/api.js?render=' + env.reCAPTCHA_site_key;
+    s.setAttribute('src', src);
+    document.body.appendChild(s);
+
 	/**
 	*	cache DOM
 	*/
@@ -7,9 +13,6 @@
 	const $pass = $('#password');
 	const $loginBtn = $('#btn-login');
 	const $downloadLinks = $('#download-links');
-	const $identifyingCanvas = $('#identifyingCanvas')
-	const $identifyingCode = $('#identifyingCode')
-	var identifyingCode = '';
 
 	/**
 	*	init
@@ -20,10 +23,8 @@
 	/**
 	*	bind event
 	*/
-	$identifyingCanvas.on('click',generateCode);
 	$loginBtn.on('click', _handleLogin);
-	// $pass.keyup((e) => { e.keyCode == 13 && _handleLogin(); }); //原本沒驗證碼 所以就密碼輸入欄位判斷是否有按enter的鍵盤事件
-	$identifyingCode.keydown((e) => { e.keyCode == 13 && _handleLogin(); }); //驗證碼輸入欄位  判斷是否有按enter的鍵盤事件
+	$pass.keyup((e) => { e.keyCode == 13 && _handleLogin(); }); //原本沒驗證碼 所以就密碼輸入欄位判斷是否有按enter的鍵盤事件
 
 	/**
 	*	event handlet
@@ -43,141 +44,59 @@
 		} catch (e) {
 			console.log(e);
 		}
-		generateCode();
+
 		loading.complete();
 	}
 
 	function _handleLogin() {
 		const email = $email.val();
 		const pass = $pass.val();
-		const code = $identifyingCode.val();
-
-		//確認驗證碼是否一致  不區分大小寫
-		if(code.toUpperCase() !== identifyingCode){
-			alert('驗證碼不正確');
-			generateCode();
-			return;
-		}
-		generateCode();
 
 		const loginData = {
 			email: email,
-			password: sha256(pass)
+			password: sha256(pass),
+			google_recaptcha_token: ''
 		};
-		// location.href = './qualify.html';
-		loading.start();
-		student.login(loginData)
-		.then((res) => {
-			if (res.ok) {
-				return res.json();
-			} else {
-				throw res.status;
-			}
-		})
-		.then((json) => {
-			if(!json.has_qualify) {
-				location.href = './qualify.html';
-			} else if(!json.has_personal_info) {
-				location.href = './personalInfo.html';
-			} else if(!json.has_apply_way) {
-				location.href = './grade.html';
-			} else if(!json.has_admission) {
-				location.href = './admission.html';
-			} else if(json.confirmed_at === null){
-				location.href = './result.html';
-			}else{
-				location.href = './download.html';
-			}
-			loading.complete();
-		})
-		.catch((err) => {
-			err === 401 && alert('帳號或密碼輸入錯誤。');
-			err === 429 && alert('登入錯誤次數太多，請稍後再試。');
-			loading.complete();
-		})
-	}
-
-	//產生圖形驗證碼
-	function generateCode(){
-
-		//隨機產生數字
-		function randomNumber(min, max){
-			return Math.floor(Math.random()*(max-min)+min);  //隨機產生一個在min~max之間的整數
-		}
-	
-		//隨機顏色色碼
-		function randomColor(min, max){
-			
-			let r = randomNumber(min, max);
-			let g = randomNumber(min, max);
-			let b = randomNumber(min, max);
-	
-			return "rgb("+r+","+g+","+b+")";
-		}
-
-		//取得畫布物件屬性
-		let canvas = document.getElementById('identifyingCanvas');
-		let width = canvas.width;
-		let height = canvas.height;
-		let context = canvas.getContext('2d');
-
-		//基礎設定 設置文本基線在底部  背景顏色  方形繪製
-		context.textBaseline = 'bottom';
-		context.fillStyle = randomColor(200,240);
-		context.fillRect(0,0,width,height);
-
-		//隨機字母表   去除相似的 1 I   0 O   
-		let codeList = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-		let codeString = '';
-
-		//雖機產生4個字母
-		for(let i = 0; i<4 ; i++){
-			let code = codeList[randomNumber(0,codeList.length)];
-			codeString += code;
-
-			context.fillStyle = randomColor(50,160);
-			context.font = randomNumber(25,30)+ 'px Arial';  //字體大小25~30隨機
-
-			let x = 10+i*25;
-			let y = randomNumber(30,35);  //隨機高度
-			let angle = randomNumber(-30,30);  //隨機旋轉角度
-
-			context.translate(x,y);  //移動繪製初始位置
-			context.rotate(angle*Math.PI/180);  //旋轉繪製初始位置
-
-			context.fillText(code,0,0);
-
-			context.rotate(-angle*Math.PI/180);  //返回繪製初始位置
-			context.translate(-x,-y);  //返回繪製初始位置
-		}
-
-		//產生干擾線
-		for(let i =0;i<2;i++){
-			context.strokeStyle = randomColor(40,180);
-
-			context.beginPath();
-
-			context.moveTo( randomNumber(0,width), randomNumber(0,height));
-
-			context.lineTo( randomNumber(0,width), randomNumber(0,height));
-
-			context.stroke();
-		}
-
-		//產生干擾點
-		for(let i=0 ; i<50 ; i++){
-			context.fillStyle = randomColor(0,255);
-
-			context.beginPath();
-			
-			context.arc( randomNumber(0,width), randomNumber(0,height),1,0,2*Math.PI);
-
-			context.fill();
-		}
-
-		//紀錄驗證碼
-		identifyingCode = codeString;
+		grecaptcha.ready(function() {
+            grecaptcha.execute(env.reCAPTCHA_site_key, {
+              action: 'MalaysiaSpringLogin'
+            }).then(function(token) {
+                // token = document.getElementById('btn-login').value
+                loginData.google_recaptcha_token=token;
+            }).then(function(){
+				loading.start();
+				student.login(loginData)
+				.then((res) => {
+					if (res.ok) {
+						return res.json();
+					} else {
+						throw res.status;
+					}
+				})
+				.then((json) => {
+					if(!json.has_qualify) {
+						location.href = './qualify.html';
+					} else if(!json.has_personal_info) {
+						location.href = './personalInfo.html';
+					} else if(!json.has_apply_way) {
+						location.href = './grade.html';
+					} else if(!json.has_admission) {
+						location.href = './admission.html';
+					} else if(json.confirmed_at === null){
+						location.href = './result.html';
+					}else{
+						location.href = './download.html';
+					}
+					loading.complete();
+				})
+				.catch((err) => {
+					err === 401 && alert('帳號或密碼輸入錯誤。');
+					err === 403 && alert('Google Recaptcha Failed。');
+					err === 429 && alert('登入錯誤次數太多，請稍後再試。');
+					loading.complete();
+				});
+			});
+        });
 	}
 
 })();
