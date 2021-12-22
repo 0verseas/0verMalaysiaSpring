@@ -134,6 +134,17 @@
                 });
                 $birthContinent.html(stateHTML);
                 $residenceContinent.html(stateHTML);
+                // 總是有人亂填生日 甚至變成未來人 只好設個上限 最年輕就是報名當下剛滿十歲
+                $birthday.datepicker({
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 10))
+                });
+                // 總是有人亂填生日 甚至變成未來人 只好設個上限 父母最年輕就是報名當下剛滿二十二歲
+                $dadBirthday.datepicker({
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
+                });
+                $momBirthday.datepicker({
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
+                });
             })
             .then(()=>{
                 _initPersonalInfo();
