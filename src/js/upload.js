@@ -26,11 +26,11 @@
 	$('body').on('click', '.img-thumbnail', _showUploadedFile);// 點擊檔案呼叫編輯模板事件
 
 	async function _init() {
-		// 確認是否在報名期間 非報名期間 隱藏上傳、刪除、儲存按鈕
+		// 確認是否被收件 已經被收件者 隱藏上傳、刪除、儲存按鈕
 		const registerResponse = await student.getStudentRegistrationProgress();
 		if(registerResponse.ok){
 			const data = await registerResponse.json();
-			if(!data.is_opening){
+			if(data.overseas_student_id !== null){
 				$('.input-group').hide();
 				$deleteFileBtn.hide();
 				$saveButton.hide();
