@@ -1,8 +1,12 @@
-version: '3'
-services:
+version: '3.7'
 
-  # Nginx Service
-  nginx:
+networks:
+  bridge:
+    external:
+      name: ${NETWORKS}
+
+services:
+  malaysia-spring:
     image: nginx:alpine
     container_name: 0verMalaysiaSpring
     restart: unless-stopped
@@ -10,5 +14,11 @@ services:
     environment:
       - TZ=Asia/Taipei
     volumes:
-#      - /var/log/nginx:/var/log/nginx
       - ./app/dist/:/usr/share/nginx/html/malaysia_spring/
+    networks:
+      - bridge
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.malaysia-spring.entrypoints=websecure"
+      - "traefik.http.routers.malaysia-spring.tls.certresolver=lets-encr"
+      - "traefik.http.routers.malaysia-spring.rule=Host(``)"
