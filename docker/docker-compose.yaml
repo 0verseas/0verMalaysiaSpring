@@ -21,4 +21,4 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.malaysia-spring.entrypoints=websecure"
       - "traefik.http.routers.malaysia-spring.tls.certresolver=lets-encr"
-      - "traefik.http.routers.malaysia-spring.rule=Host(``)"
+      - "traefik.http.routers.malaysia-spring.rule=Host(``) && PathPrefix(`/malaysia_spring`)"
