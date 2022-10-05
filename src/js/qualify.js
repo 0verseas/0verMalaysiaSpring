@@ -37,8 +37,9 @@
 			data.forEach((val, i) => {
 				$citizenshipContinentSelect.append(`<option value="${i}">${val.continent}</option>`);
 			});
-			$citizenshipSelect.empty();
-			$citizenshipSelect.append('<option value="-1" hidden disabled selected>請先選擇洲別</option>');
+			$citizenshipSelect.selectpicker({title: '請先選擇洲別(Continent)'});
+			$citizenshipSelect.attr('disabled',true);
+			$citizenshipSelect.selectpicker('refresh');
 		});
 		// get data
 		await student.getVerifyQualification().then((res) => {
@@ -257,18 +258,22 @@
 		const order = $(this).val();
 		// reset 國籍列表選單
 		$citizenshipSelect.empty();
-		// 預設選項為 "可選擇" 但設定為不可選且隱藏 讓他不會出現在下拉式選單中
-		$citizenshipSelect.append('<option value="-1" disabled selected hidden>請選擇</option>');
 		// 防止有人選取預設選項
 		if (+order === -1) {
+			$citizenshipSelect.selectpicker({title: '請先選擇洲別(Continent)'});
+            $citizenshipSelect.attr('disabled',true);
 			return;
 		}
+		$citizenshipSelect.selectpicker({title: '請選擇國家'});
+		$citizenshipSelect.attr('disabled',false);
 		// 渲染選取洲別的國家到下拉式選單中
 		_countryList[order].country.forEach((val, i) => {
 			if(_citizenshipList.findIndex(order => order.id == val.id) === -1){ // 在已選擇國籍名單中 就不渲染避免重複選取
 				$citizenshipSelect.append(`<option value="${val.id}">${val.country}</option>`);
 			}
 		});
+		$citizenshipSelect.selectpicker('refresh');
+		$citizenshipSelect.parent().find('button').removeClass('bs-placeholder');
 	}
 
 	// 選擇國籍選項 新增至已選擇國籍列表
@@ -323,7 +328,9 @@
 		// reset 洲別與國家選項 並清空國家列表 避免重複選取到一樣國家
 		$citizenshipContinentSelect.append('<option value="-1" hidden disabled selected>請選擇</option>');
 		$citizenshipSelect.empty();
-		$citizenshipSelect.append('<option value="-1" hidden disabled selected>請先選擇洲別</option>');
+		$citizenshipSelect.selectpicker({title: '請先選擇洲別(Continent)'});
+        $citizenshipSelect.attr('disabled',true);
+		$citizenshipSelect.selectpicker('refresh');
 	}
 
 	/**

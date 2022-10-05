@@ -295,6 +295,9 @@
                 $twContactWorkplacePhone.val(formData.tw_contact_workplace_phone);
             })
             .then(() => {
+                // init selectpicker
+                $birthLocation.selectpicker('refresh');
+                $residentLocation.selectpicker('refresh');
                 _showSpecailForm();
                 _handleOtherDisabilityCategoryForm();
                 _switchDadDataForm();
@@ -302,6 +305,8 @@
                 _reRenderSchoolLocation();
             })
             .then(() => {
+                $birthLocation.parent().find('button').removeClass('bs-placeholder');
+                $residentLocation.parent().find('button').removeClass('bs-placeholder');
                 loading.complete();
             })
             .catch((err) => {
@@ -343,19 +348,21 @@
 
     function _reRenderCountry() {
         const continent = $(this).find(':selected').data('continentindex');
-        const $row = $(this).closest('.row');
-        const $countrySelect = $row.find('.country');
 
-        let countryHTML = '<option value="">Country</option>';
+        let countryHTML = '';
         if (continent !== -1) {
+            $birthLocation.selectpicker({title: '請選擇國家'}); // 修改 未選擇選項時的顯示文字
             _countryList[continent]['country'].forEach((obj, index) => {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
+            $birthLocation.attr('disabled',false); // enable selector
         } else {
-            countryHTML = '<option value="">Country</option>'
+            $birthLocation.selectpicker({title: '請先選擇洲別(Continent)'}); // 修改 未選擇選項時的顯示文字
+            $birthLocation.attr('disabled',true); // disable selector
         }
-        $countrySelect.html(countryHTML);
-        $countrySelect.change();
+        $birthLocation.html(countryHTML); // reder option
+        $birthLocation.selectpicker('refresh'); // refresh selector
+        $birthLocation.parent().find('button').removeClass('bs-placeholder'); // 為了風格統一 去除預設格式
     }
 
     function _reRenderResidenceCountry() {
@@ -364,12 +371,19 @@
         let countryHTML = '<option value="">Country</option>';
 
         if (continent !== -1) {
+            $residentLocation.selectpicker({title: '請選擇國家'}); // 修改 未選擇選項時的顯示文字
             _countryList[continent]['country'].forEach((obj, index) => {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
+            $residentLocation.attr('disabled',false); // enable selector
+        } else {
+            $residentLocation.selectpicker({title: '請先選擇洲別(Continent)'}); // 修改 未選擇選項時的顯示文字
+            $residentLocation.attr('disabled',true); // disable selector
         }
 
-        $residentLocation.html(countryHTML);
+        $residentLocation.html(countryHTML); // reder option
+        $residentLocation.selectpicker('refresh'); // refresh selector
+        $residentLocation.parent().find('button').removeClass('bs-placeholder'); // 為了風格統一 去除預設格式
     }
     
     function _switchDisabilityCategory() {
