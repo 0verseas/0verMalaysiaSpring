@@ -584,7 +584,12 @@
         *   00c0~33FF：包含大部分國家的文字
         */
         function regexChinese(str){
-            return str.replace(/[^\u3400-\u9fff\u2027\u00b7]/g, "");
+            const regexp = /\p{sc=Han}|[\u2027\u00b7]/gu;
+            if(str.match(regexp) == null){
+                return '';
+            } else {
+                return str.match(regexp).join("");
+            }
         }
         function regexEnglish(str){
             return str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
@@ -1074,7 +1079,6 @@
 
         formValidateList.forEach((obj, index) => {
             if (obj.require) {
-                console.log(obj);
                 if (_validateNotEmpty(obj)) {
                     switch (obj.type) {
                         case 'email':
