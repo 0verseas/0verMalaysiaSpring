@@ -38,6 +38,7 @@
     const $disabilityLevel = $('#disabilityLevel'); // 障礙等級
     const $otherDisabilityCategoryForm = $('#otherDisabilityCategoryForm'); // 其他障礙說明表單
     const $otherDisabilityCategory = $('#otherDisabilityCategory'); // 其他障礙說明
+    const $proposeGroup = $('#proposeGroup');
 
     // 僑居地資料
     const $residenceContinent = $('#residenceContinent'); // 州
@@ -171,6 +172,7 @@
                         "special": 0,
                         "disability_category": "",
                         "disability_level": "",
+                        "propose_group": "",
                         "resident_location": "",
                         "resident_id": "",
                         "resident_passport_no": "",
@@ -231,6 +233,8 @@
                 } else {
                     $("input[name=special][value='0']").prop("checked", true).change();
                 }
+
+                $proposeGroup.val(formData.propose_group)
 
                 // init 僑居地資料
                 $residenceContinent.val(_findContinent(formData.resident_location)).change();
@@ -632,6 +636,10 @@
         value = await $otherDisabilityCategory.val();
         value = await regexGeneral(value);
         await $otherDisabilityCategory.val(value);
+        // 協助推薦來臺就學之僑華校/教學組織
+        value = await $proposeGroup.val();
+        value = await regexGeneral(value);
+        await $proposeGroup.val(value);
         // 僑居地資料
         // 護照號碼
         value = await $residentPassportNo.val();
@@ -884,6 +892,14 @@
                 value: $(".specail:checked").val(),
                 dbKey: 'special',
                 colName: '身心障礙選項'
+            },
+            {
+                el: $proposeGroup,
+                require: false,
+                type: 'string',
+                value: $proposeGroup.val(),
+                dbKey: 'propose_group',
+                colName: '協助推薦來臺就學之僑華校/教學組織'
             },
             {
                 el: $residentLocation,
