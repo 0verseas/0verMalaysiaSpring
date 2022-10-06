@@ -75,7 +75,7 @@
 	// 儲存事件
     async function _handleSave(){
         await loading.start();
-        await swal({title: `儲存成功，即將跳轉。`, type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+        await swal({title: `儲存成功`, html:`<a class="font-weight-bold text-danger">請於報名期限內完成紙本繳件</a>`, type:"success", confirmButtonText: '確定', allowOutsideClick: false});
         await loading.complete();
         location.href = './download.html';
     }
