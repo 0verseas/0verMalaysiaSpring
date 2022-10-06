@@ -75,9 +75,9 @@
 	// 儲存事件
     async function _handleSave(){
         await loading.start();
-        await swal({title: `儲存成功`, type:"success", confirmButtonText: '確定', allowOutsideClick: false});
+        await swal({title: `儲存成功，即將跳轉。`, type:"success", confirmButtonText: '確定', allowOutsideClick: false});
         await loading.complete();
-        await location.reload();
+        location.href = './download.html';
     }
 
 	// 上傳事件
