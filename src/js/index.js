@@ -90,9 +90,9 @@
 					loading.complete();
 				})
 				.catch((err) => {
-					err === 401 && alert('帳號或密碼輸入錯誤。');
-					err === 403 && alert('Google Recaptcha Failed。');
-					err === 429 && alert('登入錯誤次數太多，請稍後再試。');
+					err === 401 && swal({title:`帳號或密碼輸入錯誤。`, confirmButtonText:'確定', type:'error'});
+					err === 403 && swal({title:`Google reCaptcha Failed，請稍等五分鐘後再嘗試或寄信到海外聯招會信箱詢問。`, confirmButtonText:'確定', type:'error'});
+					err === 429 && swal({title:`登入錯誤次數太多，請稍後再試。`, confirmButtonText:'確定', type:'error'});
 					loading.complete();
 				});
 			});

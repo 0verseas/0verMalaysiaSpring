@@ -30,12 +30,14 @@
 	.catch((err) => {
 		console.error(err);
         if (err.status && err.status === 401) {
-            alert('請登入。');
-            location.href = "./index.html";
+			swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+			.then(()=>{
+				location.href = "./index.html";
+			});
         } else {
             err.json && err.json().then((data) => {
                 console.error(data);
-                alert(`ERROR: \n${data.messages[0]}`);
+                swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
             })
         }
 	});
@@ -59,14 +61,16 @@
 			}
 		})
 		.then((json) => {
-			alert('登出成功。');
-			location.href="./index.html";
+			swal({title: `登出成功。`, type:"success", confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./index.html";
+			});
 			loading.complete();
 		})
 		.catch((err) => {
 			err.json && err.json().then((data) => {
 				console.error(data);
-				alert(`ERROR: \n${data.messages[0]}`);
+				swal({title: `ERROR`, type:"error", text: data.messages[0], confirmButtonText: '確定', allowOutsideClick: false});
 			})
 			loading.complete();
 		})
@@ -83,8 +87,8 @@
 				throw res;
 			}
 		})
-		.then((data) => {
-			alert('已寄出驗證信，請至填寫信箱查看。');
+		.then(async (data) => {
+			await swal({title: `已寄出驗證信，請至填寫信箱查看。`, type:"info", confirmButtonText: '確定', allowOutsideClick: false})
 			loading.complete();
 		})
 		.catch((err) => {
@@ -174,18 +178,22 @@
 				}
 			})
 			.then(() => {
-				alert("成功確認資料。\n如果需要再修改資料請利用「資料修正表」，或是重新申請一組新的帳號。");
-				location.href = "./download.html";
+				swal({title: `成功確認資料。`, type:`success`, text: `如果需要再修改資料請利用「資料修正表」，或是重新申請一組新的帳號。`, confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./download.html";
+				});
 				loading.complete();
 			})
 			.catch((err) => {
 				if (err.status && err.status === 401) {
-					alert('請登入。');
-					location.href = "./index.html";
+					swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+					.then(()=>{
+						location.href = "./index.html";
+					});
 				} else {
 					err.json && err.json().then((data) => {
 						console.error(data);
-						alert(`ERROR: \n${data.messages[0]}`);
+						swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 					})
 				}
 				loading.complete();

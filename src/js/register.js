@@ -90,17 +90,17 @@
 		const passConfirm = $passwordConfirm.val();
 
 		if (!_emailValid) {
-			alert('信箱格式錯誤。');
+			swal({title: `信箱格式錯誤。`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 			return;
 		}
 
 		if (!_passwordComplex){
-			alert('密碼複雜度不足');
+			swal({title: `密碼複雜度不足`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 			return;
 		}
 
 		if (!_passValid) {
-			alert('密碼格式錯誤，或「確認密碼」與「密碼」內容不符。');
+			swal({title: `密碼格式錯誤，或「確認密碼」與「密碼」內容不符。`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 			return;
 		}
 		
@@ -133,12 +133,12 @@
 					if (err.status === 429){  // 註冊太多次啦 Too Many Requests
 						err.json && err.json().then((data) => {
 							console.error(data);
-							alert(`${data.message}`);
+							swal({title: `警告`, type:"warning", text: data.message, confirmButtonText: '確定', allowOutsideClick: false});
 						})
 					} else {
 						err.json && err.json().then((data) => {
 							console.error(data);
-							alert(`ERROR: \n${data.messages[0]}`);
+							swal({title: `ERROR`, type:"error", text: data.message[0], confirmButtonText: '確定', allowOutsideClick: false});
 						})
 					}
 					loading.complete();

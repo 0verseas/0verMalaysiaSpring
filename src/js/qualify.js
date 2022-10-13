@@ -57,12 +57,14 @@
 		})
 		.catch((err) => {
 			if (err.status && err.status === 401) {
-				alert('請登入。');
-				location.href = "./index.html";
+				swal({title: `請登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./index.html";
+				});
 			} else {
 				err.json && err.json().then((data) => {
 					console.error(data);
-					alert(`ERROR: \n${data.messages[0]}`);
+					swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 				})
 			}
 			loading.complete();
@@ -130,19 +132,19 @@
 		const hasBeenTaiwanOption = +$signUpForm.find('.radio-whyHasBeenTaiwan:checked').val();
 		const ethnicChinese = +$signUpForm.find('.radio-ethnicChinese:checked').val();
 		const invalidDistributionOption = [4, 5, 6, 7];
-		if (!!isDistribution && invalidDistributionOption.includes(distributionOption)) return alert('分發來臺選項不具報名資格');
-		if (!!isDistribution && distributionTime === '') return alert('未填寫分發來臺年份或填寫格式不正確');
-		if (stayLimitOption === 1) return alert('海外居留年限選項不具報名資格');
-		if (!!hasBeenTaiwan && hasBeenTaiwanOption === 9) return alert('在臺停留選項不具報名資格');
-		if (ethnicChinese === 0) return alert('非華裔者不具報名資格');
-		if (! citizenshipString.length>0) return alert('請先選取你的國籍');// 陣列長度 <= 0 代表沒有選取國籍
-		console.log(`是否曾經分發來臺就學過？ ${!!isDistribution}`);
-		console.log(`曾分發來臺於西元幾年分發來臺？ ${distributionTime}`);
-		console.log(`曾分發來臺請就下列選項擇一勾選 ${distributionOption}`);
-		console.log(`海外居留年限 ${stayLimitOption}`);
-		console.log(`報名截止日往前推算僑居地居留期間內，是否曾在某一年來臺停留超過 120 天？ ${!!hasBeenTaiwan}`);
-		console.log(`在臺停留日期請就下列選項，擇一勾選，並檢附證明文件： ${hasBeenTaiwanOption}`);
-		console.log(`是否為華裔者： ${ethnicChinese}`);
+		if (!!isDistribution && invalidDistributionOption.includes(distributionOption)) return swal({title:`分發來臺選項不具報名資格`, confirmButtonText:'確定', type:'error'});
+		if (!!isDistribution && distributionTime === '') return swal({title:`未填寫分發來臺年份或填寫格式不正確`, confirmButtonText:'確定', type:'error'});
+		if (stayLimitOption === 1) return swal({title:`海外居留年限選項不具報名資格`, confirmButtonText:'確定', type:'error'});
+		if (!!hasBeenTaiwan && hasBeenTaiwanOption === 9) return swal({title:`在臺停留選項不具報名資格`, confirmButtonText:'確定', type:'error'});
+		if (ethnicChinese === 0) return swal({title:`非華裔者不具報名資格`, confirmButtonText:'確定', type:'error'});
+		if (! citizenshipString.length>0) return swal({title:`請先選取你的國籍`, confirmButtonText:'確定', type:'error'});// 陣列長度 <= 0 代表沒有選取國籍
+		// console.log(`是否曾經分發來臺就學過？ ${!!isDistribution}`);
+		// console.log(`曾分發來臺於西元幾年分發來臺？ ${distributionTime}`);
+		// console.log(`曾分發來臺請就下列選項擇一勾選 ${distributionOption}`);
+		// console.log(`海外居留年限 ${stayLimitOption}`);
+		// console.log(`報名截止日往前推算僑居地居留期間內，是否曾在某一年來臺停留超過 120 天？ ${!!hasBeenTaiwan}`);
+		// console.log(`在臺停留日期請就下列選項，擇一勾選，並檢附證明文件： ${hasBeenTaiwanOption}`);
+		// console.log(`是否為華裔者： ${ethnicChinese}`);
 
 		loading.start();
 		student.verifyQualification({
@@ -163,14 +165,15 @@
 				throw res;
 			}
 		})
-		.then((json) => {
+		.then(async(json) => {
+			await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
 			window.location.href = './personalInfo.html';
 			loading.complete();
 		})
 		.catch((err) => {
 			err.json && err.json().then((data) => {
 				console.error(data);
-				alert(`ERROR: \n${data.messages[0]}`);
+				swal({title:`ERROR`, text: data.messages[0], type: `error`, confirmButtonText: '確定', allowOutsideClick: false});
 			})
 			loading.complete();
 		});

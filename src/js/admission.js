@@ -103,25 +103,29 @@
 		} catch (e) {
 			// console.log(e);
 			if (e.status && e.status === 401) {
-				alert('請登入。');
-				location.href = "./index.html";
+				swal({title: `請登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./index.html";
+				});
 			} else if (e.status && e.status === 403) {
 				e.json && e.json().then((data) => {
-					alert(`ERROR: \n${data.messages[0]}\n`);
-					if(data.messages[0] === '請先完成資格檢視'){
-						location.href = "./qualify.html";
-					}else if(data.messages[0]==='請先完成個人基本資料填寫'){
-						location.href = "./personalInfo.html";
-					}else if(data.messages[0]==='請先選擇成績採計方式'){
-						location.href = "./grade.html";
-					}else{
-						location.href = "./result.html";
-					}
+					swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false})
+					.then(()=> {
+						if(data.messages[0] === '請先完成資格檢視'){
+							location.href = "./qualify.html";
+						}else if(data.messages[0]==='請先完成個人基本資料填寫'){
+							location.href = "./personalInfo.html";
+						}else if(data.messages[0]==='請先選擇成績採計方式'){
+							location.href = "./grade.html";
+						}else{
+							location.href = "./result.html";
+						}
+					});
 				})
 			} else {
 				e.json && e.json().then((data) => {
 					console.error(data);
-					alert(`ERROR: \n${data.messages[0]}`);
+					swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 				})
 			}
 			loading.complete();
@@ -129,7 +133,7 @@
 	}
 
 	function _addWish() { // 增加志願
-		if (_wishList.length < 70) {
+		if (_wishList.length < 1) {
 			const sortNum = $(this).data("sortnum");
 			const optionalIndex = _optionalWish.findIndex(order => order.sortNum === sortNum)
 			const pageNum = $paginationContainer.pagination('getSelectedPageNum');
@@ -138,7 +142,7 @@
 			_generateOptionalWish(pageNum);
 			_generateWishList();
 		} else {
-			alert('志願數量已達上限。');
+			swal({title: `志願類組僅可選擇一項。`, type: `warning`, confirmButtonText: '確定', allowOutsideClick: false});
 		}
 	}
 
@@ -361,19 +365,21 @@
 				}
 			})
 			.then((json) => {
-				alert("儲存成功");
-				location.href = "./result.html";
+				swal({title:`儲存成功`, type:`success`, confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=> {
+					location.href = "./result.html";
+				});
 				loading.complete();
 			})
 			.catch((err) => {
 				err.json && err.json().then((data) => {
 					console.error(data);
-					alert(`ERROR: \n${data.messages[0]}`);
+					swal({title:`ERROR`, text: data.messages[0], type: `error`, confirmButtonText: '確定', allowOutsideClick: false});
 				})
 				loading.complete();
 			})
 		} else {
-			alert('沒有選擇志願。');
+			swal({title: `沒有選擇志願。`, type:`error`, confirmButtonText: '確定', allowOutsideClick: false});
 		}
 	}
 })();

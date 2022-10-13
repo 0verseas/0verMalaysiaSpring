@@ -35,7 +35,7 @@
 		const id = $('.applyOptions:checked').val();
 		const ticket_no = $('.my_admission_ticket_no').val();
 		if (!id ) {
-			alert('請選擇您的成績採計方式');
+			swal({title: `請選擇您的成績採計方式`, type:`error`, confirmButtonText: '確定', allowOutsideClick: false});
 			return;
 		}
 
@@ -46,7 +46,7 @@
 
 		if (+id === 1) {
 			if(!ticket_no){
-				alert('請填寫你的准考證號碼');
+				swal({title: `請填寫你的准考證號碼`, type:`error`, confirmButtonText: '確定', allowOutsideClick: false});
 				return;
 			}
 			data.my_admission_ticket_no = ticket_no;
@@ -61,8 +61,8 @@
 				throw res;
 			}
 		})
-		.then(() => {
-			alert("儲存成功");
+		.then(async() => {
+			await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
 
 			student.getStudentRegistrationProgress()
 			.then((res) => {
@@ -85,12 +85,14 @@
 		})
 		.catch((err) => {
 			if (err.status && err.status === 401) {
-				alert('請登入。');
-				location.href = "./index.html";
+				swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./index.html";
+				});
 			}
 			err.json && err.json().then((data) => {
 				console.error(data.messages[0]);
-				alert(data.messages[0]);
+				swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 			});
 			loading.complete();
 		});
@@ -117,23 +119,27 @@
 		})
 		.catch((err) => {
 			if (err.status && err.status === 401) {
-				alert('請登入。');
-				location.href = "./index.html";
+				swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+				.then(()=>{
+					location.href = "./index.html";
+				});
 			} else if (err.status && err.status === 403) {
 				err.json && err.json().then((data) => {
-					alert(`ERROR: \n${data.messages[0]}\n`);
-					if(data.messages[0] === '請先完成資格檢視'){
-						location.href = "./qualify.html";
-					}else if(data.messages[0]==='請先完成個人基本資料填寫'){
-						location.href = "./personalInfo.html";
-					}else{
-						location.href = "./result.html";
-					}
+					swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false})
+					.then(()=> {
+						if(data.messages[0] === '請先完成資格檢視'){
+							location.href = "./qualify.html";
+						}else if(data.messages[0]==='請先完成個人基本資料填寫'){
+							location.href = "./personalInfo.html";
+						}else{
+							location.href = "./result.html";
+						}
+					});
 				})
 			} else {
 				err.json && err.json().then((data) => {
 					console.error(data);
-					alert(`ERROR: \n${data.messages[0]}`);
+					swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 				})
 			}
 			loading.complete();
