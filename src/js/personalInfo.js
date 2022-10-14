@@ -124,6 +124,9 @@
     $momStatus.on('change', _chMomStatus);
     $saveBtn.on('click', _handleSave);
     $taiwanIdType.on('change', _showTaiwanIdExample);
+    $("#form-personalInfo :input").on('change', function() {
+        $(this).removeClass('invalidInput');
+    });
 
     function _init() {
         student.getCountryList()
@@ -274,10 +277,8 @@
                 $dadBirthday.val(formData.dad_birthday);
                 $dadJob.val(formData.dad_job);
                 // FIXME: 當雙親都是不詳的時候不這樣寫（判斷有無電話）渲染會出錯，懇請大神協助修改讓程式碼好看一點
-                if (formData.dad_phone !== null) {
-                    $dadPhoneCode.val(_splitWithSemicolon(formData.dad_phone)[0]);
-                    $dadPhone.val(_splitWithSemicolon(formData.dad_phone)[1]);
-                }
+                [document.getElementById("dadPhoneCode").value, document.getElementById("dadPhone").value] = _splitWithSemicolon(formData.dad_phone);
+
                 // 母
                 _currentMomStatus = formData.mom_status;
                 $("input[name=momStatus][value='" + formData.mom_status + "']").prop("checked", true);
@@ -285,10 +286,7 @@
                 $momEngName.val(formData.mom_eng_name);
                 $momBirthday.val(formData.mom_birthday);
                 $momJob.val(formData.mom_job);
-                if (formData.mom_phone !== null) {
-                    $momPhoneCode.val(_splitWithSemicolon(formData.mom_phone)[0]);
-                    $momPhone.val(_splitWithSemicolon(formData.mom_phone)[1]);
-                }
+                [document.getElementById("momPhoneCode").value, document.getElementById("momPhone").value] = _splitWithSemicolon(formData.mom_phone);
 
                 // init 在台聯絡人
                 $twContactName.val(formData.tw_contact_name);
@@ -315,17 +313,21 @@
             })
             .catch((err) => {
                 if (err.status && err.status === 401) {
-                    alert('請登入。');
-                    location.href = "./index.html";
+                    swal({title: `請登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+                    .then(()=>{
+                        location.href = "./index.html";
+                    });
                 } else {
                     err.json && err.json().then((data) => {
                         console.error(data);
-                        alert(`ERROR: \n${data.messages[0]}`);
-                        if(data.messages[0] === '請先完成資格檢視'){
-                            location.href = "./qualify.html";
-                        }else{
-                            location.href = "./result.html";
-                        }
+                        swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false})
+                        .then(() => {
+                            if(data.messages[0] === '請先完成資格檢視'){
+                                location.href = "./qualify.html";
+                            }else{
+                                location.href = "./result.html";
+                            }
+                        });
                     })
                 }
                 loading.complete();
@@ -346,6 +348,7 @@
     }
 
     function _splitWithSemicolon(phoneNum) {
+        if(phoneNum == null) return ['',''];
         let i = phoneNum.indexOf("-");
         return [phoneNum.slice(0, i), phoneNum.slice(i + 1)];
     }
@@ -503,6 +506,7 @@
 
     //學校名稱是其它時 出現 學校名稱 input Text 讓它輸入
     function _chSchoolName(){
+        $schoolNameSelect.removeClass('invalidInput');
         if($schoolNameSelect.val() === '其它'){
             $schoolNameTextForm.show();
             $schoolNameText.val(_currentSchoolName);
@@ -539,9 +543,9 @@
         _switchDadDataForm();
     }
 
-    function _switchDadDataForm() {
+    async function _switchDadDataForm() {
         if(_currentMomStatus === "undefined" && _currentDadStatus ==="undefined"){
-            alert('請至少填寫一位監護人資料');
+            await swal({title: `請至少填寫一位監護人資料`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
             _currentDadStatus = 'alive';
             $dadStatus[0].checked = true;
             $dadStatus[2].checked = false;
@@ -560,10 +564,10 @@
         }
     }
 
-    function _chMomStatus() {
+    async function _chMomStatus() {
         _currentMomStatus = $(this).val();
         if(_currentMomStatus === "undefined" && _currentDadStatus ==="undefined"){
-            alert('請至少填寫一位監護人資料');
+            await swal({title: `請至少填寫一位監護人資料`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
             _currentMomStatus = 'alive';
             $momStatus[0].checked = true;
             $momStatus[2].checked = false;
@@ -587,189 +591,9 @@
         }
     }
 
-    //將輸入欄位資料過濾  避免xss攻擊
-    async function _handleReplace(){
-
-        /*
-        *   3400～4DFF：中日韓認同表意文字擴充A區，總計收容6,582個中日韓漢字。
-        *   4E00～9FFF：中日韓認同表意文字區，總計收容20,902個中日韓漢字。 
-        *   0023： #
-        *   002d： -
-        *   00b7：半形音界號
-        *   2027：全形音界號
-        *   \s ： 空白
-        *   \d：數字
-        *   00c0~33FF：包含大部分國家的文字
-        */
-        function regexChinese(str){
-            const regexp = /\p{sc=Han}|[\u2027\u00b7]/gu;
-            if(str.match(regexp) == null){
-                return '';
-            } else {
-                return str.match(regexp).join("");
-            }
-        }
-        function regexEnglish(str){
-            return str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
-        }
-        function regexGeneral(str){
-            return str.replace(/[\s]/g, "\u0020").replace(/[\<\>\"]/g, "");
-        }
-        function regexIdNumber(str){
-            return str.replace(/[^0-9A-Za-z\u002d]/g, "");
-        }
-        function regexNumber(str){
-            return str.replace(/[^\d\u0020\u0023]/g, "");
-        }
-
-        let value = '';
-        // 申請人資料表
-        // 姓名（中)
-        value = await $name.val();
-        value = await regexChinese(value);
-        await $name.val(value);
-        // 姓名（英）
-        value = await $engName.val();
-        value = await regexEnglish(value);
-        await $engName.val(value);
-        // 其他障礙說明
-        value = await $otherDisabilityCategory.val();
-        value = await regexGeneral(value);
-        await $otherDisabilityCategory.val(value);
-        // 協助推薦來臺就學之僑華校/教學組織
-        value = await $proposeGroup.val();
-        value = await regexGeneral(value);
-        await $proposeGroup.val(value);
-        // 僑居地資料
-        // 護照號碼
-        value = await $residentPassportNo.val();
-        value = await regexIdNumber(value);
-        await $residentPassportNo.val(value);
-        // 電話國碼
-        value = await $residentPhoneCode.val();
-        value = await regexNumber(value);
-        await $residentPhoneCode.val(value);
-        // 電話號碼
-        value = await $residentPhone.val();
-        value = await regexNumber(value);
-        await $residentPhone.val(value);
-        // 手機國碼
-        value = await $residentCellphoneCode.val();
-        value = await regexNumber(value);
-        await $residentCellphoneCode.val(value);
-        // 手機號碼
-        value = await $residentCellphone.val();
-        value = await regexNumber(value);
-        await $residentCellphone.val(value);
-        // 地址（中 / 英）
-        value = await $residentAddress.val();
-        value = await regexGeneral(value);
-        await $residentAddress.val(value);
-
-        // 在臺資料 (選填)
-        // 臺灣護照號碼
-        value = await $taiwanPassport.val();
-        value = await regexIdNumber(value);
-        await $taiwanPassport.val(value);
-        // 臺灣電話
-        value = await $taiwanPhone.val();
-        value = await regexNumber(value);
-        await $taiwanPhone.val(value);
-        // 臺灣地址
-        value = await $taiwanAddress.val();
-        value = await regexGeneral(value);
-        await $taiwanAddress.val(value);
-
-        // 學歷
-        // 學制描述
-        value = await $educationSystemDescription.val();
-        value = await regexGeneral(value);
-        await $educationSystemDescription.val(value);
-        // 學校名稱 (text)
-        value = await $schoolNameText.val();
-        value = await regexGeneral(value);
-        await $schoolNameText.val(value);
-
-        // 家長資料
-        // 父親
-        // 姓名（中）
-        value = await $dadName.val();
-        value = await regexChinese(value);
-        await $dadName.val(value);
-        // 姓名（英）
-        value = await $dadEngName.val();
-        value = await regexEnglish(value);
-        await $dadEngName.val(value);
-        // 職業
-        value = await $dadJob.val();
-        value = await regexGeneral(value);
-        await $dadJob.val(value);
-        // 聯絡電話國碼
-        value = await $dadPhoneCode.val();
-        value = await regexNumber(value);
-        await $dadPhoneCode.val(value);
-        // 聯絡電話
-        value = await $dadPhone.val();
-        value = await regexNumber(value);
-        await $dadPhone.val(value);
-        // 母親
-        // 姓名（中）
-        value = await $momName.val();
-        value = await regexChinese(value);
-        await $momName.val(value);
-        // 姓名（英）
-        value = await $momEngName.val();
-        value = await regexEnglish(value);
-        await $momEngName.val(value);
-        // 職業
-        value = await $momJob.val();
-        value = await regexGeneral(value);
-        await $momJob.val(value);
-        // 聯絡電話國碼
-        value = await $momPhoneCode.val();
-        value = await regexNumber(value);
-        await $momPhoneCode.val(value);
-        // 聯絡電話
-        value = await $momPhone.val();
-        value = await regexNumber(value);
-        await $momPhone.val(value);
-
-        // 在臺聯絡人 
-        // 姓名
-        value = await $twContactName.val();
-        value = await regexGeneral(value);
-        await $twContactName.val(value);
-        // 關係
-        value = await $twContactRelation.val();
-        value = await regexGeneral(value);
-        await $twContactRelation.val(value);
-        // 聯絡電話
-        value = await $twContactPhone.val();
-        value = await regexNumber(value);
-        await $twContactPhone.val(value);
-        // 地址
-        value = await $twContactAddress.val();
-        value = await regexGeneral(value);
-        await $twContactAddress.val(value);
-        // 服務機關名稱
-        value = await $twContactWorkplaceName.val();
-        value = await regexGeneral(value);
-        await $twContactWorkplaceName.val(value);
-        // 服務機關電話
-        value = await $twContactWorkplacePhone.val();
-        value = await regexNumber(value);
-        await $twContactWorkplacePhone.val(value);
-    }
-
     async function _handleSave() {
-        await _handleReplace();
         let sendData = {};
-        if (sendData = _validateForm()) {
-            for (let i in sendData) {
-                if (sendData[i] === null) {
-                    sendData[i] = "";
-                }
-            }
+        if (sendData = await _validataForm()) {
             loading.start();
             student.setStudentPersonalData(sendData)
                 .then((res) => {
@@ -779,8 +603,8 @@
                         throw res;
                     }
                 })
-                .then((json) => {
-                    alert('儲存成功');
+                .then(async (json) => {
+                    await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
                     window.location.reload();
                     loading.complete();
                     scroll(0,0);
@@ -788,406 +612,363 @@
                 .catch((err) => {
                     err.json && err.json().then((data) => {
                         console.error(data);
-                        alert(`ERROR: \n${data.messages[0]}`);
+                        let errMsg = data.messages[0].split(" ");
+                        _handleErrMsg(errMsg[1]);
+                        swal({title: `ERROR`, html: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     });
                     loading.complete();
                 })
         } else {
-            alert("填寫格式錯誤，請檢查以下表單：\n———————————————\n" + _errormsg.join('、'));
+            swal({title: `填寫資料錯誤`, html: `請檢查以下欄位：<br/>`+_errormsg.join('、'), type:"error", confirmButtonText: '確定', allowOutsideClick: false});
         }
     }
 
-    // 驗證是否有值
-    function _validateNotEmpty(obj) {
-        let _checkValue = (obj.value) ? obj.value : obj.el.val();
-        return _checkValue !== "";
-    }
-
-    // 驗證是否有選擇性別
-    function _validateGengerNotEmpty(obj) {
-        let _checkValue = (obj.value) ? obj.value : "";
-        return _checkValue !== "";
-    }
-
-    // 驗證 Email 格式是否正確
-    function _validateEmail(obj) {
-        let _checkValue = (obj.value) ? obj.value : obj.el.val();
-        if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(_checkValue)) {
-            return false;
-        } else {
-            return true;
+    function _checkValue(col, type){
+        /*
+        *   3400～4DFF：中日韓認同表意文字擴充A區，總計收容6,582個中日韓漢字。
+        *   4E00～9FFF：中日韓認同表意文字區，總計收容20,902個中日韓漢字。 
+        *   0023： #
+        *   002d： -
+        *   00b7：半形音界號
+        *   2027：全形音界號
+        *   0020：半形空格
+        *   \s  ：空白
+        *   \d  ：數字
+        *   00c0~33FF：包含大部分國家的文字
+        */
+        let str = col.val();
+        // 檢查至否為空，否則replace會報錯
+        if(!str) return true;
+        switch (type) {
+            case 'Chinese':
+                const regexp = /\p{sc=Han}|[\u2027\u00b7]/gu;
+                str = str.match(regexp);
+                if(str == null){
+                    str = '';
+                } else {
+                    str = str.join("");
+                }
+                break;
+            case 'English':
+                str = str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
+                break;
+            case 'General':
+                str = str.replace(/[\s]/g, "\u0020").replace(/[\<\>\"]/g, "");
+                break;
+            case 'IdNumber':
+                str = str.replace(/[^0-9A-Za-z\u002d]/g, "");
+                break;
+            case 'Number':
+                str = str.replace(/[^\d\u0020\u0023]/g, "");
+                break;
+            case 'Date':
+                return !(/^[1-2]\d{3}\/((01|03|05|07|08|10|12)\/(0[1-9]|[1-2]\d{1}|3[0-1])|(02|04|06|09|11)\/(0[1-9]|[1-2]\d{1}|30)|(0[1-9]|1[0-2]))$/).test(str);
+            case 'EMail':
+                return !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(str);
         }
+        col.val(str);
+        if(!str) return true;
+        return false;
     }
 
-    // 驗證日期
-    function _validateDate(obj) {
-        return true;
+    function _handleError(col, msg) {
+        _errormsg.push(msg);
+        col.addClass('invalidInput');
+        if (msg === '出生地' && $birthContinent.val() === '-1') $birthContinent.addClass('invalidInput');
+        if (msg === '僑居地國別' && $residenceContinent.val() == '-1') $residenceContinent.addClass('invalidInput');  // 未成功顯示紅框，待修改
     }
 
-    function _getDBData(obj) {
-        let _sendValue = "";
-        if (obj.dbData) {
-            _sendValue = obj.dbData;
-        } else if (obj.value) {
-            _sendValue = obj.value;
-        } else {
-            _sendValue = obj.el.val();
-        }
-        return _sendValue;
-    }
-
-    function _validateForm() {
+    async function _validataForm() {
 
         /**
-         *	formValidateList: 格式設定表，由此表決定如何驗證表單，並產出要送給後端的 json object。
-         *	el: DOM 元素。
-         *	require: 是否為必填。
-         *	type: 輸出值的格式，之後會驗證是否符合該格式。
-         *	value: 預設取值方式為 el.val()，如果有特殊需求(像是 radio 要用 class name 取值)，則填寫在 value 中。
-         *	dbKey: 資料送往後端的 key，不需送出則不填。
-         *	dbData: 送往後端的資料，預設為 value，其次為 el.val()。如果有特殊需求（像是電話要和國碼合併），則填寫在 dbData 中。
+         *	先檢查各項必填欄位，若選取其他則須填寫相關敘述
+         *  若有選擇在臺證件類型，則須填入證件號碼並檢查
          */
 
-        let formValidateList = [
-            {
-                el: $name,
-                require: true,
-                type: 'string',
-                dbKey: 'name',
-                colName: '姓名（中）'
-            },
-            {
-                el: $engName,
-                require: true,
-                type: 'string',
-                dbKey: 'eng_name',
-                colName: '姓名（英）'
-            },
-            {
-                el: $gender,
-                require: true,
-                type: 'radio',
-                value: $(".gender:checked").val(),
-                dbKey: 'gender',
-                colName: '性別'
-            },
-            {
-                el: $birthday,
-                require: true,
-                type: 'date',
-                dbKey: 'birthday',
-                colName: '生日'
-            },
-            {
-                el: $birthLocation,
-                require: true,
-                type: 'string',
-                dbKey: 'birth_location',
-                colName: '出生國別'
-            },
-            {
-                el: $specail,
-                require: true,
-                type: 'radio',
-                value: $(".specail:checked").val(),
-                dbKey: 'special',
-                colName: '身心障礙選項'
-            },
-            {
-                el: $proposeGroup,
-                require: false,
-                type: 'string',
-                value: $proposeGroup.val(),
-                dbKey: 'propose_group',
-                colName: '協助推薦來臺就學之僑華校/教學組織'
-            },
-            {
-                el: $residentLocation,
-                require: true,
-                type: 'string',
-                dbKey: 'resident_location',
-                colName: '僑居地國別'
-            },
-            {
-                el: $residentId,
-                require: true,
-                type: 'string',
-                dbKey: 'resident_id',
-                colName: '僑居地身分證號碼'
-            },
-            {
-                el: $residentPassportNo,
-                require: false,
-                type: 'string',
-                dbKey: 'resident_passport_no'
-            },
-            { // 電話國碼，需驗證，合併在電話號碼一起送出。
-                el: $residentPhoneCode,
-                require: true,
-                type: 'string',
-                colName: '僑居地電話國碼'
-            },
-            {
-                el: $residentPhone,
-                require: true,
-                type: 'string',
-                dbKey: 'phone',
-                dbData: $residentPhoneCode.val() + '-' + $residentPhone.val(),
-                colName: '僑居地電話號碼'
-            },
-            { // 手機國碼，需驗證，合併在手機號碼一起送出。
-                el: $residentCellphoneCode,
-                require: true,
-                type: 'string',
-                colName: '僑居地手機國碼'
-            },
-            {
-                el: $residentCellphone,
-                require: true,
-                type: 'string',
-                dbKey: 'cellphone',
-                dbData: $residentCellphoneCode.val() + '-' + $residentCellphone.val(),
-                colName: '僑居地手機號碼'
-            },
-            {
-                el: $residentAddress,
-                require: true,
-                type: 'string',
-                dbKey: 'resident_address',
-                dbData: $residentAddress.val() /*+ ';' + $residentOtherLangAddress.val()*/ , // 原本僑居地地址有兩欄，如果恢復其他語言地址欄位請記得取消這邊的註解
-                colName: '僑居地地址'
-            },
-            {
-                el: $residentOtherLangAddress,
-                require: false,
-                type: 'string'
-            },
-            {
-                el: $taiwanIdType,
-                require: false,
-                type: 'string',
-                dbKey: 'taiwan_id_type'
-            },
-            {
-                el: $taiwanPassport,
-                require: false,
-                type: 'string',
-                dbKey: 'taiwan_passport'
-            },
-            {
-                el: $taiwanPhone,
-                require: false,
-                type: 'string',
-                dbKey: 'taiwan_phone'
-            },
-            {
-                el: $taiwanAddress,
-                require: false,
-                type: 'string',
-                dbKey: 'taiwan_address'
-            },
-            {
-                el: $schoolLocation,
-                require: false,
-                type: 'string',
-                dbKey: 'school_locate',
-                dbData: _currentSchoolLocate
-            },
-            {
-                el: $schoolAdmissionAt,
-                require: true,
-                type: 'date',
-                dbKey: 'school_admission_at',
-                colName: '入學時間'
-            },
-            {
-                el: $schoolGraduateAt,
-                require: true,
-                type: 'date',
-                dbKey: 'school_graduate_at',
-                colName: '畢業時間'
-            },
-            {
-                el: $dadStatus,
-                require: true,
-                type: 'radio',
-                value: _currentDadStatus,
-                dbKey: 'dad_status',
-                colName: '父親存歿'
-            },
-            {
-                el: $momStatus,
-                require: true,
-                type: 'radio',
-                value: _currentMomStatus,
-                dbKey: 'mom_status',
-                colName: '母親存歿'
-            },
-            {
-                el: $twContactName,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_name'
-            },
-            {
-                el: $twContactRelation,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_relation'
-            },
-            {
-                el: $twContactPhone,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_phone'
-            },
-            {
-                el: $twContactAddress,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_address'
-            },
-            {
-                el: $twContactWorkplaceName,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_workplace_name'
-            },
-            {
-                el: $twContactWorkplacePhone,
-                require: false,
-                type: 'string',
-                dbKey: 'tw_contact_workplace_phone'
-            }
-        ];
-
-        // 身心障礙選項
-        if ($(".specail:checked").val() === "1" && $disabilityCategory.val() === "-1") {
-            formValidateList.push({ el: $otherDisabilityCategory, require: true, type: 'string', dbKey: 'disability_category', colName: '其他身心障礙類別' }, { el: $disabilityLevel, require: true, type: 'string', dbKey: 'disability_level', colName: '身心障礙程度' });
-        } else if ($(".specail:checked").val() === "1") {
-            formValidateList.push({ el: $disabilityCategory, require: true, type: 'string', dbKey: 'disability_category', colName: '身心障礙類別' }, { el: $disabilityLevel, require: true, type: 'string', dbKey: 'disability_level', colName: '身心障礙程度' });
-        }
-
-        // 父親不為「不詳」時增加的驗證
-        if (_currentDadStatus !== "undefined") {
-            formValidateList.push({ el: $dadName, require: true, type: 'string', dbKey: 'dad_name', colName: '父親姓名（中）' }, { el: $dadEngName, require: true, type: 'string', dbKey: 'dad_eng_name', colName: '父親姓名（英）' }, { el: $dadBirthday, require: true, type: 'date', dbKey: 'dad_birthday', colName: '父親生日' }, { el: $dadJob, require: true, type: 'string', dbKey: 'dad_job', colName: '父親職業' });
-        }
-
-        //父親為「存」時增加的驗證
-        if(_currentDadStatus == "alive"){
-            formValidateList.push({ el: $dadPhoneCode, require: true, type: 'string', colName: '父親聯絡電話國碼' },{ el: $dadPhone, require: true, type: 'string', dbKey: 'dad_phone', dbData: $dadPhoneCode.val() + '-' + $dadPhone.val(), colName: '父親聯絡電話' });
-        }
-
-        // 母親不為「不詳」時增加的驗證
-        if (_currentMomStatus !== "undefined") {
-            formValidateList.push({ el: $momName, require: true, type: 'string', dbKey: 'mom_name', colName: '母親姓名（中）' }, { el: $momEngName, require: true, type: 'string', dbKey: 'mom_eng_name', colName: '母親姓名（英）' }, { el: $momBirthday, require: true, type: 'date', dbKey: 'mom_birthday', colName: '母親生日' }, { el: $momJob, require: true, type: 'string', dbKey: 'mom_job', colName: '母親職業' });
-        }
-
-        //母親為「存」時增加的驗證
-        if(_currentMomStatus == "alive"){
-            formValidateList.push( { el: $momPhoneCode, require: true, type: 'string', colName: '母親聯絡電話國碼' }, { el: $momPhone, require: true, type: 'string', dbKey: 'mom_phone', dbData: $momPhoneCode.val() + '-' + $momPhone.val(), colName: '母親聯絡電話' });
-        }
-
-        // 有證件類型再送 ID
-        if ($taiwanIdType.val() !== "") {
-            formValidateList.push({ el: $taiwanIdNo, require: false, type: 'string', dbKey: 'taiwan_id' });
-        }
-
-        // 判斷 schoolName 要送 select 的還是 text 的
-        if (_hasSchoolName) {
-            formValidateList.push({ el: $schoolNameSelect, require: true, type: 'string', dbKey: 'school_name', colName: '學校名稱' });
-        } else {
-            formValidateList.push({ el: $schoolNameText, require: true, type: 'string', dbKey: 'school_name', colName: '學校名稱' });
-        }
-
-        // 學歷學制描述
-        formValidateList.push({ el: $educationSystemDescription, require: true, type: 'string', dbKey: 'education_system_description', colName: '學制描述' });
-
-        let _correct = true; // 格式正確
-        let sendData = {}; // 送給後端的
+        let sendData = {}; // 打包送給後端的資料
         _errormsg = [];
-
-        formValidateList.forEach((obj, index) => {
-            if (obj.require) {
-                if (_validateNotEmpty(obj)) {
-                    switch (obj.type) {
-                        case 'email':
-                            if (_validateEmail(obj)) {
-                                if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                                obj.el.removeClass('invalidInput');
-                            } else {
-                                _errormsg.push(obj.colName);
-                                _correct = false;
-                                obj.el.addClass('invalidInput');
-                            }
-                            break;
-                        case 'date':
-                            if (_validateDate(obj)) {
-                                if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                                obj.el.removeClass('invalidInput');
-                            } else {
-                                _errormsg.push(obj.colName);
-                                _correct = false;
-                                obj.el.addClass('invalidInput');
-                            }
-                            break;
-                        case 'radio':
-                            if(_validateGengerNotEmpty(obj)){
-                                if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                                // obj.el.removeClass('invalidInput');
-                            } else {
-                                _errormsg.push(obj.colName);
-                                _correct = false;
-                                // obj.el.addClass('invalidInput');
-                            }
-                            break;
-                        default:
-                            if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                            obj.el.removeClass('invalidInput');
-                    }
-                } else {
-                    _errormsg.push(obj.colName);
-                    _correct = false;
-                    obj.el.addClass('invalidInput');
-                }
+        const disabilityLevel = ['極重度','重度','中度','輕度'] // 身心障礙程度
+        let disabilityCategory = ""
+        // 申請人
+        if(_checkValue($name,'Chinese')) _handleError($name,'姓名（中）');
+        if(_checkValue($engName,'English')) _handleError($engName,'姓名（英）');
+        if(!$(".gender:checked").val()) _handleError($gender,'性別');
+        if(_checkValue($birthday,'Date')) _handleError($birthday,'生日');
+        if(!$birthLocation.val()) _handleError($birthLocation,'出生地');
+        if(!$(".special:checked").val()) {
+            _errormsg.push('身心障礙選項');
+        } else if ($(".special:checked").val() === "1") {
+            if($disabilityCategory.val() !== "-1" && !_disabilityCategoryList.includes($disabilityCategory.val())) {
+                _errormsg.push('身心障礙類別錯誤');
+            } else if($disabilityCategory.val() === "-1" && _checkValue($otherDisabilityCategory,'General')) {
+                _handleError($otherDisabilityCategory,'其他身心障礙類別說明');
+            } else if($disabilityCategory.val() === "-1" && $otherDisabilityCategory.val()){
+                disabilityCategory = $otherDisabilityCategory.val();
             } else {
-                if (_validateNotEmpty(obj)) {
-                    switch (obj.type) {
-                        case 'email':
-                            if (_validateEmail(obj)) {
-                                if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                                obj.el.removeClass('invalidInput');
-                            } else {
-                                _errormsg.push(obj.colName);
-                                _correct = false;
-                                obj.el.addClass('invalidInput');
-                            }
-                            break;
-                        case 'date':
-                            if (_validateDate(obj)) {
-                                if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                                obj.el.removeClass('invalidInput');
-                            } else {
-                                _errormsg.push(obj.colName);
-                                _correct = false;
-                                obj.el.addClass('invalidInput');
-                            }
-                            break;
-                        default:
-                            if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                            obj.el.removeClass('invalidInput');
-                    }
-                } else {
-                    if (obj.dbKey) sendData[obj.dbKey] = _getDBData(obj);
-                    obj.el.removeClass('invalidInput');
-                }
+                disabilityCategory = $disabilityCategory.val();
             }
-        });
+            if(!disabilityLevel.includes($disabilityLevel.val())) _errormsg.push('身心障礙程度錯誤');
+        }
+        // 僑居地
+        if(!$residentLocation.val()) _handleError($residentLocation,'僑居地國別');
+        if(_checkValue($residentId,'IdNumber')) _handleError($residentId,'僑居地身分證號碼');
+        if(_checkValue($residentPhoneCode,'Number')) _handleError($residentPhoneCode,'僑居地電話國碼');
+        if(_checkValue($residentPhone,'Number')) _handleError($residentPhone,'僑居地電話號碼');
+        if(_checkValue($residentCellphoneCode,'Number')) _handleError($residentCellphoneCode,'僑居地手機國碼');
+        if(_checkValue($residentCellphone,'Number')) _handleError($residentCellphone,'僑居地手機號碼');
+        if(_checkValue($residentAddress,'General')) _handleError($residentAddress,'僑居地地址');
+        // 學歷
+        if(_checkValue($educationSystemDescription,'General')) _handleError($educationSystemDescription,'學制描述');
+        if(_checkValue($schoolLocation,'Chinese')) _handleError($schoolLocation,'學校所在地');
+        if(_checkValue($schoolNameSelect,'General')) _handleError($schoolNameSelect,'學校名稱');
+        if(_checkValue($schoolNameText,'General') && !_hasSchoolName) _handleError($schoolNameText,'其他學校名稱');
+        if(_checkValue($schoolAdmissionAt,'Date')) _handleError($schoolAdmissionAt,'入學時間');
+        if(_checkValue($schoolGraduateAt,'Date')) _handleError($schoolGraduateAt,'畢業時間');
+        // 父
+        if(!$dadStatus.val()) _errormsg.push('父親存歿');
+        if(_currentDadStatus !== "undefined"){
+            if(_checkValue($dadName,'Chinese')) _handleError($dadName,'父親姓名（中）');
+            if(_checkValue($dadEngName,'English')) _handleError($dadEngName,'父親姓名（英）');
+            if(_checkValue($dadBirthday,'Date')) _handleError($dadBirthday,'父親生日');
+            if(_currentDadStatus === "alive") {
+                if(_checkValue($dadJob,'General')) _handleError($dadJob,'父親職業');
+                if(_checkValue($dadPhoneCode,'Number')) _handleError($dadPhoneCode,'父親聯絡電話國碼');
+                if(_checkValue($dadPhone,'Number')) _handleError($dadPhone,'父親聯絡電話號碼');
+            }
+        }
+        // 母
+        if(!$momStatus.val()) _errormsg.push('母親存歿');
+        if(_currentMomStatus !== "undefined"){
+            if(_checkValue($momName,'Chinese')) _handleError($momName,'母親姓名（中）');
+            if(_checkValue($momEngName,'English')) _handleError($momEngName,'母親姓名（英）');
+            if(_checkValue($momBirthday,'Date')) _handleError($momBirthday,'母親生日');
+            if(_currentMomStatus === "alive") {
+                if(_checkValue($momJob,'General')) _handleError($momJob,'母親職業');
+                if(_checkValue($momPhoneCode,'Number')) _handleError($momPhoneCode,'母親聯絡電話國碼');
+                if(_checkValue($momPhone,'Number')) _handleError($momPhone,'母親聯絡電話號碼');
+            }        
+        }
+        // 在臺資料（選填）轉換字串
+        if ($taiwanIdType.val() !== "") {
+            let rg = /^[A-z][1-2]\d{8}$/;                            // 身份證檢查式
+            let rg2 = /^[A-z]([A-D]|[a-d])\d{8}|[A-z][8-9]\d{8}$/    // 居留證檢查式
+            if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val())) 
+            || ($taiwanIdType.val() === "居留證" && !rg2.test($taiwanIdNo.val()))) _handleError($taiwanIdNo,'在臺證件號碼');
+        }
+        _checkValue($proposeGroup,'General');
+        _checkValue($taiwanPassport,'General');
+        _checkValue($taiwanPhone,'Number');
+        _checkValue($taiwanAddress,'General');
+        // 在臺聯絡人（選填）轉換字串
+        _checkValue($twContactName,'Chinese');
+        _checkValue($twContactRelation,'General');
+        _checkValue($twContactPhone,'Number');
+        _checkValue($twContactAddress,'General');
+        _checkValue($twContactWorkplaceName,'General');
+        _checkValue($twContactWorkplacePhone,'Number');
 
-        if (_correct) {
-            return sendData;
-        } else {
+        if(_errormsg.length > 0) {
             return false;
+        } else {
+            return sendData = {
+                name: $name.val(),
+                eng_name: $engName.val(),
+                gender: $(".gender:checked").val(),
+                birthday: $birthday.val(),
+                birth_location: $birthLocation.val(),
+                special: $(".special:checked").val(),
+                disability_category: disabilityCategory,
+                disability_level: ($(".special:checked").val() === "1")? $disabilityLevel.val() : "",
+                propose_group: $proposeGroup.val(),
+                resident_location: $residentLocation.val(),
+                resident_id: $residentId.val(),
+                resident_passport_no: ($residentPassportNo.val() === null)? "" : $residentPassportNo.val(),
+                phone: $residentPhoneCode.val() + '-' + $residentPhone.val(),
+                cellphone: $residentCellphoneCode.val() + '-' + $residentCellphone.val(),
+                resident_address: $residentAddress.val(),
+                taiwan_id_type: ($taiwanIdType === null)? "" : $taiwanIdType.val(),
+                taiwan_id: ($taiwanIdNo === null)? "" : $taiwanIdNo.val(),
+                taiwan_passport: ($taiwanPassport === null)? "" : $taiwanPassport.val(),
+                taiwan_phone: ($taiwanPhone === null)? "" : $taiwanPhone.val(),
+                taiwan_address: ($taiwanAddress === null)? "" : $taiwanAddress.val(),
+                education_system_description: $educationSystemDescription.val(),
+                school_locate: $schoolLocation.val(),
+                school_name: (_hasSchoolName)? $schoolNameSelect.val() : $schoolNameText.val(),
+                school_admission_at: $schoolAdmissionAt.val(),
+                school_graduate_at: $schoolGraduateAt.val(),
+                dad_status: _currentDadStatus,
+                dad_name: (_currentDadStatus === "undefined") ?"" :$dadName.val(),
+                dad_eng_name: (_currentDadStatus === "undefined")? "" : $dadEngName.val(),
+                dad_birthday: (_currentDadStatus === "undefined")? "" : $dadBirthday.val(),
+                dad_job: (_currentDadStatus === "alive")? $dadJob.val() : "",
+                dad_phone: (_currentDadStatus === "alive")? $dadPhoneCode.val() + "-" + $dadPhone.val() : "",
+                mom_status: _currentMomStatus,
+                mom_name: (_currentMomStatus !== "undefinded")? $momName.val() : "",
+                mom_eng_name: (_currentMomStatus !== "undefined")? $momEngName.val() : "",
+                mom_birthday: (_currentMomStatus !== "undefined")? $momBirthday.val() : "",
+                mom_job: (_currentMomStatus === "alive")? $momJob.val() : "",
+                mom_phone: (_currentMomStatus === "alive")? $momPhoneCode.val() + "-" + $momPhone.val() : "",
+                tw_contact_name: ($twContactName === null)? "" : $twContactName.val(),
+                tw_contact_relation: ($twContactRelation === null)? "" : $twContactRelation.val(),
+                tw_contact_phone: ($twContactPhone === null)? "" : $twContactPhone.val(),
+                tw_contact_address: ($twContactAddress === null)? "" : $twContactAddress.val(),
+                tw_contact_workplace_name: ($twContactWorkplaceName === null)? "" : $twContactWorkplaceName.val(),
+                tw_contact_workplace_phone: ($twContactWorkplacePhone === null)? "" : $twContactWorkplacePhone.val(),
+            };
+        }
+    }
+
+
+
+    function _handleErrMsg(msg) {
+        switch (msg) {
+            case '姓名(中)':
+                $name.addClass('invalidInput');
+                break;
+            case '姓名(英)':
+                $engName.addClass('invalidInput');
+                break;
+            case '性別':
+                $gender.addClass('invalidRadio');
+                break;
+            case '生日':
+                $birthday.addClass('invalidInput');
+                break;
+            case '出生地':
+                $birthLocation.addClass('invalidInput');
+                break;
+            case '身心障礙選項':
+                $special.addClass('invalidRadio');
+                break;
+            case '身心障礙類別':
+                $disabilityCategory.addClass('invalidInput');
+                $otherDisabilityCategory.addClass('invalidInput');
+                break;
+            case '身心障礙程度':
+                $disabilityLevel.addClass('invalidInput');
+                break;
+            case '僑區地國別':
+                $residentLocation.addClass('invalidInput');
+                break;
+            case '僑居地身份證號碼':
+                $residentId.addClass('invalidInput');
+                break;
+            case '僑居地護照號碼':
+                $residentPassportNo.addClass('invalidInput');
+                break;
+            case '電話':
+                $residentPhone.addClass('invalidInput');
+                $residentPhoneCode.addClass('invalidInput');
+                break;
+            case '僑居地手機號碼':
+                $residentCellphoneCode.addClass('invalidInput');
+                $residentCellphone.addClass('invalidInput');
+                break;
+            case '僑居地地址':
+                $residentAddress.addClass('invalidInput');
+                break;
+            case '在臺證件類型':
+                $taiwanIdType.addClass('invalidInput');
+                break;
+            case '在臺證件號碼':
+                $taiwanIdNo.addClass('invalidInput');
+                break;
+            case '在臺護照':
+                $taiwanPassport.addClass('invalidInput');
+                break;
+            case '在臺聯絡電話':
+                $taiwanPhone.addClass('invalidInput');
+                break;
+            case '在臺地址':
+                $taiwanAddress.addClass('invalidInput');
+                break;
+            case '學制描述':
+                $educationSystemDescription.addClass('invalidInput');
+                break;
+            case '學校所在地':
+                $schoolLocation.addClass('invalidInput');
+                break;
+            case '學校名稱':
+                $schoolNameText.addClass('invalidInput');
+                break;
+            case '入學時間':
+                $schoolAdmissionAt.addClass('invalidInput');
+                break;
+            case '畢業時間':
+                $schoolGraduateAt.addClass('invalidInput');
+                break;
+            case '父親存歿':
+                $dadStatus.addClass('invalidRadio');
+                break;
+            case '父親姓名(中)':
+                $dadName.addClass('invalidInput');
+                break;
+            case '父親姓名(英)':
+                $dadEngName.addClass('invalidInput');
+                break;
+            case '父親生日':
+                $dadBirthday.addClass('invalidInput');
+                break;
+            case '父親職業':
+                $dadJob.addClass('invalidInput');
+                break;
+            case '父親聯絡電話':
+                $dadPhoneCode.addClass('invalidInput');
+                $dadPhone.addClass('invalidInput');
+                break;
+            case '母親存歿':
+                $momStatus.addClass('invalidRadio');
+                break;
+            case '母親姓名(中)':
+                $momName.addClass('invalidInput');
+                break;
+            case '母親姓名(英)':
+                $momEngName.addClass('invalidInput');
+                break;
+            case '母親生日':
+                $momBirthday.addClass('invalidInput');
+                break;
+            case '母親職業':
+                $momJob.addClass('invalidInput');
+                break;
+            case '母親聯絡方式':
+                $momPhoneCode.addClass('invalidInput');
+                $momPhone.addClass('invalidInput');
+                break;
+            case '監護人姓名(中)':
+                $guardianName.addClass('invalidInput');
+                break;
+            case '監護人姓名(英)':
+                $guardianEngName.addClass('invalidInput');
+                break;
+            case '監護人生日':
+                $guardianBirthday.addClass('invalidInput');
+                break;
+            case '監護人職業':
+                $guardianJob.addClass('invalidInput');
+                break;
+            case '監護人聯絡方式':
+                $guardianPhoneCode.addClass('invalidInput');
+                $guardianPhone.addClass('invalidInput');
+                break;
+            case '在臺聯絡人姓名':
+                $twContactName.addClass('invalidInput');
+                break;
+            case '在臺聯絡人關係':
+                $twContactRelation.addClass('invalidInput');
+                break;
+            case '在臺聯絡人聯絡電話':
+                $twContactPhone.addClass('invalidInput');
+                break;
+            case '在臺聯絡人地址':
+                $twContactAddress.addClass('invalidInput');
+                break;
+            case '在臺聯絡人服務機關名稱':
+                $twContactWorkplaceName.addClass('invalidInput');
+                break;
+            case '在臺聯絡人服務機關電話':
+                $twContactWorkplacePhone.addClass('invalidInput');
+                break;
         }
     }
 
