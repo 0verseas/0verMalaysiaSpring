@@ -221,14 +221,15 @@
         const fileName = $deleteFileBtn.attr('filename');
 		const type = $deleteFileBtn.attr('type');
         swal({
-            title: '確要定刪除已上傳的檔案？',
+            title: '確定要刪除已上傳的檔案？',
             type: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#5cb85c',
 			cancelButtonColor: '#d33',
 			confirmButtonText: '確定',
 			cancelButtonText: '取消',
-			buttonsStyling: true
+			buttonsStyling: true,
+			reverseButtons: true
         }).then(()=>{
             _deleteFile(type, fileName);
         }).catch(()=>{
