@@ -4,14 +4,13 @@
      *	private variable
      */
 
-    let _specailStatus = 0;
+    let _specialStatus = 0;
     let _disabilityCategory = '視覺障礙';
     let _currentDadStatus = 'alive';
     let _currentMomStatus = 'alive';
     let _countryList = [];;
 
     let _hasSchoolName = true; // 有無學校所在地列表，true 則採用 $schoolNameSelect，否則採用 $schoolNameText
-    let _schoolCountryId = "128";
     let _currentSchoolLocate = "";
     let _currentSchoolName = "";
     let _schoolList = [];
@@ -32,7 +31,7 @@
     const $birthday = $('#birthday'); // 生日
     const $birthContinent = $('#birthContinent'); // 出生地（州）
     const $birthLocation = $('#birthLocation'); // 出生地（國）
-    const $specail = $personalInfoForm.find('.specail'); // 是否為「身心障礙」或「特殊照護」或「特殊教育」者
+    const $special = $personalInfoForm.find('.special'); // 是否為「身心障礙」或「特殊照護」或「特殊教育」者
     const $specialForm = $('#specialForm'); // 身心障礙表單
     const $disabilityCategory = $('#disabilityCategory'); // 障礙類別
     const $disabilityLevel = $('#disabilityLevel'); // 障礙等級
@@ -60,7 +59,6 @@
     const $taiwanAddress = $('#taiwanAddress'); // 臺灣地址
 
     // 學歷
-    const $educationSystemDescriptionDiv = $('#div-educationSystemDescription');
     const $educationSystemDescription = $('#educationSystemDescription'); // 學制描述
 
     const $schoolLocationForm = $('#schoolLocationForm'); // 學校所在地、學校名稱 (select) 表單
@@ -115,7 +113,7 @@
      */
 
     $birthContinent.on('change', _reRenderCountry);
-    $specail.on('change', _changeSpecail);
+    $special.on('change', _changeSpecial);
     $disabilityCategory.on('change', _switchDisabilityCategory);
     $residenceContinent.on('change', _reRenderResidenceCountry);
     $schoolLocation.on('change', _chSchoolLocation);
@@ -223,8 +221,8 @@
                 $birthLocation.val(formData.birth_location);
 
                 // 是否為「身心障礙」或「特殊照護」或「特殊教育」者
-                _specailStatus = formData.special;
-                if (_specailStatus) {
+                _specialStatus = formData.special;
+                if (_specialStatus) {
                     $("input[name=special][value='1']").prop("checked", true).change();
                     if (_disabilityCategoryList.indexOf(formData.disability_category) > -1) {
                         $disabilityCategory.val(formData.disability_category).change();
@@ -300,7 +298,7 @@
                 // init selectpicker
                 $birthLocation.selectpicker('refresh');
                 $residentLocation.selectpicker('refresh');
-                _showSpecailForm();
+                _showSpecialForm();
                 _handleOtherDisabilityCategoryForm();
                 _switchDadDataForm();
                 _switchMomDataForm();
@@ -406,13 +404,13 @@
         }
     }
 
-    function _changeSpecail() {
-        _specailStatus = Number($(this).val());
-        _showSpecailForm();
+    function _changeSpecial() {
+        _specialStatus = Number($(this).val());
+        _showSpecialForm();
     }
 
-    function _showSpecailForm() {
-        if (_specailStatus === 1) {
+    function _showSpecialForm() {
+        if (_specialStatus === 1) {
             $specialForm.fadeIn();
         } else {
             $specialForm.hide();
@@ -611,7 +609,7 @@
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
-                        console.error(data);
+                        // console.error(data);
                         let errMsg = data.messages[0].split(" ");
                         _handleErrMsg(errMsg[1]);
                         swal({title: `ERROR`, html: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
@@ -637,17 +635,10 @@
         *   00c0~33FF：包含大部分國家的文字
         */
         let str = col.val();
-        // 檢查至否為空，否則replace會報錯
-        if(!str) return true;
+        if(!str) return true;  // replace(null)會報錯
         switch (type) {
             case 'Chinese':
-                const regexp = /\p{sc=Han}|[\u2027\u00b7]/gu;
-                str = str.match(regexp);
-                if(str == null){
-                    str = '';
-                } else {
-                    str = str.join("");
-                }
+                str = (str.match(/\p{sc=Han}|[\u2027\u00b7]/gu) == null)? '' : str.match(/\p{sc=Han}|[\u2027\u00b7]/gu).join("");
                 break;
             case 'English':
                 str = str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
@@ -817,8 +808,6 @@
             };
         }
     }
-
-
 
     function _handleErrMsg(msg) {
         switch (msg) {
