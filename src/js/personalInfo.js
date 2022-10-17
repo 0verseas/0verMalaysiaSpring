@@ -671,17 +671,11 @@
         if (msg === '僑居地國別') $('.residentLocation').addClass('invalidInput');
     }
 
+    // 送出前檢查
     async function _validataForm() {
-
-        /**
-         *	先檢查各項必填欄位，若選取其他則須填寫相關敘述
-         *  若有選擇在臺證件類型，則須填入證件號碼並檢查
-         */
-
-        let sendData = {}; // 打包送給後端的資料
         _errormsg = [];
         const disabilityLevel = ['極重度','重度','中度','輕度'] // 身心障礙程度
-        let disabilityCategory = ""
+        let disabilityCategory = "" // 給後端的身心障礙類別
         // 申請人
         if(_checkValue($name,'Chinese')) _handleError($name,'姓名（中）');
         if(_checkValue($engName,'English')) _handleError($engName,'姓名（英）');
@@ -702,6 +696,7 @@
             }
             if(!disabilityLevel.includes($disabilityLevel.val())) _errormsg.push('身心障礙程度錯誤');
         }
+        _checkValue($proposeGroup,'General');
         // 僑居地
         if(!$residentLocation.val()) _handleError($residentLocation,'僑居地國別');
         if(_checkValue($residentId,'IdNumber')) _handleError($residentId,'僑居地身分證號碼');
@@ -748,7 +743,6 @@
             if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val())) 
             || ($taiwanIdType.val() === "居留證" && !rg2.test($taiwanIdNo.val()))) _handleError($taiwanIdNo,'在臺證件號碼');
         }
-        _checkValue($proposeGroup,'General');
         _checkValue($taiwanPassport,'General');
         _checkValue($taiwanPhone,'Number');
         _checkValue($taiwanAddress,'General');
@@ -763,7 +757,7 @@
         if(_errormsg.length > 0) {
             return false;
         } else {
-            return sendData = {
+            return {
                 name: $name.val(),
                 eng_name: $engName.val(),
                 gender: $(".gender:checked").val(),
@@ -811,6 +805,7 @@
         }
     }
 
+    // 後端回傳錯誤時，對應欄位顯示紅框
     function _handleErrMsg(msg) {
         switch (msg) {
             case '姓名(中)':
@@ -826,7 +821,7 @@
                 $birthday.addClass('invalidInput');
                 break;
             case '出生地':
-                $birthLocation.addClass('invalidInput');
+                $('.birthLocation').addClass('invalidInput');
                 break;
             case '身心障礙選項':
                 $special.addClass('invalidRadio');
@@ -839,7 +834,7 @@
                 $disabilityLevel.addClass('invalidInput');
                 break;
             case '僑區地國別':
-                $residentLocation.addClass('invalidInput');
+                $('.residentLocation').addClass('invalidInput');
                 break;
             case '僑居地身份證號碼':
                 $residentId.addClass('invalidInput');
@@ -925,22 +920,6 @@
             case '母親聯絡方式':
                 $momPhoneCode.addClass('invalidInput');
                 $momPhone.addClass('invalidInput');
-                break;
-            case '監護人姓名(中)':
-                $guardianName.addClass('invalidInput');
-                break;
-            case '監護人姓名(英)':
-                $guardianEngName.addClass('invalidInput');
-                break;
-            case '監護人生日':
-                $guardianBirthday.addClass('invalidInput');
-                break;
-            case '監護人職業':
-                $guardianJob.addClass('invalidInput');
-                break;
-            case '監護人聯絡方式':
-                $guardianPhoneCode.addClass('invalidInput');
-                $guardianPhone.addClass('invalidInput');
                 break;
             case '在臺聯絡人姓名':
                 $twContactName.addClass('invalidInput');
