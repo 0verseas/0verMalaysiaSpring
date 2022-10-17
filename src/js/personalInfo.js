@@ -615,9 +615,11 @@
                         swal({title: `ERROR`, html: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
                     });
                     loading.complete();
+                    scroll(0,0);
                 })
         } else {
-            swal({title: `填寫資料錯誤`, html: `請檢查以下欄位：<br/>`+_errormsg.join('、'), type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+            await swal({title: `填寫資料錯誤`, html: `請檢查以下欄位：<br/>`+_errormsg.join('、'), type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+            scroll(0,0);
         }
     }
 
@@ -665,8 +667,8 @@
     function _handleError(col, msg) {
         _errormsg.push(msg);
         col.addClass('invalidInput');
-        if (msg === '出生地' && $birthContinent.val() === '-1') $birthContinent.addClass('invalidInput');
-        if (msg === '僑居地國別' && $residenceContinent.val() == '-1') $residenceContinent.addClass('invalidInput');  // 未成功顯示紅框，待修改
+        if (msg === '出生地') $('.birthContinent').addClass('invalidInput');
+        if (msg === '僑居地國別') $('.residentLocation').addClass('invalidInput');
     }
 
     async function _validataForm() {

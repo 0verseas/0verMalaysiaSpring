@@ -1,5 +1,6 @@
 .invalidInput {
 	border-color: #d9534f !important;
+	border: 1px solid;
 }
 
 .btn-white {
