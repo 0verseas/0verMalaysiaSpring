@@ -718,8 +718,8 @@
             if(_checkValue($dadName,'Chinese')) _handleError($dadName,'父親姓名（中）');
             if(_checkValue($dadEngName,'English')) _handleError($dadEngName,'父親姓名（英）');
             if(_checkValue($dadBirthday,'Date')) _handleError($dadBirthday,'父親生日');
+            if(_checkValue($dadJob,'General')) _handleError($dadJob,'父親職業');
             if(_currentDadStatus === "alive") {
-                if(_checkValue($dadJob,'General')) _handleError($dadJob,'父親職業');
                 if(_checkValue($dadPhoneCode,'Number')) _handleError($dadPhoneCode,'父親聯絡電話國碼');
                 if(_checkValue($dadPhone,'Number')) _handleError($dadPhone,'父親聯絡電話號碼');
             }
@@ -730,8 +730,8 @@
             if(_checkValue($momName,'Chinese')) _handleError($momName,'母親姓名（中）');
             if(_checkValue($momEngName,'English')) _handleError($momEngName,'母親姓名（英）');
             if(_checkValue($momBirthday,'Date')) _handleError($momBirthday,'母親生日');
+            if(_checkValue($momJob,'General')) _handleError($momJob,'母親職業');
             if(_currentMomStatus === "alive") {
-                if(_checkValue($momJob,'General')) _handleError($momJob,'母親職業');
                 if(_checkValue($momPhoneCode,'Number')) _handleError($momPhoneCode,'母親聯絡電話國碼');
                 if(_checkValue($momPhone,'Number')) _handleError($momPhone,'母親聯絡電話號碼');
             }        
