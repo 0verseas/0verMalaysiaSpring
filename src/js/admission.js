@@ -12,8 +12,8 @@
 	const _nupsList = ["1FFFF", "2FFFF", "3FFFF"];
 
 	// 序號調整志願序之參數
-	let _prevWishIndex = -1;
-	let _currentWishIndex = -1;
+	// let _prevWishIndex = -1;
+	// let _currentWishIndex = -1;
 
 	/**
 	*	cache DOM
@@ -30,7 +30,6 @@
 	const $wishList = $('#wish-list'); // 已填選志願
 	const wishList = document.getElementById('wish-list'); // 已填選志願，渲染用
 	const $saveBtn = $('#btn-save');
-	const $secondConfirm = $('#secondConfirm');
 
 	/**
 	*	init
@@ -159,47 +158,47 @@
 		_generateWishList();
 	}
 
-	function _savePrevWishIndex() { // 暫存志願序號
-		_prevWishIndex = $(this).val() - 1;
-	}
+	// function _savePrevWishIndex() { // 暫存志願序號
+	// 	_prevWishIndex = $(this).val() - 1;
+	// }
 
-	function _chWishIndex() { // 修改志願序號
-		let currentNum = $(this).val();
+	// function _chWishIndex() { // 修改志願序號
+	// 	let currentNum = $(this).val();
 
-		if (currentNum > _wishList.length) {
-			currentNum = _wishList.length;
-		} else if (currentNum < 1 ) {
-			currentNum = 1;
-		}
-		_currentWishIndex = currentNum - 1;
+	// 	if (currentNum > _wishList.length) {
+	// 		currentNum = _wishList.length;
+	// 	} else if (currentNum < 1 ) {
+	// 		currentNum = 1;
+	// 	}
+	// 	_currentWishIndex = currentNum - 1;
 
-		const element = _wishList[_prevWishIndex];
-		_wishList.splice(_prevWishIndex, 1);
-		_wishList.splice(_currentWishIndex, 0, element);
-		_generateWishList();
-	}
+	// 	const element = _wishList[_prevWishIndex];
+	// 	_wishList.splice(_prevWishIndex, 1);
+	// 	_wishList.splice(_currentWishIndex, 0, element);
+	// 	_generateWishList();
+	// }
 
-	function _prevWish() { // 志願上調
-		const sortNum = $(this).data("sortnum");
-		const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
-		if (wishIndex > 0) {
-			const swap = _wishList[wishIndex];
-			_wishList[wishIndex] = _wishList[wishIndex - 1];
-			_wishList[wishIndex - 1] = swap;
-			_generateWishList();
-		}
-	}
+	// function _prevWish() { // 志願上調
+	// 	const sortNum = $(this).data("sortnum");
+	// 	const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
+	// 	if (wishIndex > 0) {
+	// 		const swap = _wishList[wishIndex];
+	// 		_wishList[wishIndex] = _wishList[wishIndex - 1];
+	// 		_wishList[wishIndex - 1] = swap;
+	// 		_generateWishList();
+	// 	}
+	// }
 
-	function _nextWish() { // 志願下調
-		const sortNum = $(this).data("sortnum");
-		const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
-		if (wishIndex < _wishList.length - 1) {
-			const swap = _wishList[wishIndex];
-			_wishList[wishIndex] = _wishList[wishIndex + 1];
-			_wishList[wishIndex + 1] = swap;
-			_generateWishList();
-		}
-	}
+	// function _nextWish() { // 志願下調
+	// 	const sortNum = $(this).data("sortnum");
+	// 	const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
+	// 	if (wishIndex < _wishList.length - 1) {
+	// 		const swap = _wishList[wishIndex];
+	// 		_wishList[wishIndex] = _wishList[wishIndex + 1];
+	// 		_wishList[wishIndex + 1] = swap;
+	// 		_generateWishList();
+	// 	}
+	// }
 
 	function _optionalWishTemplating(data) { // 分頁資料渲染（data.length === 0 時不會被呼叫）
 		let html = '';
@@ -236,9 +235,9 @@
 		const filter = $optionFilterInput.val().toUpperCase();
 
 		if (_wishList.length > 0) { // 有選志願
-			const _currentWishGroup = _wishList[0].group;
 			// 先篩類組
-			if (_currentWishGroup === "第一類組") {
+			// const _currentWishGroup = _wishList[0].group;
+			if (_wishList[0].group === "第一類組") {
 				_filterOptionalWish = _optionalWish.filter(function (obj) {
 					return obj["group"] === "第一類組";
 				});
@@ -290,7 +289,7 @@
 	function _generateWishList() { // 「渲染已填選志願」
 		let rowHtml = '';
 		const medicalList = ["醫學系", "牙醫學系", "中醫學系"];
-		let hasNUPS = false;
+		// let hasNUPS = false;
 		let invalidBadge = '';
 		
 		for(let i in _wishList) {
@@ -299,7 +298,7 @@
 			if (_wishList[i].specialDeptType !== null && medicalList.indexOf(_wishList[i].specialDeptType) > -1) {
 				medicalHTML = ' class="bg-medical"';
 			}
-			if (_nupsList.indexOf(_wishList[i].id) > -1) {badgeNUPS = '<span class="badge badge-info" title="請將此志願置於最後">僑先部</span>';}
+			if (_nupsList.indexOf(_wishList[i].id) > -1) {badgeNUPS = '<span class="badge badge-info">僑先部</span>';}
 			rowHtml = rowHtml + `
 			<tr${medicalHTML} data-wishIndex="${i}">
 			<td>
@@ -312,37 +311,44 @@
 			${badgeNUPS} ${invalidBadge}
 			</td>
 			<td class="text-right td-wish-num">
-			<div class="input-group">
-			<input type="text" class="form-control wish-num" value="${(Number(i) + 1)}">
-			<div class="input-group-btn">
-			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm up-arrow">
-			<i class="fa fa-chevron-up" aria-hidden="true"></i>
-			</button>
-			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm down-arrow">
-			<i class="fa fa-chevron-down" aria-hidden="true"></i>
-			</button>
-			</div>
-			</div>
+			<span class="form-control wish-num">1</span>
 			</td>
 			</tr>
 			`;
-			if (hasNUPS === false && _nupsList.indexOf(_wishList[i].id) > -1) {
-				invalidBadge =
-					'<span class="badge badge-warning" title="志願序在僑生先修部之後的志願將不會被分發">無效志願</span>' +
-					'&nbsp;<span class="badge badge-pill badge-danger" title="志願序在僑生先修部之後的志願將不會被分發！\n請將志願序調整至僑生先修部之前。" data-toggle="tooltip">?</span>';
-			}
+			
+			// **馬春班只需要選一個志願類組，用不到以下部份
+			// <td class="text-right td-wish-num">
+			// 	<div class="input-group">
+			// 		<input type="text" class="form-control wish-num" value="${(Number(i) + 1)}">
+			// 		<div class="input-group-btn">
+			// 			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm up-arrow">
+			// 				<i class="fa fa-chevron-up" aria-hidden="true"></i>
+			// 			</button>
+			// 			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm down-arrow">
+			// 				<i class="fa fa-chevron-down" aria-hidden="true"></i>
+			// 			</button>
+			// 		</div>
+			// 	</div>
+			// </td>
+			// </tr>
+			// `;
+			// if (hasNUPS === false && _nupsList.indexOf(_wishList[i].id) > -1) {
+			// 	invalidBadge =
+			// 		'<span class="badge badge-warning" title="志願序在僑生先修部之後的志願將不會被分發">無效志願</span>' +
+			// 		'&nbsp;<span class="badge badge-pill badge-danger" title="志願序在僑生先修部之後的志願將不會被分發！\n請將志願序調整至僑生先修部之前。" data-toggle="tooltip">?</span>';
+			// }
 		}
 		wishList.innerHTML = rowHtml;
 
 		const $removeWish = $wishList.find('.remove-wish');
-		const $wishNum = $wishList.find('.wish-num');
-		const $upArrow = $wishList.find('.up-arrow');
-		const $downArrow = $wishList.find('.down-arrow');
+		// const $wishNum = $wishList.find('.wish-num');
+		// const $upArrow = $wishList.find('.up-arrow');
+		// const $downArrow = $wishList.find('.down-arrow');
 		$removeWish.on("click", _removeWish);
-		$wishNum.on("focusin", _savePrevWishIndex);
-		$wishNum.on("change", _chWishIndex);
-		$upArrow.on("click", _prevWish);
-		$downArrow.on("click", _nextWish);
+		// $wishNum.on("focusin", _savePrevWishIndex);
+		// $wishNum.on("change", _chWishIndex);
+		// $upArrow.on("click", _prevWish);
+		// $downArrow.on("click", _nextWish);
 	}
 
 	function _handleSave() {
