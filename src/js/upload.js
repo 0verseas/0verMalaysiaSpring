@@ -58,7 +58,6 @@
 				}
 			}
 		} else {
-			const code = response.status;
 			const data = await response.json();
 			const message = data.messages[0];
 			await swal({

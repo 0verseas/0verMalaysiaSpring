@@ -75,7 +75,6 @@
 					school: value.school.title, // 校名
 					dept: value.title, // 中文系名
 					engDept: value.eng_title, // 英文系名
-					specialDeptType: value.special_dept_type, // 特殊系所
 					sortNum: index // 根據初始資料流水號，用於排序清單、抓取資料
 				};
 				_optionalWish.push(add);
@@ -158,72 +157,24 @@
 		_generateWishList();
 	}
 
-	// function _savePrevWishIndex() { // 暫存志願序號
-	// 	_prevWishIndex = $(this).val() - 1;
-	// }
-
-	// function _chWishIndex() { // 修改志願序號
-	// 	let currentNum = $(this).val();
-
-	// 	if (currentNum > _wishList.length) {
-	// 		currentNum = _wishList.length;
-	// 	} else if (currentNum < 1 ) {
-	// 		currentNum = 1;
-	// 	}
-	// 	_currentWishIndex = currentNum - 1;
-
-	// 	const element = _wishList[_prevWishIndex];
-	// 	_wishList.splice(_prevWishIndex, 1);
-	// 	_wishList.splice(_currentWishIndex, 0, element);
-	// 	_generateWishList();
-	// }
-
-	// function _prevWish() { // 志願上調
-	// 	const sortNum = $(this).data("sortnum");
-	// 	const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
-	// 	if (wishIndex > 0) {
-	// 		const swap = _wishList[wishIndex];
-	// 		_wishList[wishIndex] = _wishList[wishIndex - 1];
-	// 		_wishList[wishIndex - 1] = swap;
-	// 		_generateWishList();
-	// 	}
-	// }
-
-	// function _nextWish() { // 志願下調
-	// 	const sortNum = $(this).data("sortnum");
-	// 	const wishIndex = _wishList.findIndex(order => order.sortNum === sortNum);
-	// 	if (wishIndex < _wishList.length - 1) {
-	// 		const swap = _wishList[wishIndex];
-	// 		_wishList[wishIndex] = _wishList[wishIndex + 1];
-	// 		_wishList[wishIndex + 1] = swap;
-	// 		_generateWishList();
-	// 	}
-	// }
-
 	function _optionalWishTemplating(data) { // 分頁資料渲染（data.length === 0 時不會被呼叫）
 		let html = '';
-		const medicalList = ["醫學系", "牙醫學系", "中醫學系"];
 		$.each(data, function(index, item){
-			let medicalHTML = '';
 			let badgeNUPS = '';
-			if (item.specialDeptType !== null && medicalList.indexOf(item.specialDeptType) > -1) {
-				medicalHTML = ' class="bg-medical"';
-			}
 			if (_nupsList.indexOf(item.id) > -1) {badgeNUPS = '<span class="badge badge-info">僑先部</span>';}
 			html += `
-			<tr${medicalHTML}>
-			<td>
-			${item.cardCode} ｜ ${item.group} ｜ ${item.mainGroup} ｜ ${item.school}<br>
-			${item.dept} ${item.engDept}
-			<br />
-			${badgeNUPS}
-			</td>
-			<td class="text-right">
-			<button type="button" data-sortNum="${item.sortNum}" class="btn btn-info btn-sm add-wish">
-			<i class="fa fa-plus" aria-hidden="true"></i>
-			</button>
-			</td>
-			</tr>
+				<tr>
+					<td>
+						${item.cardCode} ｜ ${item.group} ｜ ${item.mainGroup} ｜ ${item.school}<br>
+						${item.dept} ${item.engDept}<br>
+						${badgeNUPS}
+					</td>
+					<td class="text-right">
+						<button type="button" data-sortNum="${item.sortNum}" class="btn btn-info btn-sm add-wish">
+						<i class="fa fa-plus" aria-hidden="true"></i>
+						</button>
+					</td>
+				</tr>
 			`;
 		});
 		return html;
@@ -236,7 +187,6 @@
 
 		if (_wishList.length > 0) { // 有選志願
 			// 先篩類組
-			// const _currentWishGroup = _wishList[0].group;
 			if (_wishList[0].group === "第一類組") {
 				_filterOptionalWish = _optionalWish.filter(function (obj) {
 					return obj["group"] === "第一類組";
@@ -288,67 +238,32 @@
 
 	function _generateWishList() { // 「渲染已填選志願」
 		let rowHtml = '';
-		const medicalList = ["醫學系", "牙醫學系", "中醫學系"];
-		// let hasNUPS = false;
 		let invalidBadge = '';
 		
 		for(let i in _wishList) {
-			let medicalHTML = '';
 			let badgeNUPS = '';
-			if (_wishList[i].specialDeptType !== null && medicalList.indexOf(_wishList[i].specialDeptType) > -1) {
-				medicalHTML = ' class="bg-medical"';
-			}
 			if (_nupsList.indexOf(_wishList[i].id) > -1) {badgeNUPS = '<span class="badge badge-info">僑先部</span>';}
 			rowHtml = rowHtml + `
-			<tr${medicalHTML} data-wishIndex="${i}">
-			<td>
-			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-danger btn-sm remove-wish"><i class="fa fa-times" aria-hidden="true"></i></button>
-			</td>
-			<td>
-			${_wishList[i].cardCode} ｜ ${_wishList[i].group} ｜ ${_wishList[i].mainGroup} | ${_wishList[i].school}<br>
-			${_wishList[i].dept} ${_wishList[i].engDept}
-			<br />
-			${badgeNUPS} ${invalidBadge}
-			</td>
-			<td class="text-right td-wish-num">
-			<span class="form-control wish-num">1</span>
-			</td>
-			</tr>
+				<tr data-wishIndex="${i}">
+					<td>
+						<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-danger btn-sm remove-wish"><i class="fa fa-times" aria-hidden="true"></i></button>
+					</td>
+					<td>
+						${_wishList[i].cardCode} ｜ ${_wishList[i].group} ｜ ${_wishList[i].mainGroup} | ${_wishList[i].school}<br>
+						${_wishList[i].dept} ${_wishList[i].engDept}
+						<br />
+						${badgeNUPS} ${invalidBadge}
+					</td>
+					<td class="text-right td-wish-num">
+						<span class="form-control wish-num">1</span>
+					</td>
+				</tr>
 			`;
-			
-			// **馬春班只需要選一個志願類組，用不到以下部份
-			// <td class="text-right td-wish-num">
-			// 	<div class="input-group">
-			// 		<input type="text" class="form-control wish-num" value="${(Number(i) + 1)}">
-			// 		<div class="input-group-btn">
-			// 			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm up-arrow">
-			// 				<i class="fa fa-chevron-up" aria-hidden="true"></i>
-			// 			</button>
-			// 			<button type="button" data-sortNum="${_wishList[i].sortNum}" class="btn btn-secondary btn-sm down-arrow">
-			// 				<i class="fa fa-chevron-down" aria-hidden="true"></i>
-			// 			</button>
-			// 		</div>
-			// 	</div>
-			// </td>
-			// </tr>
-			// `;
-			// if (hasNUPS === false && _nupsList.indexOf(_wishList[i].id) > -1) {
-			// 	invalidBadge =
-			// 		'<span class="badge badge-warning" title="志願序在僑生先修部之後的志願將不會被分發">無效志願</span>' +
-			// 		'&nbsp;<span class="badge badge-pill badge-danger" title="志願序在僑生先修部之後的志願將不會被分發！\n請將志願序調整至僑生先修部之前。" data-toggle="tooltip">?</span>';
-			// }
 		}
 		wishList.innerHTML = rowHtml;
 
 		const $removeWish = $wishList.find('.remove-wish');
-		// const $wishNum = $wishList.find('.wish-num');
-		// const $upArrow = $wishList.find('.up-arrow');
-		// const $downArrow = $wishList.find('.down-arrow');
 		$removeWish.on("click", _removeWish);
-		// $wishNum.on("focusin", _savePrevWishIndex);
-		// $wishNum.on("change", _chWishIndex);
-		// $upArrow.on("click", _prevWish);
-		// $downArrow.on("click", _nextWish);
 	}
 
 	function _handleSave() {
@@ -360,7 +275,6 @@
 			const data = {
 				order
 			}
-			console.log(data);
 			loading.start();
 			student.setPlacementSelectionOrder(data)
 			.then((res) => {
@@ -379,7 +293,7 @@
 			})
 			.catch((err) => {
 				err.json && err.json().then((data) => {
-					console.error(data);
+					// console.error(data);
 					swal({title:`ERROR`, text: data.messages[0], type: `error`, confirmButtonText: '確定', allowOutsideClick: false});
 				})
 				loading.complete();
