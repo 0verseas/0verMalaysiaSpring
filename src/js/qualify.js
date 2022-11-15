@@ -5,25 +5,45 @@
 	let _countryList = [];
 	let _citizenshipList = [];
 
+	/**
+	*	cache DOM
+	*/
+	const $signUpForm = $('#form-signUp');
+	const $saveBtn = $signUpForm.find('.btn-save');
 
-	const smoothScroll = (number = 0, time) => {
-		if (!time) {
-			document.body.scrollTop = document.documentElement.scrollTop = number;
-			return number;
-		}
-		const spacingTime = 20; // 動畫循環間隔
-		let spacingInex = time / spacingTime; // 計算動畫次數
-		let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 擷取當前scrollbar位置
-		let everTop = (number - nowTop) / spacingInex; // 計算每次動畫的滑動距離
-		let scrollTimer = setInterval(() => {
-			if (spacingInex > 0) {
-				spacingInex--;	
-				smoothScroll(nowTop += everTop); //在動畫次數結束前要繼續滑動
-			} else {
-				clearInterval(scrollTimer); // 結束計時器
-			}
-		}, spacingTime);
-	};
+	// 海外僑生
+	const $isDistribution = $signUpForm.find('.isDistribution');
+	const $distributionMoreQuestion = $signUpForm.find('.distributionMoreQuestion');
+	const $stayLimitRadio = $signUpForm.find('.radio-stayLimit');
+	const $hasBeenTaiwanRadio = $signUpForm.find('.radio-hasBeenTaiwan');
+	const $whyHasBeenTaiwanRadio = $signUpForm.find('.radio-whyHasBeenTaiwan');
+	const $ethnicChineseRadio = $signUpForm.find('.radio-ethnicChinese');
+	const $citizenshipContinentSelect = $signUpForm.find('.select-citizenshipContinent');
+	const $citizenshipSelect = $signUpForm.find('.select-citizenshipCountry');
+	const $citizenshipList = $('#citizenshipList');
+	const citizenshipList = document.getElementById('citizenshipList');
+
+	$signUpForm.find('.question.kangAo').removeClass('hide');
+
+	/**
+	*	bind event
+	*/
+	// $identityRadio.on('change', _handleChangeIdentity);
+	$saveBtn.on('click', _handleSave);
+
+	// 海外僑生
+	$isDistribution.on('change', _switchShowDistribution);
+	$distributionMoreQuestion.on('change', _checkDistributionValidation);
+	$stayLimitRadio.on('change', _checkStayLimitValidation);
+	$hasBeenTaiwanRadio.on('change', _checkHasBeenTaiwanValidation);
+	$whyHasBeenTaiwanRadio.on('change', _checkWhyHasBeenTaiwanValidation);
+	$ethnicChineseRadio.on('change',_checkEthnicChineseValidation);
+	$citizenshipContinentSelect.on('change', _setCitizenshipCountryOption);
+	$citizenshipSelect.on('change', _addCitizenship);
+
+	/**
+	*	event handler
+	*/
 
 	/**
 	* init
@@ -73,48 +93,24 @@
 		smoothScroll(document.body.scrollHeight/2.2,800);  // 用整體長度去做計算  滑動到需要填寫欄位位置
 	}
 
-	/**
-	*	cache DOM
-	*/
-	const $signUpForm = $('#form-signUp');
-	const $saveBtn = $signUpForm.find('.btn-save');
-
-	// 海外僑生
-	const $isDistribution = $signUpForm.find('.isDistribution');
-	const $distributionMoreQuestion = $signUpForm.find('.distributionMoreQuestion');
-	const $stayLimitRadio = $signUpForm.find('.radio-stayLimit');
-	const $hasBeenTaiwanRadio = $signUpForm.find('.radio-hasBeenTaiwan');
-	const $whyHasBeenTaiwanRadio = $signUpForm.find('.radio-whyHasBeenTaiwan');
-	const $ethnicChineseRadio = $signUpForm.find('.radio-ethnicChinese');
-	const $citizenshipContinentSelect = $signUpForm.find('.select-citizenshipContinent');
-	const $citizenshipSelect = $signUpForm.find('.select-citizenshipCountry');
-	const $citizenshipList = $('#citizenshipList');
-	const citizenshipList = document.getElementById('citizenshipList');
-
-	/**
-	*	init
-	*/
-	$signUpForm.find('.question.kangAo').removeClass('hide');
-
-	/**
-	*	bind event
-	*/
-	// $identityRadio.on('change', _handleChangeIdentity);
-	$saveBtn.on('click', _handleSave);
-
-	// 海外僑生
-	$isDistribution.on('change', _switchShowDistribution);
-	$distributionMoreQuestion.on('change', _checkDistributionValidation);
-	$stayLimitRadio.on('change', _checkStayLimitValidation);
-	$hasBeenTaiwanRadio.on('change', _checkHasBeenTaiwanValidation);
-	$whyHasBeenTaiwanRadio.on('change', _checkWhyHasBeenTaiwanValidation);
-	$ethnicChineseRadio.on('change',_checkEthnicChineseValidation);
-	$citizenshipContinentSelect.on('change', _setCitizenshipCountryOption);
-	$citizenshipSelect.on('change', _addCitizenship);
-
-	/**
-	*	event handler
-	*/
+	const smoothScroll = (number = 0, time) => {
+		if (!time) {
+			document.body.scrollTop = document.documentElement.scrollTop = number;
+			return number;
+		}
+		const spacingTime = 20; // 動畫循環間隔
+		let spacingInex = time / spacingTime; // 計算動畫次數
+		let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 擷取當前scrollbar位置
+		let everTop = (number - nowTop) / spacingInex; // 計算每次動畫的滑動距離
+		let scrollTimer = setInterval(() => {
+			if (spacingInex > 0) {
+				spacingInex--;	
+				smoothScroll(nowTop += everTop); //在動畫次數結束前要繼續滑動
+			} else {
+				clearInterval(scrollTimer); // 結束計時器
+			}
+		}, spacingTime);
+	};
 
 	// 儲存
 	function _handleSave() {
@@ -342,26 +338,26 @@
 
 	function _setData(data) {
 		
-			// 海外僑生
-			// 曾分發來臺
-			!!data.has_come_to_taiwan &&
-			$signUpForm.find('.isDistribution[value=1]').trigger('click') &&
-			$signUpForm.find('.input-distributionTime').val(data.come_to_taiwan_at).trigger('change') &&
-			$signUpForm.find(`.distributionMoreQuestion[value=${data.reason_of_come_to_taiwan}]`).trigger('click');
+		// 海外僑生
+		// 曾分發來臺
+		!!data.has_come_to_taiwan &&
+		$signUpForm.find('.isDistribution[value=1]').prop('checked',true).trigger('change') &&
+		$signUpForm.find('.input-distributionTime').val(data.come_to_taiwan_at).trigger('change') &&
+		$signUpForm.find(`.distributionMoreQuestion[value=${data.reason_of_come_to_taiwan}]`).prop('checked',true).trigger('change');
 
-			// 是否華裔學生
-			$signUpForm.find('.radio-ethnicChinese[value=1]').trigger('click');
+		// 是否華裔學生
+		$signUpForm.find('.radio-ethnicChinese[value=1]').prop('checked',true).trigger('change');
 
-			// 海外居留年限
-			$signUpForm.find(`.radio-stayLimit[value=${data.overseas_residence_time}]`).trigger('click');
+		// 海外居留年限
+		$signUpForm.find(`.radio-stayLimit[value=${data.overseas_residence_time}]`).prop('checked',true).trigger('change');
 
-			// 在臺停留日期
-			!!data.stay_over_120_days_in_taiwan &&
-			$signUpForm.find('.radio-hasBeenTaiwan[value=1]').trigger('click') &&
-			$signUpForm.find(`.radio-whyHasBeenTaiwan[value=${data.reason_selection_of_stay_over_120_days_in_taiwan}]`).trigger('click');
+		// 在臺停留日期
+		!!data.stay_over_120_days_in_taiwan &&
+		$signUpForm.find('.radio-hasBeenTaiwan[value=1]').prop('checked',true).trigger('change') &&
+		$signUpForm.find(`.radio-whyHasBeenTaiwan[value=${data.reason_selection_of_stay_over_120_days_in_taiwan}]`).prop('checked',true).trigger('change');
 
-			// 國籍
-			_initCitizenshipList(data.citizenship);
+		// 國籍
+		_initCitizenshipList(data.citizenship);
 	}
 	_init();
 })();
