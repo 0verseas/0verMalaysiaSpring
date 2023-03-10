@@ -335,7 +335,6 @@
     }
 
     function _findContinent(locationId) { // 找到州別
-        let continent = '';
         for (let i = 0; i < _countryList.length; i++) {
             let countryObj = _countryList[i].country.filter((obj) => {
                 return obj.id === locationId;
@@ -360,7 +359,7 @@
         let countryHTML = '';
         if (continent !== -1) {
             $birthLocation.selectpicker({title: '請選擇國家'}); // 修改 未選擇選項時的顯示文字
-            _countryList[continent]['country'].forEach((obj, index) => {
+            _countryList[continent]['country'].forEach((obj) => {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
             $birthLocation.attr('disabled',false); // enable selector
@@ -380,7 +379,7 @@
 
         if (continent !== -1) {
             $residentLocation.selectpicker({title: '請選擇國家'}); // 修改 未選擇選項時的顯示文字
-            _countryList[continent]['country'].forEach((obj, index) => {
+            _countryList[continent]['country'].forEach((obj) => {
                 countryHTML += `<option value="${obj.id}">${obj.country}</option>`;
             })
             $residentLocation.attr('disabled',false); // enable selector
@@ -423,11 +422,11 @@
     function _showTaiwanIdExample() {
         document.getElementById("taiwanIdExample1").style.display = "none"
         document.getElementById("taiwanIdExample2").style.display = "none"
-        if ($taiwanIdType.val() == '居留證') {
+        if ($taiwanIdType.val() === '居留證') {
             document.getElementById("taiwanIdExample1").style.display = "block";
             document.getElementById("taiwanIdExample2").style.display = "none";
         }
-        if ($taiwanIdType.val() == '身分證') {
+        if ($taiwanIdType.val() === '身分證') {
             document.getElementById("taiwanIdExample2").style.display = "block";
             document.getElementById("taiwanIdExample1").style.display = "none";
         }
@@ -443,7 +442,7 @@
                     }
                 })
                 .then((json) => {
-                    schoolList = json;
+                    let schoolList = json;
                     schoolList.push({
                         id: 999,
                         country_id: 128,
@@ -476,7 +475,7 @@
                     let schoolLocationHTML = '';
                     _schoolList = groups;
                     // 渲染學校所在地、隱藏學校名稱輸入
-                    _schoolList.forEach((value, index) => {
+                    _schoolList.forEach((value) => {
                         schoolLocationHTML += `<option value="${value.locate}">${value.locate}</option>`;
                     });
                     $schoolLocation.html(schoolLocationHTML);
@@ -516,6 +515,7 @@
             $schoolNameTextForm.hide();
             _hasSchoolName = true;
         }
+        return 0;
     }
 
     function _reRenderSchoolList() {
@@ -525,9 +525,9 @@
 
         let schoolListHTML = '';
         let selectSchoolName = '其它';
-        _schoolList[locateIndex].school.forEach((value, index) => {
+        _schoolList[locateIndex].school.forEach((value) => {
             schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
-            if(value.name == _currentSchoolName){selectSchoolName=value.name;}
+            if(value.name === _currentSchoolName){selectSchoolName=value.name;}
         });
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
@@ -537,6 +537,7 @@
                 $schoolNameSelect.val('其它');
             }
         }
+        return 0;
     }
 
     function _chDadStatus() {
@@ -597,8 +598,8 @@
     }
 
     async function _handleSave() {
-        let sendData = {};
-        if (sendData = await _validataForm()) {
+        let sendData = await _validataForm();
+        if (sendData) {
             loading.start();
             student.setStudentPersonalData(sendData)
                 .then((res) => {
@@ -608,7 +609,7 @@
                         throw res;
                     }
                 })
-                .then(async (json) => {
+                .then(async () => {
                     await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
                     window.location.reload();
                     loading.complete();
@@ -653,7 +654,7 @@
                 str = str.replace(/[\s]/g, "\u0020").replace(/[^\u0020a-zA-Z.,-]/g, "");
                 break;
             case 'General':
-                str = str.replace(/[\s]/g, "\u0020").replace(/[\<\>\"]/g, "");
+                str = str.replace(/[\s]/g, "\u0020").replace(/[<>"]/g, "");
                 break;
             case 'IdNumber':
                 str = str.replace(/[^0-9A-Za-z\u002d]/g, "");

@@ -19,12 +19,12 @@
 	*/
 
 	_init();
-	
+
 	/**
 	*	bind event
 	*/
 	$loginBtn.on('click', _handleLogin);
-	$pass.keyup((e) => { e.keyCode == 13 && _handleLogin(); }); //原本沒驗證碼 所以就密碼輸入欄位判斷是否有按enter的鍵盤事件
+	$pass.keyup((e) => { e.keyCode === 13 && _handleLogin(); }); //原本沒驗證碼 所以就密碼輸入欄位判斷是否有按enter的鍵盤事件
 
 	/**
 	*	event handlet

@@ -60,7 +60,7 @@
 				throw res;
 			}
 		})
-		.then((json) => {
+		.then(() => {
 			swal({title: `登出成功。`, type:"success", confirmButtonText: '確定', allowOutsideClick: false})
 				.then(()=>{
 					location.href = "./index.html";
@@ -87,7 +87,7 @@
 				throw res;
 			}
 		})
-		.then(async (data) => {
+		.then(async () => {
 			await swal({title: `已寄出驗證信，請至填寫信箱查看。`, type:"info", confirmButtonText: '確定', allowOutsideClick: false})
 			loading.complete();
 		})

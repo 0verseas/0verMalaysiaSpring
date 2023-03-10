@@ -104,7 +104,7 @@
 		let everTop = (number - nowTop) / spacingInex; // 計算每次動畫的滑動距離
 		let scrollTimer = setInterval(() => {
 			if (spacingInex > 0) {
-				spacingInex--;	
+				spacingInex--;
 				smoothScroll(nowTop += everTop); //在動畫次數結束前要繼續滑動
 			} else {
 				clearInterval(scrollTimer); // 結束計時器
@@ -119,7 +119,7 @@
 		_citizenshipList.forEach(object => {
 			tmpString += object.id+',';
 		});
-		const citizenshipString = tmpString.substr(0,tmpString.length-1);
+		const citizenshipString = tmpString.substring(0,tmpString.length-1);
 		const isDistribution = +$signUpForm.find('.isDistribution:checked').val();
 		const distributionTime = $signUpForm.find('.input-distributionTime').val();
 		const distributionOption = +$signUpForm.find('.distributionMoreQuestion:checked').val();
@@ -161,7 +161,7 @@
 				throw res;
 			}
 		})
-		.then(async(json) => {
+		.then(async() => {
 			await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
 			window.location.href = './personalInfo.html';
 			loading.complete();
@@ -174,7 +174,7 @@
 			loading.complete();
 		});
 	}
-	
+
 
 	// 判斷是否分發來臺就學的一推選項是否符合資格
 	function _checkDistributionValidation() {
@@ -240,7 +240,7 @@
 			let keep = true;
 			for(let i=0;i<5 && keep;i++){
 				for(let j=0;j<_countryList[i].country.length && keep;j++){
-					if(_countryList[i].country[j].id == value){
+					if(_countryList[i].country[j].id === value){
 						_citizenshipList.push( {'continent': i,'id' : value} );
 						keep=false;
 					}
@@ -248,7 +248,7 @@
 			}
 		});
 		_generateCitizenshipList();
-		return;
+		return 0;
 	}
 
 	// 選洲，更換國家選項
@@ -266,8 +266,8 @@
 		$citizenshipSelect.selectpicker({title: '請選擇國家'});
 		$citizenshipSelect.attr('disabled',false);
 		// 渲染選取洲別的國家到下拉式選單中
-		_countryList[order].country.forEach((val, i) => {
-			if(_citizenshipList.findIndex(order => order.id == val.id) === -1){ // 在已選擇國籍名單中 就不渲染避免重複選取
+		_countryList[order].country.forEach((val) => {
+			if(_citizenshipList.findIndex(order => order.id === val.id) === -1){ // 在已選擇國籍名單中 就不渲染避免重複選取
 				$citizenshipSelect.append(`<option value="${val.id}">${val.country}</option>`);
 			}
 		});
@@ -293,7 +293,7 @@
 		// 先提取國家代碼
 		const id = $(this).data("id");
 		// 用國家代碼搜尋已選擇國籍列表找到Index
-		const citizenshipIndex = _citizenshipList.findIndex(order => order.id == id)
+		const citizenshipIndex = _citizenshipList.findIndex(order => order.id === id)
 		// 使用Index和splice來刪除已選擇國籍
 		_citizenshipList.splice(citizenshipIndex,1);
 		_generateCitizenshipList();
@@ -306,7 +306,7 @@
 		// 從已選擇國籍列表中處理資料渲染到畫面上
 		for(let i in _citizenshipList) {
 			// 用已選擇國籍列表中儲存的洲別與國家代碼從儲存的國家列表中找到國家名稱
-			let country = _countryList[_citizenshipList[i].continent].country.find(list => list.id == _citizenshipList[i].id).country;
+			let country = _countryList[_citizenshipList[i].continent].country.find(list => list.id === _citizenshipList[i].id).country;
 			// 將變數編寫成Html格式的字串
 			rowHtml = rowHtml + `
 			<tr data-wishIndex="${i}">
@@ -337,7 +337,7 @@
 	*/
 
 	function _setData(data) {
-		
+
 		// 海外僑生
 		// 曾分發來臺
 		!!data.has_come_to_taiwan &&

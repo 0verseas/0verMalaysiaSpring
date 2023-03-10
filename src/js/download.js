@@ -4,10 +4,6 @@
 	*	cache DOM
 	*/
 
-	const $memo = $('#memo');
-
-	let personalData='';
-
 	/**
 	*	init
 	*/

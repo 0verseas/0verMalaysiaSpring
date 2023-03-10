@@ -13,7 +13,7 @@
 	const $resetPassword = $('#input-resetPassword');
 	const $resetPasswordConfirm = $('#input-resetPasswordConfirm');
 	const $resetPasswordSubmitBtn = $('#btn-resetPasswordSubmit');
-	
+
 	const $passwordWarning = $('#password-warning');
 
 	/**
@@ -28,7 +28,7 @@
 
 	$resetPassword.on('blur', _checkPassword);
 	$resetPasswordConfirm.on('blur', _checkPassword);
-	$resetPasswordConfirm.keyup((e) => { e.keyCode == 13 && _handleSubmit(); });
+	$resetPasswordConfirm.keyup((e) => { e.keyCode === 13 && _handleSubmit(); });
 	$resetPasswordSubmitBtn.on('click', _handleSubmit);
 
 	function _init() {
@@ -45,7 +45,7 @@
 			loading.complete();
 		})
 		.catch((err) => {
-			err.json && err.json().then((data) => {
+			err.json && err.json().then(() => {
 				swal({title: `您並無重設密碼之請求。`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
 				.then(()=>{
 					location.href = "./index.html";
@@ -116,7 +116,7 @@
 				throw res;
 			}
 		})
-		.then((json) => {
+		.then(() => {
 			swal({title: `密碼重設成功，請重新登入。`, type:"success", confirmButtonText: '確定', allowOutsideClick: false})
 				.then(()=>{
 					location.href = "./index.html";
@@ -126,7 +126,7 @@
 		.catch((err) => {
 			err.json && err.json().then((data) => {
 				// console.error(data);
-				swal({title: `ERROR`, text: `data.messages[0]`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+				swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 
 			})
 			loading.complete();

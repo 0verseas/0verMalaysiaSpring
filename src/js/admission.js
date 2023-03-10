@@ -45,7 +45,7 @@
 	$optionFilterInput.on('keyup', _generateOptionalWish); // // 監聽「招生校系清單」關鍵字
 	$manualSearchBtn.on('click', _generateOptionalWish);
 	$saveBtn.on('click', _handleSave);
-	
+
 	async function _init() {
 		loading.complete();
 		$group1QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=true&second-group=false&third-group=false`);
@@ -85,9 +85,9 @@
 			if(resPlacement.admission_group !== null){
 				let dept_id = resPlacement.admission_group+'FFFF'
 				order.push(dept_id);
-			}			
+			}
 
-			await order.forEach((value, index) => {
+			await order.forEach((value) => {
 				let orderIndex = _optionalWish.findIndex(order => order.id === value);
 				if (orderIndex > -1) {
 					_wishList.push(_optionalWish[orderIndex]);
@@ -219,7 +219,7 @@
 		$paginationContainer.pagination({
 			dataSource: _filterOptionalWish,
 			pageNumber: pageNum,
-			callback: function(data, pagination) {
+			callback: function(data) {
 				var html = _optionalWishTemplating(data);
 				$optionalWishList.html(html);
 				const $addWish = $optionalWishList.find('.add-wish');
@@ -239,7 +239,7 @@
 	function _generateWishList() { // 「渲染已填選志願」
 		let rowHtml = '';
 		let invalidBadge = '';
-		
+
 		for(let i in _wishList) {
 			let badgeNUPS = '';
 			if (_nupsList.indexOf(_wishList[i].id) > -1) {badgeNUPS = '<span class="badge badge-info">僑先部</span>';}
@@ -269,7 +269,7 @@
 	function _handleSave() {
 		let order = [];
 		if (_wishList.length > 0) {
-			_wishList.forEach((value, index) => {
+			_wishList.forEach((value) => {
 				order.push(value.id);
 			});
 			const data = {
@@ -284,7 +284,7 @@
 					throw res;
 				}
 			})
-			.then((json) => {
+			.then(() => {
 				swal({title:`儲存成功`, type:`success`, confirmButtonText: '確定', allowOutsideClick: false})
 				.then(()=> {
 					location.href = "./result.html";

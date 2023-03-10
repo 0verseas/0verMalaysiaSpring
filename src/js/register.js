@@ -103,7 +103,7 @@
 			swal({title: `密碼格式錯誤，或「確認密碼」與「密碼」內容不符。`, type:"error", confirmButtonText: '確定', allowOutsideClick: false});
 			return;
 		}
-		
+
 		const data = {
 			email: email,
 			password: sha256(oriPass),
@@ -125,7 +125,7 @@
 						throw res;
 					}
 				})
-				.then((json) => {
+				.then(() => {
 					location.href="./qualify.html";
 					loading.complete();
 				})
@@ -142,7 +142,7 @@
 						})
 					}
 					loading.complete();
-				})	
+				})
 			});
         });
 	}

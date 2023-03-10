@@ -5,7 +5,7 @@
 	*/
 
 	const $applyWaysFieldSet = $('#apply-ways');
-	
+
 	/**
 	*	init
 	*/

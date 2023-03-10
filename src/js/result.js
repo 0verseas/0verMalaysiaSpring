@@ -4,15 +4,10 @@
 	*	private variable
 	*/
 
-	let _systemId = 0;
-	let _hasOlympia = false;
-	let _hasAdmission = false;
-	let _hasPlacement = false;
-
 	/**
 	*	cache DOM
 	*/
-	
+
 	const $previewPersonalDataBtn = $('#btn-previewPersonalData');
 
 	/**

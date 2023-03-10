@@ -9,7 +9,7 @@
 	const $deleteFileBtn = $('.btn-delFile');// 檔案編輯模板刪除按鈕
 	let $uploadedFiles = [];// 已上傳檔案名稱陣列
 
-	
+
 	/**
 	*	init
 	*/
@@ -37,10 +37,9 @@
 			}
 		} else {
 			const data = await response.json();
-			const message = data.messages[0];
 			await swal({
 				title: `ERROR！`,
-				html:`${message}`,
+				html:`${data.message[0]}`,
 				type:"error",
 				confirmButtonText: '確定',
 				allowOutsideClick: false
@@ -67,6 +66,7 @@
 				confirmButtonText: '確定',
 				allowOutsideClick: false
 			});
+			location.href = "./result.html";
 		}
 		await loading.complete();
 	}
@@ -127,7 +127,6 @@
 			// 重新渲染已上傳檔案區域
 			await _renderUploadedArea(type);
 		} else {
-			const code = response.status;
 			const data = await response.json();
 			const message = data.messages[0];
 			await swal({
@@ -140,7 +139,7 @@
 		}
 
 		await loading.complete();
-		return;
+		return 0;
     }
 
 	// 渲染已上傳檔案區域事件
@@ -232,7 +231,7 @@
         }).then(()=>{
             _deleteFile(type, fileName);
         }).catch(()=>{
-            return;
+            return 0;
         });
     }
 
@@ -253,7 +252,6 @@
 			await $imgModal.modal('hide');
 			await _renderUploadedArea(type);
 		} else {
-			const code = response.status;
 			const data = await response.json();
 			const message = data.messages[0];
 			await swal({
@@ -292,7 +290,7 @@
 
 	//檢查檔案類型
     function checkFile(selectfile){
-        var extension = new Array(".jpg", ".png", ".pdf",".jpeg"); //可接受的附檔名
+        var extension = [".jpg", ".png", ".pdf",".jpeg"]; //可接受的附檔名
         var fileExtension = selectfile.name; //fakepath
         //看副檔名是否在可接受名單
         fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.')).toLowerCase();  // 副檔名通通轉小寫
