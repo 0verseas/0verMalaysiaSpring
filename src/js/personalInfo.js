@@ -79,6 +79,7 @@
     const $dadEngName = $('#dadEngName'); // 姓名（英）
     const $dadBirthday = $('#dadBirthday'); // 生日
     const $dadJob = $('#dadJob'); // 職業
+    const $dadJobForm = $('#dad-job'); // 職業欄位
     const $dadPhoneCode = $('#dadPhoneCode'); // 聯絡電話國碼
     const $dadPhone = $('#dadPhone'); // 聯絡電話
     const $dadPhoneForm = $('#dad-phone');// 父親電話欄位
@@ -89,6 +90,7 @@
     const $momEngName = $('#momEngName'); // 姓名（英）
     const $momBirthday = $('#momBirthday'); // 生日
     const $momJob = $('#momJob'); // 職業
+    const $momJobForm = $('#mom-job'); // 職業欄位
     const $momPhoneCode = $('#momPhoneCode'); // 聯絡電話國碼
     const $momPhone = $('#momPhone'); // 聯絡電話
     const $momPhoneForm = $('#mom-phone');// 母親電話欄位
@@ -106,12 +108,13 @@
      *	init
      */
 
-    _init(); 
+    _init();
 
     /**
      *	bind event
      */
 
+    $saveBtn.on('click', _handleSave);
     $birthContinent.on('change', _reRenderCountry);
     $special.on('change', _changeSpecial);
     $disabilityCategory.on('change', _switchDisabilityCategory);
@@ -120,8 +123,8 @@
     $schoolNameSelect.on('change',_chSchoolName);
     $dadStatus.on('change', _chDadStatus);
     $momStatus.on('change', _chMomStatus);
-    $saveBtn.on('click', _handleSave);
     $taiwanIdType.on('change', _showTaiwanIdExample);
+    // 原顯示錯誤紅框的欄位修改後移除紅框
     $("#form-personalInfo :input").on('change', function() {
         $(this).removeClass('invalidInput');
     });
@@ -274,7 +277,6 @@
                 $dadEngName.val(formData.dad_eng_name);
                 $dadBirthday.val(formData.dad_birthday);
                 $dadJob.val(formData.dad_job);
-                // FIXME: 當雙親都是不詳的時候不這樣寫（判斷有無電話）渲染會出錯，懇請大神協助修改讓程式碼好看一點
                 [document.getElementById("dadPhoneCode").value, document.getElementById("dadPhone").value] = _splitWithSemicolon(formData.dad_phone);
 
                 // 母
@@ -346,6 +348,7 @@
     }
 
     function _splitWithSemicolon(phoneNum) {
+        // 先檢查傳入值是否為null
         if(phoneNum == null) return ['',''];
         let i = phoneNum.indexOf("-");
         return [phoneNum.slice(0, i), phoneNum.slice(i + 1)];
@@ -365,7 +368,7 @@
             $birthLocation.selectpicker({title: '請先選擇洲別(Continent)'}); // 修改 未選擇選項時的顯示文字
             $birthLocation.attr('disabled',true); // disable selector
         }
-        $birthLocation.html(countryHTML); // reder option
+        $birthLocation.html(countryHTML); // render option
         $birthLocation.selectpicker('refresh'); // refresh selector
         $birthLocation.parent().find('button').removeClass('bs-placeholder'); // 為了風格統一 去除預設格式
     }
@@ -386,11 +389,11 @@
             $residentLocation.attr('disabled',true); // disable selector
         }
 
-        $residentLocation.html(countryHTML); // reder option
+        $residentLocation.html(countryHTML); // render option
         $residentLocation.selectpicker('refresh'); // refresh selector
         $residentLocation.parent().find('button').removeClass('bs-placeholder'); // 為了風格統一 去除預設格式
     }
-    
+
     function _switchDisabilityCategory() {
         _disabilityCategory = $(this).val();
         _handleOtherDisabilityCategoryForm();
@@ -482,7 +485,7 @@
                     } else {
                         _currentSchoolLocate = _schoolList[0].locate;
                     }
-                    $schoolLocationForm.fadeIn();   
+                    $schoolLocationForm.fadeIn();
                 })
                 .then(() => {
                     setTimeout(_reRenderSchoolList(), 500);
@@ -492,7 +495,7 @@
                     err.json && err.json().then((data) => {
                         console.error(data);
                     })
-                })               
+                })
     }
 
     function _chSchoolLocation() {
@@ -555,8 +558,10 @@
         }
         if(_currentDadStatus === 'alive'){
             $dadPhoneForm.fadeIn();
+            $dadJobForm.fadeIn();
         } else {
             $dadPhoneForm.hide();
+            $dadJobForm.hide();
             document.getElementById('dadPhoneCode').value="";
             document.getElementById('dadPhone').value="";
         }
@@ -582,8 +587,10 @@
         }
         if(_currentMomStatus === 'alive'){
             $momPhoneForm.fadeIn();
+            $momJobForm.fadeIn();
         } else {
             $momPhoneForm.hide();
+            $momJobForm.hide();
             document.getElementById('momPhoneCode').value="";
             document.getElementById('momPhone').value="";
         }
@@ -626,7 +633,7 @@
     function _checkValue(col, type){
         /*
         *   3400～4DFF：中日韓認同表意文字擴充A區，總計收容6,582個中日韓漢字。
-        *   4E00～9FFF：中日韓認同表意文字區，總計收容20,902個中日韓漢字。 
+        *   4E00～9FFF：中日韓認同表意文字區，總計收容20,902個中日韓漢字。
         *   0023： #
         *   002d： -
         *   00b7：半形音界號
@@ -718,10 +725,10 @@
             if(_checkValue($dadName,'Chinese')) _handleError($dadName,'父親姓名（中）');
             if(_checkValue($dadEngName,'English')) _handleError($dadEngName,'父親姓名（英）');
             if(_checkValue($dadBirthday,'Date')) _handleError($dadBirthday,'父親生日');
-            if(_checkValue($dadJob,'General')) _handleError($dadJob,'父親職業');
             if(_currentDadStatus === "alive") {
                 if(_checkValue($dadPhoneCode,'Number')) _handleError($dadPhoneCode,'父親聯絡電話國碼');
                 if(_checkValue($dadPhone,'Number')) _handleError($dadPhone,'父親聯絡電話號碼');
+                if(_checkValue($dadJob,'General')) _handleError($dadJob,'父親職業');
             }
         }
         // 母
@@ -730,17 +737,17 @@
             if(_checkValue($momName,'Chinese')) _handleError($momName,'母親姓名（中）');
             if(_checkValue($momEngName,'English')) _handleError($momEngName,'母親姓名（英）');
             if(_checkValue($momBirthday,'Date')) _handleError($momBirthday,'母親生日');
-            if(_checkValue($momJob,'General')) _handleError($momJob,'母親職業');
             if(_currentMomStatus === "alive") {
                 if(_checkValue($momPhoneCode,'Number')) _handleError($momPhoneCode,'母親聯絡電話國碼');
                 if(_checkValue($momPhone,'Number')) _handleError($momPhone,'母親聯絡電話號碼');
-            }        
+                if(_checkValue($momJob,'General')) _handleError($momJob,'母親職業');
+            }
         }
         // 在臺資料（選填）轉換字串
         if ($taiwanIdType.val() !== "") {
             let rg = /^[A-z][1-2]\d{8}$/;                            // 身份證檢查式
             let rg2 = /^[A-z]([A-D]|[a-d])\d{8}|[A-z][8-9]\d{8}$/    // 居留證檢查式
-            if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val())) 
+            if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val()))
             || ($taiwanIdType.val() === "居留證" && !rg2.test($taiwanIdNo.val()))) _handleError($taiwanIdNo,'在臺證件號碼');
         }
         _checkValue($taiwanPassport,'General');

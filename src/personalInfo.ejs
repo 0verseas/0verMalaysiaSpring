@@ -256,7 +256,7 @@
 					<div class="form-group">
 						<label for="taiwanIdType">證件號碼</label>
 						<input type="text" class="form-control" id="taiwanIdNo" placeholder="">
-						<small class="text-danger hide" id="taiwanIdExample1">居留證範例：FC12345678</small> 
+						<small class="text-danger hide" id="taiwanIdExample1">居留證範例：FC12345678</small>
 						<small class="text-danger hide" id="taiwanIdExample2">身分證範例：A123456789</small>
 					</div>
 				</div>
@@ -425,7 +425,7 @@
 											<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="dadBirthday">
 										</div>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-6" id = "dad-job">
 										<div class="form-group">
 											<label class="text-danger" for="dadJob">* 職業</label>
 											<input type="text" class="form-control" id="dadJob" placeholder="">
@@ -500,7 +500,7 @@
 											<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm/dd" id="momBirthday">
 										</div>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-6" id = "mom-job">
 										<div class="form-group">
 											<label class="text-danger" for="momJob">* 職業</label>
 											<input type="text" class="form-control" id="momJob" placeholder="">
@@ -588,7 +588,9 @@
 
 <div class="row">
 	<div class="col-12 text-center">
-		<button class="btn btn-primary" id="btn-save">儲存</button>
+		<button class="btn btn-primary" id="btn-save">
+			<i class="fa fa-floppy-o" aria-hidden="true"></i> 儲存
+		</button>
 	</div>
 </div>
 
