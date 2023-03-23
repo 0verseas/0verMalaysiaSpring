@@ -27,7 +27,7 @@
 
 		const email = $email.val();
 
-		if (_checkEmail(email)) {
+		if (_checkEmail()) {
 			const data = {
 				email
 			}

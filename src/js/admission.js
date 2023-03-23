@@ -11,10 +11,6 @@
 	// 僑先部 cardCode
 	const _nupsList = ["1FFFF", "2FFFF", "3FFFF"];
 
-	// 序號調整志願序之參數
-	// let _prevWishIndex = -1;
-	// let _currentWishIndex = -1;
-
 	/**
 	*	cache DOM
 	*/
@@ -87,7 +83,7 @@
 				order.push(dept_id);
 			}
 
-			await order.forEach((value) => {
+			order.forEach((value) => {
 				let orderIndex = _optionalWish.findIndex(order => order.id === value);
 				if (orderIndex > -1) {
 					_wishList.push(_optionalWish[orderIndex]);
@@ -99,7 +95,6 @@
 			_generateWishList();
 			loading.complete();
 		} catch (e) {
-			// console.log(e);
 			if (e.status && e.status === 401) {
 				swal({title: `請登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
 				.then(()=>{
@@ -220,7 +215,7 @@
 			dataSource: _filterOptionalWish,
 			pageNumber: pageNum,
 			callback: function(data) {
-				var html = _optionalWishTemplating(data);
+				let html = _optionalWishTemplating(data);
 				$optionalWishList.html(html);
 				const $addWish = $optionalWishList.find('.add-wish');
 				$addWish.on("click", _addWish);
@@ -293,7 +288,6 @@
 			})
 			.catch((err) => {
 				err.json && err.json().then((data) => {
-					// console.error(data);
 					swal({title:`ERROR`, text: data.messages[0], type: `error`, confirmButtonText: '確定', allowOutsideClick: false});
 				})
 				loading.complete();

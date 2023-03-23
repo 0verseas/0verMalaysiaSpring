@@ -1,6 +1,6 @@
 (() => {
 	// 引入 reCAPTCHA 的 JS 檔案
-    var s = document.createElement('script');
+    let s = document.createElement('script');
     let src = 'https://www.google.com/recaptcha/api.js?render=' + env.reCAPTCHA_site_key;
     s.setAttribute('src', src);
     document.body.appendChild(s);
@@ -61,7 +61,6 @@
             grecaptcha.execute(env.reCAPTCHA_site_key, {
               action: 'MalaysiaSpringLogin'
             }).then(function(token) {
-                // token = document.getElementById('btn-login').value
                 loginData.google_recaptcha_token=token;
             }).then(function(){
 				loading.start();

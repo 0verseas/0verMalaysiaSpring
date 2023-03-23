@@ -53,7 +53,7 @@
 				$uploadedFiles = data[type];
 				// 有檔案才渲染
 				if($uploadedFiles.length > 0){
-					await _renderUploadedArea(type);
+					_renderUploadedArea(type);
 				}
 			}
 		} else {
@@ -93,12 +93,12 @@
 
 		// 檢查檔案大小 不超過4MB 在放進senData中
 		let sendData = new FormData();
-		for (let i = 0; i < fileList.length; i++) {
+		for (let file of fileList ) {
 			//有不可接受的副檔名存在
-			if(! await checkFile(fileList[i])){
-                return ;
-            }
-			if(await student.sizeConversion(fileList[i].size,4)){
+			let res = checkFile(file);
+			if (!res) return;
+			res = student.sizeConversion(fileList[i].size,4);
+			if (res) {
 				await swal({
 					title: `上傳失敗！`,
 					html:`${fileList[i].name}檔案過大，檔案大小不能超過4MB。`,
@@ -108,7 +108,7 @@
 				});
 				return;
 			}
-			await sendData.append('files[]', fileList[i]);
+			sendData.append('files[]', fileList[i]);
 		}
 
 		await loading.start();
@@ -125,7 +125,7 @@
 			const data = await response.json();
 			$uploadedFiles = data;
 			// 重新渲染已上傳檔案區域
-			await _renderUploadedArea(type);
+			_renderUploadedArea(type);
 		} else {
 			const data = await response.json();
 			const message = data.messages[0];
@@ -250,7 +250,7 @@
 			const data = await response.json();
 			$uploadedFiles = data;
 			await $imgModal.modal('hide');
-			await _renderUploadedArea(type);
+			_renderUploadedArea(type);
 		} else {
 			const data = await response.json();
 			const message = data.messages[0];
@@ -290,8 +290,8 @@
 
 	//檢查檔案類型
     function checkFile(selectfile){
-        var extension = [".jpg", ".png", ".pdf",".jpeg"]; //可接受的附檔名
-        var fileExtension = selectfile.name; //fakepath
+        let extension = [".jpg", ".png", ".pdf",".jpeg"]; //可接受的附檔名
+        let fileExtension = selectfile.name; //fakepath
         //看副檔名是否在可接受名單
         fileExtension = fileExtension.substring(fileExtension.lastIndexOf('.')).toLowerCase();  // 副檔名通通轉小寫
         if (extension.indexOf(fileExtension) < 0) {

@@ -179,7 +179,6 @@ footer { /* 令 footer 圖層置底，才不會蓋到其他元素 */
 	-webkit-border-radius: 35px;
 	-moz-border-radius: 35px;
 	border-radius: 35px;
-	display: none;
 	-webkit-transition: all 0.3s linear;
 	-moz-transition: all 0.3s ease;
 	-ms-transition: all 0.3s ease;

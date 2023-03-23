@@ -164,7 +164,7 @@
 	}
 
 	function _checkAllSet() {
-		var isAllSet = confirm("確認後就「無法再次更改資料」，您真的確認送出嗎？");
+		let isAllSet = confirm("確認後就「無法再次更改資料」，您真的確認送出嗎？");
 		if (isAllSet === true) {
 			const data = {
 				"confirmed": true

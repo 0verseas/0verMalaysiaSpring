@@ -1,6 +1,6 @@
 (() => {
 	// 引入 reCAPTCHA 的 JS 檔案
-    var s = document.createElement('script');
+    let s = document.createElement('script');
     let src = 'https://www.google.com/recaptcha/api.js?render=' + env.reCAPTCHA_site_key;
     s.setAttribute('src', src);
     document.body.appendChild(s);

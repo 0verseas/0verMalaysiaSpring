@@ -69,7 +69,7 @@ const student = (() => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
-			}, 
+			},
 			body: JSON.stringify(data),
 			credentials: 'include'
 		});
@@ -90,7 +90,7 @@ const student = (() => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
-			}, 
+			},
 			body: JSON.stringify(data),
 			credentials: 'include'
 		});
@@ -111,7 +111,7 @@ const student = (() => {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
-			}, 
+			},
 			credentials: 'include',
 			body: JSON.stringify({ token })
 		})
@@ -122,7 +122,7 @@ const student = (() => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
-			}, 
+			},
 			credentials: 'include'
 		})
 	}
@@ -221,7 +221,7 @@ const student = (() => {
 	}
 
 	function getPlacementSelectionOrder() {
-		var urls = [
+		let urls = [
 		baseUrl + '/malaysia-spring/admission-order',
 		baseUrl + '/malaysia-spring/admission-order-list?type=placement'
 		]

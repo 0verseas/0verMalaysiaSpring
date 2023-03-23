@@ -464,9 +464,9 @@
                     });
 
                     //各所在地區的學校名稱加上其它選項
-                    for(let i=0;i<groups.length;i++){
-                        if(groups[i].locate !== '其它'){
-                            groups[i].school.push({
+                    for (let groupElement of groups) {
+                        if (groupElement.locate !== '其它') {
+                            groupElement.school.push({
                                 name:'其它'
                             });
                         }
@@ -663,9 +663,9 @@
                 str = str.replace(/[^\d\u0020\u0023]/g, "");
                 break;
             case 'Date':
-                return !(/^[1-2]\d{3}\/((01|03|05|07|08|10|12)\/(0[1-9]|[1-2]\d{1}|3[0-1])|(02|04|06|09|11)\/(0[1-9]|[1-2]\d{1}|30)|(0[1-9]|1[0-2]))$/).test(str);
+                return !(/^[1-2]\d{3}\/((0[13578]|1[02])\/(0[1-9]|[1-2]\d|3[0-1])|(0[469]|11)\/(0[1-9]|[1-2]\d|30)|02\/(0[1-9]|1\d|2[0-8])|(0[1-9]|1[0-2]))$/).test(str);
             case 'EMail':
-                return !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(str);
+                return !/^\w+([-^<>()[\]\\.,;:!?"]*\w*)*@(\w+([-^<>()[\]\\,;:"]*\w*)*\.)+(\w{2,3})+$/.test(str);
         }
         col.val(str);
         if(!str) return true;
@@ -746,8 +746,8 @@
         }
         // 在臺資料（選填）轉換字串
         if ($taiwanIdType.val() !== "") {
-            let rg = /^[A-z][1-2]\d{8}$/;                            // 身份證檢查式
-            let rg2 = /^[A-z]([A-D]|[a-d])\d{8}|[A-z][8-9]\d{8}$/    // 居留證檢查式
+            let rg = /^[A-z][1-2]\d{8}$/;               // 身份證檢查式
+            let rg2 = /^[A-z]([A-Da-d]|[8-9])\d{8}$/    // 居留證檢查式
             if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val()))
             || ($taiwanIdType.val() === "居留證" && !rg2.test($taiwanIdNo.val()))) _handleError($taiwanIdNo,'在臺證件號碼');
         }
