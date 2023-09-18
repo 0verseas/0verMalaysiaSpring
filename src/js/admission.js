@@ -47,7 +47,7 @@
 		$group1QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=true&second-group=false&third-group=false`);
 		$group2QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=false&second-group=true&third-group=false`);
 		$group3QuotaBtn.attr('href', `https://student.overseas.ncnu.edu.tw/quota/?school=all&group=all&keyword=&first-group=false&second-group=false&third-group=true`);
-		$groupSubjects.attr('href', `https://cmn-hant.overseas.ncnu.edu.tw/#block-subjects`);
+		$groupSubjects.attr('href', `https://cmn-hant.overseas.ncnu.edu.tw/further-study-area/18-academic-and-subjects-in-taiwan/`);
 		try {
 
 			// 使用 jQuery 的 Tooltip
