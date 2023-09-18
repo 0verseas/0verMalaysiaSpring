@@ -5,8 +5,8 @@
 	*/
 	const $logoutBtn = $('#btn-logout'); //登出按鈕
 	const $mailResendBtn = $('#btn-mailResend'); //重寄驗證信按鈕
-	const $checkBtn = $('#btn-all-set'); //確認並鎖定個人基本資料按鈕
-	const $afterConfirmZone = $('#afterConfirmZone'); //確認並鎖定個人基本資料後區域
+	const $checkBtn = $('#btn-all-set'); //確認並鎖定報名基本資料
+	const $afterConfirmZone = $('#afterConfirmZone'); //確認並鎖定報名基本資料後區域
 
 	/**
 	* init
@@ -164,46 +164,59 @@
 	}
 
 	function _checkAllSet() {
-		let isAllSet = confirm("確認後就「無法再次更改資料」，您真的確認送出嗎？");
-		if (isAllSet === true) {
-			const data = {
-				"confirmed": true
-			};
-			student.dataConfirmation(data)
-			.then((res) => {
-				if (res.ok) {
-					return res.json();
-				} else {
-					throw res;
-				}
-			})
-			.then(() => {
-				swal({title: `成功確認資料。`, type:`success`, text: `如果需要再修改資料請利用「資料修正表」，或是重新申請一組新的帳號。`, confirmButtonText: '確定', allowOutsideClick: false})
-				.then(()=>{
-					location.href = "./download.html";
-				});
-				loading.complete();
-			})
-			.catch((err) => {
-				if (err.status && err.status === 401) {
-					swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+		swal({
+			title: '確認後就「無法再次更改資料」，您真的確認送出嗎？',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#5cb85c',
+			cancelButtonColor: '#dc3454',
+			confirmButtonText: '確定',
+			cancelButtonText: '取消',
+			reverseButtons: true
+		}).then( (result)	=>{
+			if (result === true) {
+				const data = {
+					"confirmed": true
+				};
+				student.dataConfirmation(data)
+				.then((res) => {
+					if (res.ok) {
+						return res.json();
+					} else {
+						throw res;
+					}
+				})
+				.then(() => {
+					swal({title: `成功確認資料。`, type:`success`, text: `如果需要再修改資料請利用「資料修正表」，或是重新申請一組新的帳號。`, confirmButtonText: '確定', allowOutsideClick: false})
 					.then(()=>{
-						location.href = "./index.html";
+						location.href = "./upload.html";
 					});
-				} else {
-					err.json && err.json().then((data) => {
-						console.error(data);
-						swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
-					})
-				}
-				loading.complete();
-			});
-		}
+					loading.complete();
+				})
+				.catch((err) => {
+					if (err.status && err.status === 401) {
+						swal({title: `請重新登入`, type:"warning", confirmButtonText: '確定', allowOutsideClick: false})
+						.then(()=>{
+							location.href = "./index.html";
+						});
+					} else {
+						err.json && err.json().then((data) => {
+							console.error(data);
+							swal({title: `ERROR`, text: data.messages[0], type:"error", confirmButtonText: '確定', allowOutsideClick: false});
+						})
+					}
+					loading.complete();
+				});
+			} else { //取消
+				return;
+			}
+		})
+
 	}
 
 	function  _checkConfirm(json) {
 		if (!!json.confirmed_at) {
-			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已確認並鎖定個人基本資料').show() && $afterConfirmZone.show();
+			$('#btn-all-set').removeClass('btn-danger').addClass('btn-success').prop('disabled', true).text('已確認並鎖定報名基本資料').show() && $afterConfirmZone.show();
 		} else if (!json.has_qualify) {
 			// 沒有輸入資格驗證的狀況下，隱藏提交按鈕
 			$('#btn-all-set').hide();
@@ -217,7 +230,7 @@
 			// 志願類組未選擇者，隱藏提交按鈕
 			$('#btn-all-set').hide();
 		}else if (!json.is_opening) {
-			// 還沒有確認並鎖定個人基本資料，且不在報名期間內，不能點送出填報按鈕
+			// 還沒有確認並鎖定報名基本資料，且不在報名期間內，不能點送出填報按鈕
 			$('#btn-all-set').prop('disabled', true).text('目前非報名時間').show();
 		} else{
 			$('#btn-all-set').show();
