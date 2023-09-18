@@ -195,7 +195,9 @@
 		const option = +$this.val();
 		$signUpForm.find('.stayLimitAlert').hide();
 		if (option===1) {
-				$signUpForm.find('.stayLimitAlert.invalid').fadeIn();
+			$signUpForm.find('.stayLimitAlert.invalid').fadeIn();
+		} else if (option === 2){
+			$signUpForm.find('.stayLimitAlert.valid').fadeIn();
 		}
 	}
 
