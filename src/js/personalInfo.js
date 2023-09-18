@@ -25,6 +25,7 @@
 
     // 申請人資料表
     const $email = $('#email');
+    const $backupEmail = $('#backupEmail');
     const $name = $('#name'); // 姓名（中）
     const $engName = $('#engName'); // 姓名（英）
     const $gender = $personalInfoForm.find('.gender'); // 性別
@@ -102,6 +103,7 @@
     const $twContactAddress = $('#twContactAddress'); // 地址
     const $twContactWorkplaceName = $('#twContactWorkplaceName'); // 服務機關名稱
     const $twContactWorkplacePhone = $('#twContactWorkplacePhone'); // 服務機關電話
+    const $twContactWorkplaceAddress = $('#twContactWorkplaceAddress'); // 服務機關地址
     const $saveBtn = $('#btn-save');
 
     /**
@@ -133,23 +135,36 @@
         student.getCountryList()
             .then((json) => {
                 _countryList = json;
-                let stateHTML = '<option value="-1" data-continentIndex="-1">Continent</option>';
+                let stateHTML = '<option value="-1" data-continentIndex="-1" hidden disabled selected>請選擇洲別（Continent）</option>';
                 json.forEach((obj, index) => {
                     stateHTML += `<option value="${index}" data-continentIndex="${index}">${obj.continent}</option>`
                 });
                 $birthContinent.html(stateHTML);
                 $residenceContinent.html(stateHTML);
                 // 總是有人亂填生日 甚至變成未來人 只好設個上限 最年輕就是報名當下剛滿十歲
+                let Year = new Date().getFullYear();
                 $birthday.datepicker({
+                    startView: 2,
+                    defaultViewDate: {year: (Year-18)},
                     endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 10))
                 });
                 // 總是有人亂填生日 甚至變成未來人 只好設個上限 父母最年輕就是報名當下剛滿二十二歲
                 $dadBirthday.datepicker({
+                    startView: 2,
+                    defaultViewDate: {year: (Year-40)},
                     endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
                 });
                 $momBirthday.datepicker({
+                    startView: 2,
+                    defaultViewDate: {year: (Year-40)},
                     endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
                 });
+                $schoolAdmissionAt.datepicker({
+                    startView: 2,
+                })
+                $schoolGraduateAt.datepicker({
+                    startView: 2,
+                })
             })
             .then(()=>{
                 _initPersonalInfo();
@@ -211,11 +226,13 @@
                         "tw_contact_address": "",
                         "tw_contact_workplace_name": "",
                         "tw_contact_workplace_phone": "",
+                        "tw_contact_workplace_address": "",
                     }
                 }
 
                 // init 申請人資料表
                 $email.val(json.email);
+                $backupEmail.val(json.backup_email);
                 $name.val(json.name);
                 $engName.val(json.eng_name);
                 $("input[name=gender][value='" + formData.gender + "']").prop("checked", true);
@@ -295,6 +312,7 @@
                 $twContactAddress.val(formData.tw_contact_address);
                 $twContactWorkplaceName.val(formData.tw_contact_workplace_name);
                 $twContactWorkplacePhone.val(formData.tw_contact_workplace_phone);
+                $twContactWorkplaceAddress.val(formData.tw_contact_workplace_address)
             })
             .then(() => {
                 // init selectpicker
@@ -611,9 +629,8 @@
                 })
                 .then(async () => {
                     await swal({title:"儲存成功", type:"success", confirmButtonText: '確定'});
-                    window.location.reload();
                     loading.complete();
-                    scroll(0,0);
+                    window.location.href = './grade.html';
                 })
                 .catch((err) => {
                     err.json && err.json().then((data) => {
@@ -685,6 +702,7 @@
         const disabilityLevel = ['極重度','重度','中度','輕度'] // 身心障礙程度
         let disabilityCategory = "" // 給後端的身心障礙類別
         // 申請人
+        if($backupEmail.val() != "" &&_checkValue($backupEmail,'EMail')) _handleError($backupEmail,'備用 E-mail');
         if(_checkValue($name,'Chinese')) _handleError($name,'姓名（中）');
         if(_checkValue($engName,'English')) _handleError($engName,'姓名（英）');
         if(!$(".gender:checked").val()) _handleError($gender,'性別');
@@ -746,8 +764,8 @@
         }
         // 在臺資料（選填）轉換字串
         if ($taiwanIdType.val() !== "") {
-            let rg = /^[A-z][1-2]\d{8}$/;               // 身份證檢查式
-            let rg2 = /^[A-z]([A-Da-d]|[8-9])\d{8}$/    // 居留證檢查式
+            let rg = /^[A-z][1-2]\d{8}$/; // 身份證檢查式
+            let rg2 = /^[A-XZa-xz]{1}([A-Da-d8-9]{1})\d{8}$/; // 居留證檢查式 // 驗證格式，1位字母爲地區(不包括 Y，而 L，S，R 則是服務站地區未合併的關係，故還是不加入黑名單)+1位數字爲A/B/C/D/8/9(新式舊式性別區分)+8位數字
             if(($taiwanIdType.val() === "身分證" && !rg.test($taiwanIdNo.val()))
             || ($taiwanIdType.val() === "居留證" && !rg2.test($taiwanIdNo.val()))) _handleError($taiwanIdNo,'在臺證件號碼');
         }
@@ -761,11 +779,13 @@
         _checkValue($twContactAddress,'General');
         _checkValue($twContactWorkplaceName,'General');
         _checkValue($twContactWorkplacePhone,'Number');
+        _checkValue($twContactWorkplaceAddress,'General');
 
         if(_errormsg.length > 0) {
             return false;
         } else {
             return {
+                backup_email:$backupEmail.val(),
                 name: $name.val(),
                 eng_name: $engName.val(),
                 gender: $(".gender:checked").val(),
@@ -809,6 +829,7 @@
                 tw_contact_address: ($twContactAddress === null)? "" : $twContactAddress.val(),
                 tw_contact_workplace_name: ($twContactWorkplaceName === null)? "" : $twContactWorkplaceName.val(),
                 tw_contact_workplace_phone: ($twContactWorkplacePhone === null)? "" : $twContactWorkplacePhone.val(),
+                tw_contact_workplace_address: ($twContactWorkplaceAddress === null)? "" : $twContactWorkplaceAddress.val(),
             };
         }
     }
@@ -816,6 +837,9 @@
     // 後端回傳錯誤時，對應欄位顯示紅框
     function _handleErrMsg(msg) {
         switch (msg) {
+            case '備用 E-mail':
+                $backupEmail.addClass('invalidInput');
+                break;
             case '姓名(中)':
                 $name.addClass('invalidInput');
                 break;
@@ -946,6 +970,9 @@
                 break;
             case '在臺聯絡人服務機關電話':
                 $twContactWorkplacePhone.addClass('invalidInput');
+                break;
+            case '在臺聯絡人服務機關地址':
+                $twContactWorkplaceAddress.addClass('invalidInput');
                 break;
         }
     }

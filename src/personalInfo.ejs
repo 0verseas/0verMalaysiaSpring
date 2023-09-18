@@ -30,6 +30,14 @@
 				</div>
 			</div>
 			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="email">備用  E-Mail</label>
+						<input type="email" class="form-control" id="backupEmail" value="">
+					</div>
+				</div>
+			</div>
+			<div class="row">
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="text-danger" for="name">* 姓名（中）</label>
@@ -256,7 +264,7 @@
 					<div class="form-group">
 						<label for="taiwanIdType">證件號碼</label>
 						<input type="text" class="form-control" id="taiwanIdNo" placeholder="">
-						<small class="text-danger hide" id="taiwanIdExample1">居留證範例：FC12345678</small>
+						<small class="text-danger hide" id="taiwanIdExample1">該「證件類型」的號碼<br/>居留證範例：<br/>（舊）FC12345678<br/>（新）B876543210</small>
 						<small class="text-danger hide" id="taiwanIdExample2">身分證範例：A123456789</small>
 					</div>
 				</div>
@@ -308,7 +316,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="form-group">
-						<label >學校國別</label>
+						<label >學校所在國別</label>
 						<div class="row">
 							<div class="col-md-6">
 								<input type="text" class="form-control" id="schoolState" disabled value="亞洲">
@@ -576,6 +584,14 @@
 					<div class="form-group">
 						<label for="twContactWorkplacePhone">服務機關電話</label>
 						<input type="text" class="form-control" id="twContactWorkplacePhone" placeholder="" onblur="this.value=this.value.replace(/[^\d]/g,'')">
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="twContactWorkplaceAddress">服務機關地址</label>
+						<input type="text" class="form-control" id="twContactWorkplaceAddress" placeholder="">
 					</div>
 				</div>
 			</div>
