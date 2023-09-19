@@ -72,6 +72,9 @@
     const $schoolAdmissionAt = $('#schoolAdmissionAt'); // 入學時間
     const $schoolGraduateAt = $('#schoolGraduateAt'); // 畢業時間
 
+    const $getDiploma = $personalInfoForm.find('.getDiploma'); // 是否取得畢業證書或離校證明
+    const $getDiplomaYetAlert = $('.getDiplomaYetAlert') // 沒有取得畢業證書或離校證明時的提醒文字
+
     // 家長資料
     // 父親
     const $dadStatus = $('.dadStatus'); // 存歿
@@ -123,6 +126,7 @@
     $residenceContinent.on('change', _reRenderResidenceCountry);
     $schoolLocation.on('change', _chSchoolLocation);
     $schoolNameSelect.on('change',_chSchoolName);
+    $getDiploma.on('change', _changeGetDiploma);
     $dadStatus.on('change', _chDadStatus);
     $momStatus.on('change', _chMomStatus);
     $taiwanIdType.on('change', _showTaiwanIdExample);
@@ -203,6 +207,7 @@
                         "taiwan_passport": "",
                         "taiwan_phone": "",
                         "taiwan_address": "",
+                        "get_diploma": "",
                         "education_system_description": "",
                         "school_name": "",
                         "school_locate": "",
@@ -285,6 +290,9 @@
                 // 入學時間、畢業時間初始化
                 $schoolAdmissionAt.val(formData.school_admission_at);
                 $schoolGraduateAt.val(formData.school_graduate_at);
+
+                // 是否取得畢業證書或離校證明
+                $("input[name=getDiploma][value='" + formData.get_diploma + "']").prop("checked", true);
 
                 // init 家長資料
                 // 父
@@ -393,7 +401,7 @@
     function _reRenderResidenceCountry() {
         const continent = $(this).find(':selected').data('continentindex');
 
-        let countryHTML = '<option value="">Country</option>';
+        let countryHTML = '';
 
         if (continent !== -1) {
             $residentLocation.selectpicker({title: '請選擇國家'}); // 修改 未選擇選項時的顯示文字
@@ -558,6 +566,16 @@
         return 0;
     }
 
+    function _changeGetDiploma(){
+        let option = Number($(this).val());
+
+        if(option){
+            $getDiplomaYetAlert.hide();
+        } else {
+            $getDiplomaYetAlert.show();
+        }
+    }
+
     function _chDadStatus() {
         _currentDadStatus = $(this).val();
         _switchDadDataForm();
@@ -692,8 +710,10 @@
     function _handleError(col, msg) {
         _errormsg.push(msg);
         col.addClass('invalidInput');
+        if (msg === '性別') $('#genderFieldSet').addClass('invalidInput');
         if (msg === '出生地') $('.birthContinent').addClass('invalidInput');
         if (msg === '僑居地國別') $('.residentLocation').addClass('invalidInput');
+        if (msg === '報名當下是否已取得高中「畢業證書或離校證明」') $('#getDiplomaFieldSet').addClass('invalidInput');
     }
 
     // 送出前檢查
@@ -738,6 +758,7 @@
         if(_checkValue($schoolNameText,'General') && !_hasSchoolName) _handleError($schoolNameText,'其他學校名稱');
         if(_checkValue($schoolAdmissionAt,'Date')) _handleError($schoolAdmissionAt,'入學時間');
         if(_checkValue($schoolGraduateAt,'Date')) _handleError($schoolGraduateAt,'畢業時間');
+        if(!$(".getDiploma:checked").val()) _handleError($getDiploma,'報名當下是否已取得高中「畢業證書或離校證明」');
         // 父
         if(!$dadStatus.val()) _errormsg.push('父親存歿');
         if(_currentDadStatus !== "undefined"){
@@ -811,6 +832,7 @@
                 school_name: (_hasSchoolName)? $schoolNameSelect.val() : $schoolNameText.val(),
                 school_admission_at: $schoolAdmissionAt.val(),
                 school_graduate_at: $schoolGraduateAt.val(),
+                get_diploma: $(".getDiploma:checked").val(),
                 dad_status: _currentDadStatus,
                 dad_name: (_currentDadStatus === "undefined") ?"" :$dadName.val(),
                 dad_eng_name: (_currentDadStatus === "undefined")? "" : $dadEngName.val(),
@@ -847,7 +869,7 @@
                 $engName.addClass('invalidInput');
                 break;
             case '性別':
-                $gender.addClass('invalidRadio');
+                $('#genderFieldSet').addClass('invalidInput');
                 break;
             case '生日':
                 $birthday.addClass('invalidInput');
@@ -914,6 +936,9 @@
                 break;
             case '畢業時間':
                 $schoolGraduateAt.addClass('invalidInput');
+                break;
+            case '報名當下是否已取得高中「畢業證書或離校證明」':
+                $getDiploma.addClass('invalidRadio');
                 break;
             case '父親存歿':
                 $dadStatus.addClass('invalidRadio');

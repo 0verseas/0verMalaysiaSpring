@@ -56,7 +56,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-					<fieldset class="form-group">
+					<fieldset class="form-group" id="genderFieldSet">
 						<label class="text-danger">* 性別</label><br>
 						<div class="form-check form-check-inline">
 							<label class="form-check-label">
@@ -264,7 +264,7 @@
 					<div class="form-group">
 						<label for="taiwanIdType">證件號碼</label>
 						<input type="text" class="form-control" id="taiwanIdNo" placeholder="">
-						<small class="text-danger hide" id="taiwanIdExample1">該「證件類型」的號碼<br/>居留證範例：<br/>（舊）FC12345678<br/>（新）B876543210</small>
+						<small class="text-danger hide" id="taiwanIdExample1">居留證範例：<br/>（舊）FC12345678<br/>（新）B876543210</small>
 						<small class="text-danger hide" id="taiwanIdExample2">身分證範例：A123456789</small>
 					</div>
 				</div>
@@ -361,13 +361,39 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="text-danger" for="schoolAdmissionAt">* 入學時間</label>
-						<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolAdmissionAt">
+						<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolAdmissionAt" placeholder="年/月 yyyy/mm">
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="text-danger" for="schoolGraduateAt">* 畢業時間</label>
-						<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolGraduateAt">
+						<input class="form-control input-datepicker" data-provide="datepicker" data-date-format="yyyy/mm" data-date-min-view-mode="months" id="schoolGraduateAt" placeholder="年/月 yyyy/mm">
+					</div>
+				</div>
+			</div>
+
+			<div class="row" id="div-getDiplomaOption">
+				<div class="col-md-12">
+					<fieldset class="form-group" id="getDiplomaFieldSet">
+						<label class="text-danger">* 報名當下是否已取得高中「畢業證書或離校證明」？</label><label>（畢業證書或離校證明：至少需修滿相當於臺灣高中二年級下學期）</label><br>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input getDiploma" name="getDiploma" type="radio" value="1"> 是，已取得
+							</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<label class="form-check-label">
+								<input class="form-check-input getDiploma" name="getDiploma" type="radio" value="0"> 否，尚未取得（須填具切結書）
+							</label>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-warning getDiplomaYetAlert invalid hide" role="alert">
+						報名時以應屆畢業身分申請者，可先檢送應屆當學期在學證明書；但至遲必須在入學前（西元2024年2月中旬）取得畢業證書或附歷年成績單之修業證明書供分發學校審查，否則將視為報名資格不符，已經分發者撤銷入學資格。
 					</div>
 				</div>
 			</div>
