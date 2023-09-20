@@ -293,6 +293,11 @@
 
                 // 是否取得畢業證書或離校證明
                 $("input[name=getDiploma][value='" + formData.get_diploma + "']").prop("checked", true);
+                if(formData.get_diploma){
+                    $getDiplomaYetAlert.hide();
+                } else {
+                    $getDiplomaYetAlert.show();
+                }
 
                 // init 家長資料
                 // 父
