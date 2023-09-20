@@ -292,11 +292,8 @@
                 $schoolGraduateAt.val(formData.school_graduate_at);
 
                 // 是否取得畢業證書或離校證明
-                $("input[name=getDiploma][value='" + formData.get_diploma + "']").prop("checked", true);
-                if(formData.get_diploma){
-                    $getDiplomaYetAlert.hide();
-                } else {
-                    $getDiplomaYetAlert.show();
+                if(formData.get_diploma != null){
+                    $("input[name=getDiploma][value='" + formData.get_diploma + "']").prop("checked", true).trigger('change');
                 }
 
                 // init 家長資料
