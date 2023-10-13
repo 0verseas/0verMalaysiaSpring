@@ -2,13 +2,13 @@ version: '3.7'
 
 networks:
   bridge:
-    external:
-      name: ${NETWORKS}
+    external: true
+    name: ${NETWORKS}
 
 services:
   malaysia-spring:
     image: nginx:alpine
-    container_name: 0verMalaysiaSpring
+    container_name: ${CONTAINER_NAME}
     restart: unless-stopped
     tty: true
     environment:
@@ -20,8 +20,9 @@ services:
       - bridge
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.malaysia-spring.entrypoints=websecure"
-      - "traefik.http.routers.malaysia-spring.tls.certresolver=lets-encr"
-      - "traefik.http.routers.malaysia-spring.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/malaysia_spring`)"
-      - "traefik.http.routers.malaysia-spring.tls.options=default"
-      - "traefik.http.routers.malaysia-spring.middlewares=secure-headers@file"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=${ENTRYPOINTS}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certresolver=lets-encr"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`) && PathPrefix(`/malaysia_spring`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.options=default"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=secure-headers@file,traefik-compress@file"
+        #      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=ipwhitelist@file" # 禁止對外連接
