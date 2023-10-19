@@ -97,18 +97,18 @@
 			//有不可接受的副檔名存在
 			let res = checkFile(file);
 			if (!res) return;
-			res = student.sizeConversion(fileList[i].size,4);
+			res = student.sizeConversion(file.size,4);
 			if (res) {
 				await swal({
 					title: `上傳失敗！`,
-					html:`${fileList[i].name}檔案過大，檔案大小不能超過4MB。`,
+					html:`${file.name}檔案過大，檔案大小不能超過4MB。`,
 					type:"error",
 					confirmButtonText: '確定',
 					allowOutsideClick: false
 				});
 				return;
 			}
-			sendData.append('files[]', fileList[i]);
+			sendData.append('files[]', file);
 		}
 
 		await loading.start();
