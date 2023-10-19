@@ -195,7 +195,7 @@
                     immediateUpdates: true,
                     defaultViewDate: {year: (Year)},
                     startDate: '-121y',
-                    endDate: '-0y',
+                    endDate: new Date((Year+1)+'/09/01'),
                 })
             })
             .then(()=>{
@@ -528,7 +528,7 @@
                         }
                     }
 
-                    let schoolLocationHTML = '';
+                    let schoolLocationHTML = '<option value="-1" data-continentIndex="-1" hidden disabled selected>請選擇</option>';
                     _schoolList = groups;
                     // 渲染學校所在地、隱藏學校名稱輸入
                     _schoolList.forEach((value) => {
@@ -538,7 +538,7 @@
                     if (_currentSchoolLocate !== "") {
                         $schoolLocation.val(_currentSchoolLocate);
                     } else {
-                        _currentSchoolLocate = _schoolList[0].locate;
+                        _currentSchoolLocate = '';
                     }
                     $schoolLocationForm.fadeIn();
                 })
@@ -581,10 +581,18 @@
 
         let schoolListHTML = '';
         let selectSchoolName = '其它';
-        _schoolList[locateIndex].school.forEach((value) => {
-            schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
-            if(value.name === _currentSchoolName){selectSchoolName=value.name;}
-        });
+
+        if(locateIndex === -1){
+            schoolListHTML = '<option value="-1" hidden disabled selected>請先選擇學校所在地</option>';
+            $schoolNameSelect.attr('disabled',true);
+        } else {
+            schoolListHTML = '<option value="-1" hidden disabled selected>請選擇</option>';
+            _schoolList[locateIndex].school.forEach((value) => {
+                schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
+                if(value.name === _currentSchoolName){selectSchoolName=value.name;}
+            });
+            $schoolNameSelect.attr('disabled',false);
+        }
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
             if(_currentSchoolLocate !=="其它" && selectSchoolName !== "其它"){
