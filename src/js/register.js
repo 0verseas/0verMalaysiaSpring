@@ -133,12 +133,12 @@
 					if (err.status === 429){  // 註冊太多次啦 Too Many Requests
 						err.json && err.json().then((data) => {
 							console.error(data);
-							swal({title: `警告`, type:"warning", text: data.message, confirmButtonText: '確定', allowOutsideClick: false});
+							swal({title: `警告`, type:"warning", text: data.messages[0], confirmButtonText: '確定', allowOutsideClick: false});
 						})
 					} else {
 						err.json && err.json().then((data) => {
 							console.error(data);
-							swal({title: `ERROR`, type:"error", text: data.message[0], confirmButtonText: '確定', allowOutsideClick: false});
+							swal({title: `ERROR`, type:"error", text: data.messages[0], confirmButtonText: '確定', allowOutsideClick: false});
 						})
 					}
 					loading.complete();
