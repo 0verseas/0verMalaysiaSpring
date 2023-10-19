@@ -145,58 +145,6 @@
                 });
                 $birthContinent.html(stateHTML);
                 $residenceContinent.html(stateHTML);
-                // 總是有人亂填生日 甚至變成未來人 只好設個上限 最年輕就是報名當下剛滿十歲
-                let Year = new Date().getFullYear();
-                $birthday.datepicker({
-                    updateViewDate: true, // 會自動避免並修正直接輸入錯誤/無效的月/日，例：不是潤年的時候輸入2月29日，設true會自動跳下一天到3月1日
-                    autoclose: true, // 選完會自動關閉選擇器
-                    startView: 2, // 以個位數年份單位開始瀏覽
-                    maxViewMode: 3, // 最高以10年單位瀏覽年份
-                    immediateUpdates: true, // 只要選了其中一個項目，立即刷新欄位的年/月/日的數字
-                    defaultViewDate: {year: (Year-18)},
-                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 10))
-                });
-                // 總是有人亂填生日 甚至變成未來人 只好設個上限 父母最年輕就是報名當下剛滿二十二歲
-                $dadBirthday.datepicker({
-                    updateViewDate: true,
-                    autoclose: true,
-                    startView: 2,
-                    maxViewMode: 3,
-                    immediateUpdates: true,
-                    defaultViewDate: {year: (Year-40)},
-                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
-                });
-                $momBirthday.datepicker({
-                    updateViewDate: true,
-                    autoclose: true,
-                    startView: 2,
-                    maxViewMode: 3,
-                    immediateUpdates: true,
-                    defaultViewDate: {year: (Year-40)},
-                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
-                });
-                $schoolAdmissionAt.datepicker({
-                    updateViewDate: true,
-                    autoclose: true,
-                    startView: 2,
-                    minViewMode: 1,
-                    maxViewMode: 3,
-                    immediateUpdates: true,
-                    defaultViewDate: {year: (Year-5)},
-                    startDate: '-121y',
-                    endDate: '-0y'
-                })
-                $schoolGraduateAt.datepicker({
-                    updateViewDate: true,
-                    autoclose: true,
-                    startView: 2,
-                    minViewMode: 1,
-                    maxViewMode: 3,
-                    immediateUpdates: true,
-                    defaultViewDate: {year: (Year)},
-                    startDate: '-121y',
-                    endDate: new Date((Year+1)+'/09/01'),
-                })
             })
             .then(()=>{
                 _initPersonalInfo();
@@ -262,6 +210,79 @@
                         "tw_contact_workplace_address": "",
                     }
                 }
+
+                // 總是有人亂填生日 甚至變成未來人 只好設個上限 最年輕就是報名當下剛滿十歲
+                let Year = new Date().getFullYear();
+                let birthDayDefault = `defaultViewDate: {year: (Year-18)}`;
+                if(formData.birthday != null){
+                    birthDayDefault = `defaultDate: ${formData.birthday}`;
+                }
+                let dadBirthDayDefault = `defaultViewDate: {year: (Year-40)}`;
+                if(formData.dad_birthday != null){
+                    dadBirthDayDefault = `defaultDate: ${formData.dad_birthday}`;
+                }
+                let momBirthDayDefault = `defaultViewDate: {year: (Year-40)}`;
+                if(formData.mom_birthday != null){
+                    momBirthDayDefault = `defaultDate: ${formData.mom_birthday}`;
+                }
+                let schoolAdmissionAtDefault = `defaultViewDate: {year: (Year-5)}`;
+                if(formData.school_admission_at != null){
+                    schoolAdmissionAtDefault = `defaultDate: ${formData.school_admission_at}`;
+                }
+                let schoolGraduateAtDefault = `defaultViewDate: {year: (Year)}`;
+                if(formData.school_graduate_at != null){
+                    schoolGraduateAtDefault = `defaultDate: ${formData.school_graduate_at}`;
+                }
+                $birthday.datepicker({
+                    updateViewDate: true, // 會自動避免並修正直接輸入錯誤/無效的月/日，例：不是潤年的時候輸入2月29日，設true會自動跳下一天到3月1日
+                    autoclose: true, // 選完會自動關閉選擇器
+                    startView: 2, // 以個位數年份單位開始瀏覽
+                    maxViewMode: 3, // 最高以10年單位瀏覽年份
+                    immediateUpdates: true, // 只要選了其中一個項目，立即刷新欄位的年/月/日的數字
+                    birthDayDefault,
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 10))
+                });
+                // 總是有人亂填生日 甚至變成未來人 只好設個上限 父母最年輕就是報名當下剛滿二十二歲
+                $dadBirthday.datepicker({
+                    updateViewDate: true,
+                    autoclose: true,
+                    startView: 2,
+                    maxViewMode: 3,
+                    immediateUpdates: true,
+                    defaultViewDate: {year: (Year-40)},
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
+                });
+                $momBirthday.datepicker({
+                    updateViewDate: true,
+                    autoclose: true,
+                    startView: 2,
+                    maxViewMode: 3,
+                    immediateUpdates: true,
+                    defaultViewDate: {year: (Year-40)},
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() - 22))
+                });
+                $schoolAdmissionAt.datepicker({
+                    updateViewDate: true,
+                    autoclose: true,
+                    startView: 2,
+                    minViewMode: 1,
+                    maxViewMode: 3,
+                    immediateUpdates: true,
+                    defaultViewDate: {year: (Year-5)},
+                    startDate: '-121y',
+                    endDate: '-0y'
+                })
+                $schoolGraduateAt.datepicker({
+                    updateViewDate: true,
+                    autoclose: true,
+                    startView: 2,
+                    minViewMode: 1,
+                    maxViewMode: 3,
+                    immediateUpdates: true,
+                    defaultViewDate: {year: (Year)},
+                    startDate: '-121y',
+                    endDate: new Date((Year+1)+'/09/01'),
+                })
 
                 // init 申請人資料表
                 $email.val(json.email);
