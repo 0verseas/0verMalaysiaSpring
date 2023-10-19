@@ -602,17 +602,21 @@
 
         let schoolListHTML = '';
         let selectSchoolName = '其它';
+        $schoolNameSelect.parent().show();
 
         if(locateIndex === -1){
             schoolListHTML = '<option value="-1" hidden disabled selected>請先選擇學校所在地</option>';
             $schoolNameSelect.attr('disabled',true);
-        } else {
+        } else if(_currentSchoolLocate !== '其它'){
             schoolListHTML = '<option value="-1" hidden disabled selected>請選擇</option>';
             _schoolList[locateIndex].school.forEach((value) => {
                 schoolListHTML += `<option value="${value.name}">${value.name}</option>`;
                 if(value.name === _currentSchoolName){selectSchoolName=value.name;}
             });
             $schoolNameSelect.attr('disabled',false);
+        } else {
+            schoolListHTML = '<option value="其它" selected>其它</option>';
+            $schoolNameSelect.parent().hide();
         }
         $schoolNameSelect.html(schoolListHTML);
         if (_currentSchoolName !== "") {
