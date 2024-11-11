@@ -24,25 +24,56 @@ $ npm run serve
 $ npm run build
 ```
 ## Deploy Docker Develop Environment
-Just need to modify related documents(src/env.js, .env, docker-compose.yaml)
+### Startup Preparation
+if dev then
+```
+git clone https://github.com/0verseas/0verMalaysiaSpring.git ./0verMalaysiaSpring-dev/
+cd ./0verMalaysiaSpring-dev/
+git checkout dev
+```
+if official then
+```
+git clone https://github.com/0verseas/0verMalaysiaSpring.git
+cd ./0verMalaysiaSpring/
+```
 
-First of all, git clone https://github.com/0verseas/0verMalaysiaSpring.git than switch folder to 0verMalaysiaSpring/, and do below
-  - ``cd 0verMalaysiaSpring/``
-    - switch git branch
-      - ``sudo git checkout dev``
-    - ``sudo cp src/env.js.example src/env.js``
-    - edit src/env.js (modify baseUrl, reCAPTCHA_site_key)
-    - docker build
-      - ``sudo docker run -it --rm -v $PWD:/0verMalaysiaSpring -w /0verMalaysiaSpring node:14.16.0 sh -c 'npm install && npm run build'``
-
-Secondly, switch folder to 0verStudent/docker/ and do below
-- ``cd docker/``
-  - ``sudo cp .env.example .env``
-  - edit .env (modify NETWORKS)
-  - edit docker-compose.yaml (modify the container's label which "traefik.http.routers.malaysia-spring.rule=Host(`` `input student's domain name here` ``) && PathPrefix(`` `/malaysia_spring` ``)")
-
-Finally, did all the above mentioned it after that the last move is docker-compose up
-- ``sudo docker-compose up -d``
-
-If want to stop docker-compose
-- ``sudo docker-compose down``
+```
+npm install
+cp ./src/env.js.example ./src/env.js
+cp ./docker/.env.example ./docker/.env
+```
+#### Edit Config Files
+modify baseUrl, isProduction, reCAPTCHA_site_key
+```
+vim ./src/env.js
+```
+modfiy NETWORKS, DOMAIN_NAME, ENTRYPOINTS
+*If dev then modfiy COMPOSE_PROJECT_NAME and CONTAINER_NAME*
+```
+vim ./docker/.env
+```
+#### *If want Container Block Exclude IPs Other than Ours*
+modify uncomment row 28
+```
+vim ./docker/docker-compose.yaml
+```
+### Build
+```
+sudo npm run docker-build
+```
+### StartUp
+*at ./docker/ path*
+```
+sudo docker-compose up -d
+```
+### Stop
+*at ./docker/ path*
+```
+sudo docker-compose down
+```
+### ✨Nonstop Container and Apply New Edit Docker-Compose Setting (Use Only Container is running)✨
+The command will not effect on the running container if you have not edited any of the settings on docker-compose.yaml
+*at ./docker/ path*
+```
+sudo docker-compose up --detach
+```
